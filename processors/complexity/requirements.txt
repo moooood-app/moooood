@@ -1,0 +1,6 @@
+attrs==23.2.0
+pyphen==0.15.0
+referencing==0.35.1
+rpds-py==0.18.0
+textstat==0.7.3
+boto3==1.28.75
