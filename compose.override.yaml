@@ -1,0 +1,45 @@
+# Development environment override
+services:
+  php:
+    build:
+      context: ./docker/api
+      target: frankenphp_dev
+    volumes:
+      - ./api/:/app
+      - ./docker/api/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./docker/api/frankenphp/conf.d/20-app.dev.ini:/usr/local/etc/php/app.conf.d/20-app.dev.ini:ro
+    environment:
+      MERCURE_EXTRA_DIRECTIVES: demo
+      # See https://xdebug.org/docs/all_settings#mode
+      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+      NEW_ENTRY_SNS_DSN: sns://${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}@${AWS_URL:-default}?region=${AWS_DEFAULT_REGION}&sslmode=disable
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
+    tty: true
+
+  database:
+    ports:
+      - "5432:5432"
+
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    env_file:
+      - .env
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+      - SQS_QUEUES=worker-asent,worker-complexity
+      - SNS_TOPICS=${NEW_ENTRY_SNS_TOPIC}
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./docker/data/localstack}:/var/lib/localstack"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/localstack/init_sqs.sh:/etc/localstack/init/ready.d/init_sqs.sh
+      - ./docker/localstack/init_sns.sh:/etc/localstack/init/ready.d/init_sns.sh
+
+###> symfony/mercure-bundle ###
+###< symfony/mercure-bundle ###
