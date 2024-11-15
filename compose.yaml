@@ -1,3 +1,17 @@
+x-templates:
+  python-processor-template: &python-processor-template
+    env_file:
+      - .env
+    environment:
+      - MAX_MESSAGES=10
+    working_dir: /app
+    depends_on:
+      - localstack
+
+  python-processor-build-template: &python-processor-build-template
+    context: ./
+    dockerfile: docker/processors/python/Dockerfile
+
 services:
   php:
     container_name: api
@@ -16,7 +30,6 @@ services:
       MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}/.well-known/mercure}
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       NEW_ENTRY_SNS_DSN: sns://${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}@${AWS_URL:-default}?region=${AWS_DEFAULT_REGION}
-      NEW_ENTRY_SNS_ARN: arn:aws:sns:${AWS_DEFAULT_REGION}:${AWS_ACCOUNT_ID}:${NEW_ENTRY_SNS_TOPIC}
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -52,6 +65,24 @@ services:
       start_period: 60s
     volumes:
       - ./docker/data/db:/var/lib/postgresql/data:rw
+
+  processors.asent:
+    <<: *python-processor-template
+    build:
+      <<: *python-processor-build-template
+      args:
+        PROCESSOR_PATH: processors/asent
+    volumes:
+      - ./processors/asent:/app
+
+  processors.complexity:
+    <<: *python-processor-template
+    build:
+      <<: *python-processor-build-template
+      args:
+        PROCESSOR_PATH: processors/complexity
+    volumes:
+      - ./processors/complexity:/app
 
 volumes:
   caddy_data:

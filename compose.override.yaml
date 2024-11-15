@@ -33,13 +33,10 @@ services:
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       - DEBUG=${DEBUG:-0}
-      - SQS_QUEUES=worker-asent,worker-complexity
-      - SNS_TOPICS=${NEW_ENTRY_SNS_TOPIC}
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./docker/data/localstack}:/var/lib/localstack"
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./docker/localstack/init_sqs.sh:/etc/localstack/init/ready.d/init_sqs.sh
-      - ./docker/localstack/init_sns.sh:/etc/localstack/init/ready.d/init_sns.sh
+      - ./docker/localstack/init_sns_sqs.sh:/etc/localstack/init/ready.d/init_sns_sqs.sh
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
