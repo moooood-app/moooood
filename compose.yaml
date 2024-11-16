@@ -4,6 +4,7 @@ x-templates:
       - .env
     environment:
       - MAX_MESSAGES=10
+      - MAX_DURATION=300
     working_dir: /app
     depends_on:
       - localstack
@@ -73,7 +74,7 @@ services:
       args:
         PROCESSOR_PATH: processors/asent
     volumes:
-      - ./processors/asent:/app
+      - ./processors/asent/processor.py:/app/processor.py
 
   processors.complexity:
     <<: *python-processor-template
@@ -82,7 +83,27 @@ services:
       args:
         PROCESSOR_PATH: processors/complexity
     volumes:
-      - ./processors/complexity:/app
+      - ./processors/complexity/processor.py:/app/processor.py
+
+  processors.keywords:
+    <<: *python-processor-template
+    build:
+      <<: *python-processor-build-template
+      args:
+        PROCESSOR_PATH: processors/keywords
+    volumes:
+      - ./processors/keywords/processor.py:/app/processor.py
+
+  processors.summary:
+    <<: *python-processor-template
+    build:
+      <<: *python-processor-build-template
+      args:
+        PROCESSOR_PATH: processors/summary
+        TRANSFORMERS_CACHE: /cache/transformers
+    volumes:
+      - ./data/cache/transformers:/cache/transformers
+      - ./processors/summary/processor.py:/app/processor.py
 
 volumes:
   caddy_data:
