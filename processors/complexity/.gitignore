@@ -1,1 +1,2 @@
 supervisord.*
+__pycache__/

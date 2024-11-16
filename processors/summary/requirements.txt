@@ -1,0 +1,4 @@
+transformers==4.46.2
+boto3==1.28.75
+tensorflow==2.18.0
+tf-keras==2.18.0
