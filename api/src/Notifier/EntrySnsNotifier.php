@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifier;
 
+use App\Entity\Entry;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Notifier\Exception\TransportExceptionInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Notifier\Message\MessageOptionsInterface;
 use Symfony\Component\Notifier\TexterInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Psr\Log\LoggerInterface;
-use App\Entity\Entry;
-use Symfony\Component\Notifier\Exception\TransportExceptionInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class EntrySnsNotifier
 {
@@ -17,8 +19,9 @@ class EntrySnsNotifier
         private readonly TexterInterface $texter,
         private readonly SerializerInterface $serializer,
         private readonly LoggerInterface $logger,
-        private readonly MessageOptionsInterface $entrySnsOptions
-    ) {}
+        private readonly MessageOptionsInterface $entrySnsOptions,
+    ) {
+    }
 
     public function notify(Entry $entry): void
     {
@@ -31,7 +34,7 @@ class EntrySnsNotifier
         try {
             $this->texter->send($message);
         } catch (TransportExceptionInterface $e) {
-            $this->logger->error('Failed to send SNS notification: ' . $e->getMessage());
+            $this->logger->error('Failed to send SNS notification: '.$e->getMessage());
         }
     }
 }

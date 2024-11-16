@@ -6,7 +6,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class KeywordsProcessor(BaseProcessor):
+class SummaryProcessor(BaseProcessor):
     def __init__(self):
         super().__init__(
             queue_url_env="SUMMARY_PROCESSOR_SQS_QUEUE",
@@ -23,13 +23,16 @@ class KeywordsProcessor(BaseProcessor):
                 entry_text,
                 max_length=35,
                 min_length=5,
-                length_penalty=0.7,
+                length_penalty=0.5,
             )
+            logger.info(f"Processed summary: {summary}")
             summary = summary[0]["summary_text"]
             last_period_index = summary.rfind(".")
             if last_period_index != -1:
                 summary = summary[: last_period_index + 1]
-            return summary
+            return {
+                "summary": summary,
+            }
 
         except Exception as e:
             logger.error(f"Error in process_message: {e}")
@@ -37,5 +40,5 @@ class KeywordsProcessor(BaseProcessor):
 
 
 if __name__ == "__main__":
-    processor = KeywordsProcessor()
+    processor = SummaryProcessor()
     processor.poll_queue()

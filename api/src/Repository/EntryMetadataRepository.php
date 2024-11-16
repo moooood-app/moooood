@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\Entry;
+use App\Entity\EntryMetadata;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Entry>
+ * @extends ServiceEntityRepository<EntryMetadata>
  */
-class EntryRepository extends ServiceEntityRepository
+class EntryMetadataRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Entry::class);
+        parent::__construct($registry, EntryMetadata::class);
     }
 
     //    /**
-    //     * @return Entry[] Returns an array of Entry objects
+    //     * @return EntryMetadata[] Returns an array of EntryMetadata objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -33,7 +33,7 @@ class EntryRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Entry
+    //    public function findOneBySomeField($value): ?EntryMetadata
     //    {
     //        return $this->createQueryBuilder('e')
     //            ->andWhere('e.exampleField = :val')

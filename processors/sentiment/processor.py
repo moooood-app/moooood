@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class SentimentProcessor(BaseProcessor):
     def __init__(self):
         super().__init__(
-            queue_url_env="ASENT_PROCESSOR_SQS_QUEUE",
+            queue_url_env="SENTIMENT_PROCESSOR_SQS_QUEUE",
             sns_topic_arn_env="POST_PROCESSING_SNS_ARN",
             max_messages_env="MAX_MESSAGES",
             max_duration_seconds_env="MAX_DURATION",
@@ -24,7 +24,6 @@ class SentimentProcessor(BaseProcessor):
         try:
             doc = self.nlp(entry_text)
             result = doc._.polarity.to_dict()
-            logger.info(f"Processed sentiment: {result}")
             return {
                 key: result[key]
                 for key in result.keys()

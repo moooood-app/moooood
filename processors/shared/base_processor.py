@@ -60,7 +60,7 @@ class BaseProcessor:
                         logger.info(f"Received SQS message: {payload}")
                         result = {
                             'result': self.process_message(payload.pop('content')),
-                            'processor': self.__class__.__name__.lower(),
+                            'processor': self.__class__.__name__.lower().removesuffix('processor'),
                         }
                         payload.update(result)
                         self.send_sns_notification(payload)
