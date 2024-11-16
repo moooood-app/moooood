@@ -41,12 +41,12 @@ class Entry
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
-    public ?\DateTimeImmutable $createdAt = null;
+    public \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Gedmo\Timestampable]
     #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
-    public ?\DateTimeImmutable $updatedAt = null;
+    public \DateTimeImmutable $updatedAt;
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -63,7 +63,7 @@ class Entry
     ])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 5000)]
-    private ?string $content = null;
+    private string $content;
 
     /**
      * @var Collection<int, EntryMetadata>
@@ -82,7 +82,7 @@ class Entry
         return $this->id;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -115,11 +115,7 @@ class Entry
 
     public function removeMetadata(EntryMetadata $metadata): static
     {
-        if ($this->metadata->removeElement($metadata)) {
-            if ($metadata->getEntry() === $this) {
-                $metadata->setEntry(null);
-            }
-        }
+        $this->metadata->removeElement($metadata);
 
         return $this;
     }

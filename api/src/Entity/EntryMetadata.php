@@ -22,12 +22,16 @@ class EntryMetadata
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     #[Serializer\Groups([Entry::SERIALIZATION_GROUP_READ_ITEM])]
-    public ?\DateTimeImmutable $createdAt = null;
+    public \DateTimeImmutable $createdAt;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
+    /**
+     * @var array<mixed>
+     */
     #[ORM\Column(type: Types::JSON, options: ['jsonb' => true])]
     #[Serializer\Groups([Entry::SERIALIZATION_GROUP_READ_ITEM])]
     private array $metadata = [];
@@ -38,18 +42,24 @@ class EntryMetadata
 
     #[ORM\ManyToOne(inversedBy: 'metadata')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Entry $entry = null;
+    private Entry $entry;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getMetadata(): array
     {
         return $this->metadata;
     }
 
+    /**
+     * @param array<mixed> $metadata
+     */
     public function setMetadata(array $metadata): static
     {
         $this->metadata = $metadata;
@@ -69,12 +79,12 @@ class EntryMetadata
         return $this;
     }
 
-    public function getEntry(): ?Entry
+    public function getEntry(): Entry
     {
         return $this->entry;
     }
 
-    public function setEntry(?Entry $entry): static
+    public function setEntry(Entry $entry): static
     {
         $this->entry = $entry;
 
