@@ -24,13 +24,13 @@ services:
       SERVER_NAME: ${SERVER_NAME:-moooood.localhost}, php:80
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
       DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-password}@database:5432/${POSTGRES_DB:-moooood}?serverVersion=${POSTGRES_VERSION:-16}&charset=${POSTGRES_CHARSET:-utf8}
       # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
       MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}/.well-known/mercure}
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      NEW_ENTRY_SNS_DSN: sns://${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}@${AWS_URL:-default}?region=${AWS_DEFAULT_REGION}
+      NEW_ENTRY_SNS_DSN: sns://${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}@${AWS_URL:-default}?region=${AWS_DEFAULT_REGION}&sslmode=disable
+      MESSENGER_TRANSPORT_POST_PROCESSING_DSN: sqs://${AWS_URL:-default}/${POST_PROCESSING_SQS_QUEUE}?access_key=${AWS_SECRET_ACCESS_KEY}&secret_key=${AWS_ACCESS_KEY_ID}&region=${AWS_DEFAULT_REGION}&sslmode=disable
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -67,14 +67,14 @@ services:
     volumes:
       - ./docker/data/db:/var/lib/postgresql/data:rw
 
-  processors.asent:
+  processors.sentiment:
     <<: *python-processor-template
     build:
       <<: *python-processor-build-template
       args:
-        PROCESSOR_PATH: processors/asent
+        PROCESSOR_PATH: processors/sentiment
     volumes:
-      - ./processors/asent/processor.py:/app/processor.py
+      - ./processors/sentiment/processor.py:/app/processor.py
 
   processors.complexity:
     <<: *python-processor-template

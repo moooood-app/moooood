@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\EventListener;
 
 use ApiPlatform\Symfony\EventListener\EventPriorities;
@@ -12,7 +14,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class EntryWriteListener implements EventSubscriberInterface
 {
-    public function __construct(private readonly EntrySnsNotifier $notifier) {}
+    public function __construct(private readonly EntrySnsNotifier $notifier)
+    {
+    }
 
     public static function getSubscribedEvents()
     {

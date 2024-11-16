@@ -14,5 +14,8 @@ install:
 migrate:
 	$(DOCKER_EXEC_PHP) bin/console doctrine:migrations:migrate
 
-run:
+run: stop
 	docker compose up -d --wait
+
+stop:
+	docker compose down --remove-orphans
