@@ -18,7 +18,10 @@ final class EntryWriteListener implements EventSubscriberInterface
     {
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, array<int|string>>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::VIEW => ['notify', EventPriorities::POST_WRITE],
