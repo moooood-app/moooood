@@ -10,7 +10,10 @@ help: ## automatically generates a documentation of the available Makefile targe
 
 install:
 	$(DOCKER_EXEC_API) composer install
+    cp api/.env.sso.dist api/.env.sso
 	$(DOCKER_EXEC_API) bin/console lexik:jwt:generate-keypair --skip-if-exists
+    $(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction
+
 
 lint:
 	$(DOCKER_EXEC_API) vendor/bin/php-cs-fixer fix src
