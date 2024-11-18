@@ -4,3 +4,7 @@ doctrine_migrations:
         # as migrations classes should NOT be autoloaded
         'DoctrineMigrations': '%kernel.project_dir%/migrations'
     enable_profiler: false
+
+when@dev:
+    doctrine_migrations:
+        enable_profiler: true

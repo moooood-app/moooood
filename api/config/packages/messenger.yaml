@@ -1,0 +1,19 @@
+framework:
+    messenger:
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            post_processing:
+                dsn: '%env(MESSENGER_TRANSPORT_POST_PROCESSING_DSN)%'
+                serializer: 'App\Messenger\Serializer\ProcessorOutputDecoder'
+                options:
+                    auto_setup: false
+        routing:
+            App\Message\ProcessorOutputMessage: post_processing
+
+# when@test:
+#    framework:
+#        messenger:
+#            transports:
+#                # replace with your transport name here (e.g., my_transport: 'in-memory://')
+#                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
+#                async: 'in-memory://'

@@ -1,7 +1,7 @@
 meta {
   name: Create Entry
   type: http
-  seq: 2
+  seq: 1
 }
 
 post {
@@ -12,11 +12,12 @@ post {
 
 headers {
   Content-Type: application/ld+json
+  Authorization: bearer {{jwt}}
 }
 
 body:json {
   {
-    "content": "In reaffirming the greatness of our nation, we understand that greatness is never a given. It must be earned. Our journey has never been one of short-cuts or settling for less. It has not been the path for the faint-hearted -- for those who prefer leisure over work, or seek only the pleasures of riches and fame. Rather, it has been the risk-takers, the doers, the makers of things -- some celebrated but more often men and women obscure in their labor, who have carried us up the long, rugged path towards prosperity and freedom."
+    "content": "So even though we face the difficulties of today and tomorrow, I still have a dream. It is a dream deeply rooted in the American dream. I have a dream that one day this nation will rise up and live out the true meaning of its creed: We hold these truths to be self-evident, that all men are created equal. I have a dream that one day on the red hills of Georgia, the sons of former slaves and the sons of former slave owners will be able to sit down together at the table of brotherhood. I have a dream that one day even the state of Mississippi, a state sweltering with the heat of injustice, sweltering with the heat of oppression will be transformed into an oasis of freedom and justice. I have a dream that my four little children will one day live in a nation where they will not be judged by the color of their skin but by the content of their character. I have a dream today. I have a dream that one day down in Alabama with its vicious racists, with its governor having his lips dripping with the words of interposition and nullification, one day right down in Alabama little Black boys and Black girls will be able to join hands with little white boys and white girls as sisters and brothers. I have a dream today."
   }
 }
 

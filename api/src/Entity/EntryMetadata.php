@@ -11,12 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation as Serializer;
 
-#[ORM\Table(uniqueConstraints: [
-    new ORM\UniqueConstraint(name: 'unique_entry_processor', columns: ['entry_id', 'processor']),
-])]
+#[ORM\Table(name: 'entries_metadata')]
+#[ORM\UniqueConstraint(name: 'unique_entry_processor', columns: ['entry_id', 'processor'])]
 #[ORM\Entity(repositoryClass: EntryMetadataRepository::class)]
-#[ORM\Index(name: 'idx_processor', columns: ['processor'])]
-#[ORM\Index(name: 'idx_created_at', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_entry_metatada_processor', columns: ['processor'])]
+#[ORM\Index(name: 'idx_entry_metatada_created_at', columns: ['created_at'])]
 class EntryMetadata
 {
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]

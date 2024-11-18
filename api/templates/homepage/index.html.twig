@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomepageController!{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('hwi_oauth_connect') }}">Login</a></p>
+    <p>Currently logged in user: {{ app.user.email|default('none') }}</p>
+{% endblock %}

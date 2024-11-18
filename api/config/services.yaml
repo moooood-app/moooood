@@ -11,7 +11,7 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
-            Symfony\Component\Notifier\Message\MessageOptionsInterface $entrySnsOptions: '@notifier.new_entry.sns_options'
+            Symfony\Component\Notifier\Message\MessageOptionsInterface $entrySnsOptions: '@notifier.options.new_entry_topic'
 
     App\:
         resource: '../src/'
@@ -20,19 +20,21 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    gedmo.mapping.driver.attribute:
-        class: Gedmo\Mapping\Driver\AttributeReader
+    hwi_oauth.user.provider.entity:
+        class: HWI\Bundle\OAuthBundle\Security\Core\User\EntityUserProvider
+        arguments:
+            $class: App\Entity\User
+            $properties:
+                'google': 'google'
+                'apple': 'apple'
 
-    gedmo.listener.timestampable:
-        class: Gedmo\Timestampable\TimestampableListener
-        tags:
-            - { name: doctrine.event_listener, event: 'prePersist' }
-            - { name: doctrine.event_listener, event: 'onFlush' }
-            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
-        calls:
-            - [ setAnnotationReader, [ '@gedmo.mapping.driver.attribute' ] ]
-            - [ setClock, [ '@clock' ] ]
-
-    notifier.new_entry.sns_options:
+    notifier.options.new_entry_topic:
         class: Symfony\Component\Notifier\Bridge\AmazonSns\AmazonSnsOptions
         arguments: ['%env(NEW_ENTRY_SNS_ARN)%']
+
+    texter:
+        class: Symfony\Component\Notifier\Texter
+        arguments:
+            - '@texter.transports'
+            - null
+            - '@event_dispatcher'

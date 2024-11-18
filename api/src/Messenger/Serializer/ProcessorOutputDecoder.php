@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Messenger\Serializer;
 
+use ApiPlatform\Metadata\Exception\ItemNotFoundException;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Entry;
 use App\Enum\Processor;
 use App\Message\ProcessorOutputMessage;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
@@ -18,6 +20,7 @@ class ProcessorOutputDecoder implements SerializerInterface
     public function __construct(
         private readonly IriConverterInterface $iriConverter,
         private readonly DecoderInterface $decoder,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -32,8 +35,14 @@ class ProcessorOutputDecoder implements SerializerInterface
         /** @var array{result: array<mixed>, "@id": string, processor: string} $message */
         $message = $this->decoder->decode($body['Message'], JsonEncoder::FORMAT);
 
-        /** @var Entry $entry */
-        $entry = $this->iriConverter->getResourceFromIri($message['@id']);
+        try {
+            /** @var Entry $entry */
+            $entry = $this->iriConverter->getResourceFromIri($message['@id']);
+        } catch (ItemNotFoundException $e) {
+            $this->logger->error('Entry not found for IRI {iri}', ['iri' => $message['@id']]);
+            throw $e;
+        }
+
         $processorOutputMessage = new ProcessorOutputMessage(
             $entry,
             $message['result'],
