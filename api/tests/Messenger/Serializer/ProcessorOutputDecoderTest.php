@@ -11,6 +11,7 @@ use App\Message\ProcessorOutputMessage;
 use App\Messenger\Serializer\ProcessorOutputDecoder;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -58,7 +59,10 @@ class ProcessorOutputDecoderTest extends TestCase
             ->with('/entries/123')
             ->willReturn($entry);
 
-        $decoderInstance = new ProcessorOutputDecoder($iriConverter, $decoder);
+        /** @var LoggerInterface&MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $decoderInstance = new ProcessorOutputDecoder($iriConverter, $decoder, $logger);
 
         $envelope = $decoderInstance->decode($encodedEnvelope);
 
@@ -82,7 +86,10 @@ class ProcessorOutputDecoderTest extends TestCase
         /** @var DecoderInterface&MockObject $decoder */
         $decoder = $this->createMock(DecoderInterface::class);
 
-        $decoderInstance = new ProcessorOutputDecoder($iriConverter, $decoder);
+        /** @var LoggerInterface&MockObject $logger */
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $decoderInstance = new ProcessorOutputDecoder($iriConverter, $decoder, $logger);
 
         $decoderInstance->encode(new Envelope(new \stdClass()));
     }

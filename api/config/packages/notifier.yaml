@@ -5,9 +5,9 @@ framework:
             sns: '%env(NEW_ENTRY_SNS_DSN)%'
         channel_policy:
             # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
-            urgent: ['fanout']
-            high: ['fanout']
-            medium: ['fanout']
-            low: ['fanout']
+            urgent: ['chat/sns']
+            high: ['chat/sns']
+            medium: ['chat/sns']
+            low: ['chat/sns']
         admin_recipients:
             - { email: admin@example.com }

@@ -1,0 +1,28 @@
+hwi_oauth:
+    # https://github.com/hwi/HWIOAuthBundle/blob/master/docs/2-configuring_resource_owners.md
+    resource_owners:
+        google:
+            type:                google
+            client_id:           '%env(GOOGLE_ID)%'
+            client_secret:       '%env(GOOGLE_SECRET)%'
+            scope:               "email profile"
+            options:
+                access_type:     offline
+                csrf: true
+                refresh_on_expire: true
+        apple:
+            type:                apple
+            client_id:           '%env(APPLE_ID)%'
+            client_secret:       auto
+            scope:               "name email"
+            options:
+                csrf: true
+                refresh_on_expire: true
+                auth_key:        '%env(APPLE_AUTH_KEY)%'
+                key_id:          '%env(APPLE_KEY_ID)%'
+                team_id:         '%env(APPLE_TEAM_ID)%'
+    connect:
+        confirmation: true
+        account_connector: App\OAuth\AccountConnector
+        registration_form_handler: App\OAuth\OAuthRegistrationHandler
+        registration_form: App\Form\RegistrationFormType
