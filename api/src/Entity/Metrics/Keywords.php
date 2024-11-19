@@ -11,9 +11,9 @@ use App\Repository\Metrics\KeywordsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: KeywordsRepository::class)]
-#[MetricsApiResource(Processor::KEYWORDS)]
+#[MetricsApiResource(metricsProcessor: Processor::KEYWORDS)]
 #[MetricsQueryParameter]
-class Keywords
+class Keywords implements MetricsIdentifierInterface
 {
     use MetricsIdentifierTrait;
 

@@ -11,9 +11,9 @@ use App\Repository\Metrics\SentimentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SentimentRepository::class)]
-#[MetricsApiResource(Processor::SENTIMENT)]
+#[MetricsApiResource(metricsProcessor: Processor::SENTIMENT)]
 #[MetricsQueryParameter]
-class Sentiment
+class Sentiment implements MetricsIdentifierInterface
 {
     use MetricsIdentifierTrait;
 

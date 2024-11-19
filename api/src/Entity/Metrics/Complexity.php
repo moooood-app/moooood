@@ -11,9 +11,9 @@ use App\Repository\Metrics\ComplexityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ComplexityRepository::class)]
-#[MetricsApiResource(Processor::COMPLEXITY)]
+#[MetricsApiResource(metricsProcessor: Processor::COMPLEXITY)]
 #[MetricsQueryParameter]
-class Complexity
+class Complexity implements MetricsIdentifierInterface
 {
     use MetricsIdentifierTrait;
 
