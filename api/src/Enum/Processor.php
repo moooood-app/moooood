@@ -7,7 +7,7 @@ namespace App\Enum;
 enum Processor: string
 {
     case SENTIMENT = 'sentiment';
-    case KEYWORDs = 'keywords';
+    case KEYWORDS = 'keywords';
     case COMPLEXITY = 'complexity';
     case SUMMARY = 'summary';
 }

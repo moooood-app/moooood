@@ -1,13 +1,17 @@
 meta {
-  name: Entry
+  name: Keywords
   type: http
   seq: 3
 }
 
 get {
-  url: https://{{url}}/api/entries/{{current_id}}
+  url: https://{{url}}/api/metrics/keywords?grouping=day
   body: none
   auth: none
+}
+
+query {
+  grouping: day
 }
 
 headers {

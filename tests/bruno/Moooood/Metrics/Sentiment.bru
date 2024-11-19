@@ -1,0 +1,19 @@
+meta {
+  name: Sentiment
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://{{url}}/api/metrics/sentiment?grouping=day
+  body: none
+  auth: none
+}
+
+query {
+  grouping: day
+}
+
+headers {
+  Authorization: bearer {{jwt}}
+}

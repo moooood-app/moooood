@@ -21,7 +21,7 @@ class SummaryProcessor(BaseProcessor):
         try:
             summary = self.summarizer(
                 entry_text,
-                max_length=35,
+                max_length=50,
                 min_length=5,
                 length_penalty=0.5,
             )

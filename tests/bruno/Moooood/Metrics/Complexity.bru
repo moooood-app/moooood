@@ -1,0 +1,19 @@
+meta {
+  name: Complexity
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://{{url}}/api/metrics/complexity?grouping=week
+  body: none
+  auth: none
+}
+
+query {
+  grouping: week
+}
+
+headers {
+  Authorization: bearer {{jwt}}
+}
