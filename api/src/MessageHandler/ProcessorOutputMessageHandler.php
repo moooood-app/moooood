@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
-use App\Entity\EntryMetadata;
 use App\Enum\Metrics\GroupingCriteria;
 use App\Message\ProcessorOutputMessage;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\EntryMetadataRepository;
+use App\Repository\EntryRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -15,8 +15,10 @@ use Symfony\Contracts\Cache\CacheInterface;
 #[AsMessageHandler]
 final class ProcessorOutputMessageHandler
 {
+    /** @todo inject the EntryMetadataRepository instead here */
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private readonly EntryRepository $entryRepository,
+        private readonly EntryMetadataRepository $entryMetadataRepository,
         private readonly LoggerInterface $logger,
         private readonly CacheInterface $cache,
     ) {
@@ -31,28 +33,9 @@ final class ProcessorOutputMessageHandler
 
         $entry = $message->getEntry();
 
-        $existingMetadata = $entry->getMetadata()->filter(static fn (EntryMetadata $metadata) => $metadata->getProcessor() === $message->getProcessor());
-        if ($existingMetadata->count() > 0) {
-            $this->logger->warning('Metadata for processor {processor} already exists for entry {entry}, replacing it', [
-                'entry' => $message->getEntry()->getId(),
-                'processor' => $message->getProcessor()->value,
-            ]);
+        $this->entryRepository->removeExistingMetadataForProcessor($entry, $message->getProcessor());
 
-            foreach ($existingMetadata as $metadata) {
-                $entry->removeMetadata($metadata);
-                $this->entityManager->remove($metadata);
-            }
-            $this->entityManager->flush();
-        }
-
-        $metadata = new EntryMetadata();
-        $metadata->setProcessor($message->getProcessor());
-        $metadata->setMetadata($message->getResult());
-
-        $entry->addMetadata($metadata);
-
-        $this->entityManager->persist($metadata);
-        $this->entityManager->flush();
+        $this->entryMetadataRepository->createMetadataFromProcessorOutput($entry, $message);
 
         foreach (GroupingCriteria::cases() as $groupingCriteria) {
             $this->cache->delete("{$message->getProcessor()->value}_metrics_{$entry->getUser()->getId()}_{$groupingCriteria->value}");
