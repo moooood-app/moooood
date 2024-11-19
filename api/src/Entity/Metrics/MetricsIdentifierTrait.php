@@ -9,10 +9,34 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait MetricsIdentifierTrait
 {
-    #[ORM\Id]
     #[ORM\Column(type: 'string')]
-    public string $id;
+    private string $id;
 
+    #[ORM\Id]
     #[ORM\Column(type: 'string', enumType: GroupingCriteria::class)]
-    public GroupingCriteria $grouping;
+    private GroupingCriteria $grouping;
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function setId(string $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getGrouping(): GroupingCriteria
+    {
+        return $this->grouping;
+    }
+
+    public function setGrouping(GroupingCriteria $grouping): static
+    {
+        $this->grouping = $grouping;
+
+        return $this;
+    }
 }

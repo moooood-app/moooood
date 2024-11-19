@@ -6,6 +6,8 @@ namespace App\Tests\MessageHandler;
 
 use App\Entity\Entry;
 use App\Entity\EntryMetadata;
+use App\Entity\User;
+use App\Enum\Metrics\GroupingCriteria;
 use App\Message\ProcessorOutputMessage;
 use App\MessageHandler\ProcessorOutputMessageHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,20 +35,26 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $entry = $this->createPartialMock(Entry::class, ['getId']);
         $entry->__construct();
         $entry->method('getId')->willReturn(new Uuid('00000000-0000-0000-0000-000000000000'));
+        /** @var User&MockObject $user */
+        $user = $this->createMock(User::class);
+        $user->method('getId')->willReturn(new Uuid('09e6c349-fb5c-4f9c-8b05-d434f00e4b73'));
+        $entry->setUser($user);
 
         $processor = Processor::SENTIMENT; // Use an actual processor enum value
         $message = new ProcessorOutputMessage($entry, ['some' => 'result'], $processor);
 
         /** @var CacheInterface&MockObject $cache */
         $cache = $this->createMock(CacheInterface::class);
-        $cache->expects($this->exactly(4))
+        $cache->expects($this->exactly(count(GroupingCriteria::cases())))
             ->method('delete')
             ->with($this->callback(function(string $key): bool {
                 return in_array($key, [
-                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_daily',
-                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_weekly',
-                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_monthly',
-                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_yearly',
+                    'sentiment_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_entry',
+                    'sentiment_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_hour',
+                    'sentiment_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_day',
+                    'sentiment_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_week',
+                    'sentiment_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_month',
+                    'sentiment_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_year',
                 ]);
             }));
 
@@ -101,20 +109,27 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $entry = $this->createPartialMock(Entry::class, ['getId']);
         $entry->__construct();
         $entry->method('getId')->willReturn(new Uuid('00000000-0000-0000-0000-000000000000'));
+        /** @var User&MockObject $user */
+        $user = $this->createMock(User::class);
+        $user->method('getId')->willReturn(new Uuid('09e6c349-fb5c-4f9c-8b05-d434f00e4b73'));
+        $entry->setUser($user);
+
 
         $processor = Processor::COMPLEXITY;
         $message = new ProcessorOutputMessage($entry, ['new' => 'data'], $processor);
 
         /** @var CacheInterface&MockObject $cache */
         $cache = $this->createMock(CacheInterface::class);
-        $cache->expects($this->exactly(4))
+        $cache->expects($this->exactly(count(GroupingCriteria::cases())))
             ->method('delete')
             ->with($this->callback(function(string $key): bool {
                 return in_array($key, [
-                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_daily',
-                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_weekly',
-                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_monthly',
-                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_yearly',
+                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_entry',
+                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_hour',
+                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_day',
+                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_week',
+                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_month',
+                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_year',
                 ]);
             }));
 
