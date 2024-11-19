@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Repository\Metrics;
 
 use App\Entity\Metrics\Complexity;
-use App\Enum\Processor;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends AbstractMetricsRepository<Complexity>
+ * @extends AbstractProcessorMetricsRepository<Complexity>
  */
-class ComplexityRepository extends AbstractMetricsRepository
+class ComplexityRepository extends AbstractProcessorMetricsRepository
 {
     public function __construct(
         ManagerRegistry $registry,
@@ -36,10 +35,5 @@ class ComplexityRepository extends AbstractMetricsRepository
         ;
 
         return $builder;
-    }
-
-    public function getProcessor(): Processor
-    {
-        return Processor::COMPLEXITY;
     }
 }

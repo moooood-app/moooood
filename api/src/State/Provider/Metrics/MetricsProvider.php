@@ -10,7 +10,7 @@ use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\User;
 use App\Enum\Metrics\GroupingCriteria;
 use App\Enum\Processor;
-use App\Metadata\Metrics\MetricsApiResource;
+use App\Metadata\Metrics\ProcessorMetricsApiResource;
 use App\Repository\Metrics\MetricsRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -49,15 +49,18 @@ final readonly class MetricsProvider implements ProviderInterface
             throw new \RuntimeException('No request');
         }
 
-        $processor = $operation->getExtraProperties()[MetricsApiResource::EXTRA_PROPERTY_METRICS_PROCESSOR] ?? null;
-        if (!$processor instanceof Processor) {
-            throw new \RuntimeException('No processor defined! This provider is only compatible with data produced by processors. Please implement your own provider.');
-        }
-
         /** @var string */
         $grouping = $context['request']->query->get('grouping');
         $groupingCriteria = GroupingCriteria::from($grouping);
 
+        $processor = $operation->getExtraProperties()[ProcessorMetricsApiResource::EXTRA_PROPERTY_METRICS_PROCESSOR] ?? null;
+
+        // @todo find a way to cache these results as well and to invalidate the cache when a new entry is posted
+        if (!$processor instanceof Processor) {
+            return $repository->getMetrics($user, $groupingCriteria);
+        }
+
+        /** @todo centralize this cache key generation */
         $cacheKey = \sprintf(
             '%s_metrics_%s_%s',
             $processor->value,
@@ -65,7 +68,7 @@ final readonly class MetricsProvider implements ProviderInterface
             $groupingCriteria->value
         );
 
-        return $this->cache->get( // @phpstan-ignore-line
+        return $this->cache->get(
             $cacheKey,
             /** @return array<Complexity> */
             static function () use ($user, $groupingCriteria, $repository, $processor): array {

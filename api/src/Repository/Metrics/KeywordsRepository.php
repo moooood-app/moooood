@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Repository\Metrics;
 
 use App\Entity\Metrics\Keywords;
-use App\Enum\Processor;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends AbstractMetricsRepository<Keywords>
+ * @extends AbstractProcessorMetricsRepository<Keywords>
  */
-class KeywordsRepository extends AbstractMetricsRepository
+class KeywordsRepository extends AbstractProcessorMetricsRepository
 {
     public function __construct(
         ManagerRegistry $registry,
@@ -47,10 +46,5 @@ class KeywordsRepository extends AbstractMetricsRepository
         ;
 
         return $wrapper;
-    }
-
-    public function getProcessor(): Processor
-    {
-        return Processor::KEYWORDS;
     }
 }

@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Repository\Metrics;
 
 use App\Entity\Metrics\Sentiment;
-use App\Enum\Processor;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends AbstractMetricsRepository<Sentiment>
+ * @extends AbstractProcessorMetricsRepository<Sentiment>
  */
-class SentimentRepository extends AbstractMetricsRepository
+class SentimentRepository extends AbstractProcessorMetricsRepository
 {
     public function __construct(
         ManagerRegistry $registry,
@@ -30,10 +29,5 @@ class SentimentRepository extends AbstractMetricsRepository
         ;
 
         return $builder;
-    }
-
-    public function getProcessor(): Processor
-    {
-        return Processor::SENTIMENT;
     }
 }
