@@ -50,7 +50,7 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
         return $entityManager // @phpstan-ignore-line
             ->createNativeQuery($builder->getSQL(), $mapping)
             ->setParameters($parameters)
-            ->getResult();
+            ->getArrayResult();
     }
 
     abstract protected function getQueryBuilder(GroupingCriteria $groupingCriteria): QueryBuilder;
