@@ -1,0 +1,19 @@
+meta {
+  name: Submissions
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://{{url}}/api/metrics/submissions?grouping=day
+  body: none
+  auth: none
+}
+
+query {
+  grouping: day
+}
+
+headers {
+  Authorization: bearer {{jwt}}
+}

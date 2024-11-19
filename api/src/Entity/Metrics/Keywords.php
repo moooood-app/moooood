@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Entity\Metrics;
 
 use App\Enum\Processor;
-use App\Metadata\Metrics\MetricsApiResource;
 use App\Metadata\Metrics\MetricsQueryParameter;
+use App\Metadata\Metrics\ProcessorMetricsApiResource;
 use App\Repository\Metrics\KeywordsRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: KeywordsRepository::class)]
-#[MetricsApiResource(metricsProcessor: Processor::KEYWORDS)]
+#[ProcessorMetricsApiResource(metricsProcessor: Processor::KEYWORDS)]
 #[MetricsQueryParameter]
 class Keywords implements MetricsIdentifierInterface
 {
@@ -20,7 +21,7 @@ class Keywords implements MetricsIdentifierInterface
     /**
      * @var list<array{average_score: float, count: int}>
      */
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: Types::JSON)]
     private array $keywords = [];
 
     /**
