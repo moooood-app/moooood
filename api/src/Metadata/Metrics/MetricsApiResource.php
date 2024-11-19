@@ -12,11 +12,15 @@ use App\State\Provider\Metrics\MetricsProvider;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 final class MetricsApiResource extends ApiResource
 {
-    public function __construct(Processor $processor)
+    public function __construct(Processor|string $processor)
     {
+        $uriTemplate = $processor;
+        if ($processor instanceof Processor) {
+            $uriTemplate = $uriTemplate->value;
+        }
         parent::__construct(
             routePrefix: '/metrics',
-            uriTemplate: "/{$processor->value}",
+            uriTemplate: "/$uriTemplate",
             operations: [
                 new GetCollection(provider: MetricsProvider::class),
             ],
