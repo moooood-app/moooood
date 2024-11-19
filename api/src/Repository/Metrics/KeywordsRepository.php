@@ -21,7 +21,7 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
 
     public function addSelects(QueryBuilder $builder): QueryBuilder
     {
-        $wrapper = clone $builder;
+        $wrapper = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
         $builder
             ->addSelect('keyword_data.keyword AS keyword')
@@ -32,17 +32,22 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
             ->addGroupBy('keyword_data.keyword')
         ;
 
-        $wrapper->resetWhere();
-        $wrapper->addSelect(<<<'SQL'
-                jsonb_object_agg(
-                    keyword,
-                    jsonb_build_object(
-                        'count', keyword_count,
-                        'average_score', average_score
-                    )
-                ) AS keywords
-            SQL)
-            ->from('('.$builder->getSQL().')', 'aggregated_keywords')
+        $wrapper
+            ->select([
+                'aggregated_keywords.id',
+                'aggregated_keywords.grouping',
+            ])
+            ->addSelect(<<<'SQL'
+                    jsonb_object_agg(
+                        keyword,
+                        jsonb_build_object(
+                            'count', keyword_count,
+                            'average_score', average_score
+                        )
+                    ) AS keywords
+                SQL)
+            ->from('('.$builder->getSQL().') AS aggregated_keywords')
+            ->groupBy('aggregated_keywords.id', 'aggregated_keywords.grouping')
         ;
 
         return $wrapper;
