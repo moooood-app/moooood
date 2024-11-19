@@ -27,7 +27,7 @@ class KeywordsProcessor(BaseProcessor):
                 use_mmr=True,
                 diversity=0.25,
             )
-            return {keyword: score for keyword, score in keywords}
+            return [{"keyword": keyword, "score": score} for keyword, score in keywords]
         except Exception as e:
             logger.error(f"Error in process_message: {e}")
             raise

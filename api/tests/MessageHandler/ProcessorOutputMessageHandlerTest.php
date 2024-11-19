@@ -13,8 +13,8 @@ use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use App\Enum\Processor;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Contracts\Cache\CacheInterface;
 
 final class ProcessorOutputMessageHandlerTest extends TestCase
 {
@@ -37,7 +37,20 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $processor = Processor::SENTIMENT; // Use an actual processor enum value
         $message = new ProcessorOutputMessage($entry, ['some' => 'result'], $processor);
 
-        $handler = new ProcessorOutputMessageHandler($entityManager, $logger);
+        /** @var CacheInterface&MockObject $cache */
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->expects($this->exactly(4))
+            ->method('delete')
+            ->with($this->callback(function(string $key): bool {
+                return in_array($key, [
+                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_daily',
+                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_weekly',
+                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_monthly',
+                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_yearly',
+                ]);
+            }));
+
+        $handler = new ProcessorOutputMessageHandler($entityManager, $logger, $cache);
 
         $logger->expects($this->once())
             ->method('info')
@@ -92,7 +105,20 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $processor = Processor::COMPLEXITY;
         $message = new ProcessorOutputMessage($entry, ['new' => 'data'], $processor);
 
-        $handler = new ProcessorOutputMessageHandler($entityManager, $logger);
+        /** @var CacheInterface&MockObject $cache */
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->expects($this->exactly(4))
+            ->method('delete')
+            ->with($this->callback(function(string $key): bool {
+                return in_array($key, [
+                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_daily',
+                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_weekly',
+                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_monthly',
+                    'sentiment_metrics_00000000-0000-0000-0000-000000000000_yearly',
+                ]);
+            }));
+
+        $handler = new ProcessorOutputMessageHandler($entityManager, $logger, $cache);
 
         $existingMetadata = new EntryMetadata();
         $existingMetadata->setProcessor($processor);

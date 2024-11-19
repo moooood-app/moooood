@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\MessageHandler;
 
 use App\Entity\EntryMetadata;
+use App\Enum\Metrics\GroupingCriteria;
 use App\Message\ProcessorOutputMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Contracts\Cache\CacheInterface;
 
 #[AsMessageHandler]
 final class ProcessorOutputMessageHandler
@@ -16,6 +18,7 @@ final class ProcessorOutputMessageHandler
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
+        private readonly CacheInterface $cache,
     ) {
     }
 
@@ -50,5 +53,9 @@ final class ProcessorOutputMessageHandler
 
         $this->entityManager->persist($metadata);
         $this->entityManager->flush();
+
+        foreach (GroupingCriteria::cases() as $groupingCriteria) {
+            $this->cache->delete("{$message->getProcessor()->value}_metrics_{$entry->getUser()->getId()}_{$groupingCriteria->value}");
+        }
     }
 }
