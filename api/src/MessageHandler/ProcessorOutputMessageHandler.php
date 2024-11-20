@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
-use App\Enum\Metrics\GroupingCriteria;
 use App\Message\ProcessorOutputMessage;
 use App\Repository\EntryMetadataRepository;
 use App\Repository\EntryRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 #[AsMessageHandler]
 final class ProcessorOutputMessageHandler
@@ -20,7 +19,7 @@ final class ProcessorOutputMessageHandler
         private readonly EntryRepository $entryRepository,
         private readonly EntryMetadataRepository $entryMetadataRepository,
         private readonly LoggerInterface $logger,
-        private readonly CacheInterface $cache,
+        private readonly TagAwareCacheInterface $cache,
     ) {
     }
 
@@ -37,8 +36,6 @@ final class ProcessorOutputMessageHandler
 
         $this->entryMetadataRepository->createMetadataFromProcessorOutput($entry, $message);
 
-        foreach (GroupingCriteria::cases() as $groupingCriteria) {
-            $this->cache->delete("{$message->getProcessor()->value}_metrics_{$entry->getUser()->getId()}_{$groupingCriteria->value}");
-        }
+        $this->cache->invalidateTags([\sprintf('user-metrics-%s', $entry->getUser()->getId()->toString())]);
     }
 }

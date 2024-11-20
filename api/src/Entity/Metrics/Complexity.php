@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Entity\Metrics;
 
 use App\Enum\Processor;
+use App\Metadata\Metrics\MetricsApiResource;
 use App\Metadata\Metrics\MetricsQueryParameter;
-use App\Metadata\Metrics\ProcessorMetricsApiResource;
 use App\Repository\Metrics\ComplexityRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ComplexityRepository::class)]
-#[ProcessorMetricsApiResource(metricsProcessor: Processor::COMPLEXITY)]
+#[MetricsApiResource(metricsType: Processor::COMPLEXITY)]
 #[MetricsQueryParameter]
 class Complexity implements MetricsIdentifierInterface
 {

@@ -10,12 +10,13 @@ use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\User;
 use App\Enum\Metrics\GroupingCriteria;
 use App\Enum\Processor;
-use App\Metadata\Metrics\ProcessorMetricsApiResource;
+use App\Metadata\Metrics\MetricsApiResource;
 use App\Repository\Metrics\MetricsRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 /**
  * @implements ProviderInterface<object>
@@ -25,7 +26,7 @@ final readonly class MetricsProvider implements ProviderInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private Security $security,
-        private CacheInterface $cache,
+        private TagAwareCacheInterface $cache,
     ) {
     }
 
@@ -53,25 +54,28 @@ final readonly class MetricsProvider implements ProviderInterface
         $grouping = $context['request']->query->get('grouping');
         $groupingCriteria = GroupingCriteria::from($grouping);
 
-        $processor = $operation->getExtraProperties()[ProcessorMetricsApiResource::EXTRA_PROPERTY_METRICS_PROCESSOR] ?? null;
+        /** @var string|null */
+        $metricsType = $operation->getExtraProperties()[MetricsApiResource::EXTRA_PROPERTY_METRICS_TYPE] ?? null;
 
-        // @todo find a way to cache these results as well and to invalidate the cache when a new entry is posted
-        if (!$processor instanceof Processor) {
-            return $repository->getMetrics($user, $groupingCriteria);
+        if (null === $metricsType) {
+            throw new \RuntimeException('No metrics type found, you must use the MetricsApiResource attribute');
         }
 
-        /** @todo centralize this cache key generation */
         $cacheKey = \sprintf(
-            '%s_metrics_%s_%s',
-            $processor->value,
+            'user_%s-metrics_%s_%s',
             $user->getId(),
-            $groupingCriteria->value
+            $metricsType,
+            $groupingCriteria->value,
         );
+
+        $processor = Processor::tryFrom($metricsType);
 
         return $this->cache->get(
             $cacheKey,
             /** @return array<Complexity> */
-            static function () use ($user, $groupingCriteria, $repository, $processor): array {
+            static function (ItemInterface $item) use ($user, $groupingCriteria, $repository, $processor): array {
+                $item->tag(\sprintf('user-metrics-%s', $user->getId()->toString()));
+
                 return $repository->getMetrics($user, $groupingCriteria, $processor);
             },
             3600,

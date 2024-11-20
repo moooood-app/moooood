@@ -18,8 +18,6 @@ final readonly class OAuthRegistrationHandler implements RegistrationFormHandler
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param FormInterface<User> $form
      */
     public function process(Request $request, FormInterface $form, UserResponseInterface $userInformation): bool
