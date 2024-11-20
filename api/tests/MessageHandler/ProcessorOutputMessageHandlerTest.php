@@ -17,6 +17,7 @@ use App\Repository\EntryMetadataRepository;
 use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class ProcessorOutputMessageHandlerTest extends TestCase
 {
@@ -50,21 +51,12 @@ class ProcessorOutputMessageHandlerTest extends TestCase
             ->method('createMetadataFromProcessorOutput')
             ->with($entry, $message);
 
-        /** @var CacheInterface&MockObject $cache */
-        $cache = $this->createMock(CacheInterface::class);
+        /** @var TagAwareCacheInterface&MockObject $cache */
+        $cache = $this->createMock(TagAwareCacheInterface::class);
 
-        $cache->expects($this->exactly(count(GroupingCriteria::cases())))
-            ->method('delete')
-            ->with($this->callback(function(string $key): bool {
-                return in_array($key, [
-                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_entry',
-                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_hour',
-                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_day',
-                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_week',
-                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_month',
-                    'complexity_metrics_09e6c349-fb5c-4f9c-8b05-d434f00e4b73_year',
-                ]);
-            }));
+        $cache->expects($this->once())
+            ->method('invalidateTags')
+            ->with(['user-metrics-09e6c349-fb5c-4f9c-8b05-d434f00e4b73']);
 
         // Create the handler and invoke it
         $handler = new ProcessorOutputMessageHandler(

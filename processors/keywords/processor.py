@@ -19,14 +19,16 @@ class KeywordsProcessor(BaseProcessor):
 
     def process_message(self, entry_text):
         try:
-            keywords = self.keybert_model.extract_keywords(
-                entry_text,
-                keyphrase_ngram_range=(1, 1),
-                stop_words="english",
-                top_n=10,
-                use_mmr=True,
-                diversity=0.25,
-            )
+            keywords = []
+            for ngram_range, top_n in [((1, 1), 10), ((2, 2), 5)]:
+                keywords += self.keybert_model.extract_keywords(
+                    entry_text,
+                    keyphrase_ngram_range=ngram_range,
+                    stop_words="english",
+                    top_n=top_n,
+                    use_mmr=True,
+                    diversity=0.25,
+                )
             return [{"keyword": keyword, "score": score} for keyword, score in keywords]
         except Exception as e:
             logger.error(f"Error in process_message: {e}")
