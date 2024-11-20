@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Entity\Metrics;
 
+use App\Metadata\Metrics\GroupingQueryParameter;
 use App\Metadata\Metrics\MetricsApiResource;
-use App\Metadata\Metrics\MetricsQueryParameter;
 use App\Repository\Metrics\SubmissionsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SubmissionsRepository::class)]
 #[MetricsApiResource(metricsType: 'submissions')]
-#[MetricsQueryParameter]
+#[GroupingQueryParameter]
 class Submissions implements MetricsIdentifierInterface
 {
     use MetricsIdentifierTrait;
