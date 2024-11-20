@@ -15,6 +15,8 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
  * @template T of object
  *
  * @template-extends ServiceEntityRepository<T>
+ *
+ * You should extend this abstract repository when the metrics are not directly related to a processor.
  */
 abstract class AbstractMetricsRepository extends ServiceEntityRepository implements MetricsRepositoryInterface
 {

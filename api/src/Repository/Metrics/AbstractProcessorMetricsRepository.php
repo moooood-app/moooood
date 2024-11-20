@@ -11,6 +11,9 @@ use Doctrine\DBAL\Query\QueryBuilder;
  * @template T of object
  *
  * @template-extends AbstractMetricsRepository<T>
+ *
+ * This abstract repository should be extended when the metrics are related to a processor.
+ * It provides a pre-configured QueryBuilder with the necessary joins and grouping.
  */
 abstract class AbstractProcessorMetricsRepository extends AbstractMetricsRepository
 {
