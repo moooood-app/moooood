@@ -14,5 +14,11 @@ interface MetricsRepositoryInterface
     /**
      * @return array<MetricsIdentifierInterface>
      */
-    public function getMetrics(User $user, GroupingCriteria $grouping, ?Processor $processor = null): array;
+    public function getMetrics(
+        User $user,
+        GroupingCriteria $groupingCriteria,
+        \DateTimeInterface $dateFrom,
+        \DateTimeInterface $dateUntil,
+        ?Processor $processor = null,
+    ): array;
 }
