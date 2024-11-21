@@ -5,9 +5,14 @@ meta {
 }
 
 get {
-  url: https://{{url}}/api/entries
+  url: https://{{url}}/api/entries?createdAt[after]=2024-11-01
   body: none
   auth: none
+}
+
+query {
+  createdAt[after]: 2024-11-01
+  ~itemsPerPage: 1
 }
 
 headers {

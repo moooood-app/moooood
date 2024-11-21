@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
+use App\Dto\Metrics\MetricsQuery;
 use App\Entity\User;
 use App\Enum\Metrics\GroupingCriteria;
 use App\Enum\Processor;
@@ -27,16 +28,11 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
     protected const UNTIL_PARAMETER = 'until';
 
     /**
-     * @todo Implement pagination or limit
-     *
      * @return array<T>
      */
     public function getMetrics(
         User $user,
-        GroupingCriteria $groupingCriteria,
-        \DateTimeInterface $dateFrom,
-        \DateTimeInterface $dateUntil,
-        ?Processor $processor = null,
+        MetricsQuery $query,
     ): array {
         $entityManager = $this->getEntityManager();
 
@@ -45,7 +41,7 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
 
         $builder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $builder = $this->getQueryBuilder($groupingCriteria);
+        $builder = $this->getQueryBuilder($query->groupingCriteria);
 
         $builder
             ->andWhere(\sprintf('%s.created_at >= :%s', self::ENTRY_ALIAS, self::FROM_PARAMETER))
@@ -54,12 +50,12 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
 
         $parameters = [
             self::USER_PARAMETER => $user->getId(),
-            self::FROM_PARAMETER => $dateFrom->format('Y-m-d H:i:s'),
-            self::UNTIL_PARAMETER => $dateUntil->format('Y-m-d H:i:s'),
+            self::FROM_PARAMETER => $query->getDateFrom()->format('Y-m-d H:i:s'),
+            self::UNTIL_PARAMETER => $query->getDateUntil()->format('Y-m-d H:i:s'),
         ];
 
-        if (null !== $processor) {
-            $parameters[self::PROCESSOR_PARAMETER] = $processor->value;
+        if (null !== $query->processor) {
+            $parameters[self::PROCESSOR_PARAMETER] = $query->processor->value;
         }
 
         return $entityManager // @phpstan-ignore-line

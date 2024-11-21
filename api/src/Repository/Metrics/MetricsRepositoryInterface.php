@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
+use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\User;
-use App\Enum\Metrics\GroupingCriteria;
-use App\Enum\Processor;
 
 interface MetricsRepositoryInterface
 {
@@ -16,9 +15,6 @@ interface MetricsRepositoryInterface
      */
     public function getMetrics(
         User $user,
-        GroupingCriteria $groupingCriteria,
-        \DateTimeInterface $dateFrom,
-        \DateTimeInterface $dateUntil,
-        ?Processor $processor = null,
+        MetricsQuery $query,
     ): array;
 }
