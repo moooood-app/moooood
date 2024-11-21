@@ -6,16 +6,15 @@ namespace App\State\Provider\Metrics;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\User;
-use App\Enum\Metrics\GroupingCriteria;
 use App\Enum\Processor;
-use App\Metadata\Metrics\FromDateQueryParameter;
-use App\Metadata\Metrics\GroupingQueryParameter;
 use App\Metadata\Metrics\MetricsApiResource;
 use App\Repository\Metrics\MetricsRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
@@ -52,18 +51,8 @@ final readonly class MetricsProvider implements ProviderInterface
             throw new \RuntimeException('No request');
         }
 
+        /** @var InputBag<bool|float|int|string> */
         $query = $context['request']->query;
-
-        /** @var string */
-        $grouping = $query->get(GroupingQueryParameter::GROUPING_FILTER_KEY);
-        $groupingCriteria = GroupingCriteria::from($grouping);
-
-        /** @var string|null */
-        $dateFrom = $query->get(FromDateQueryParameter::FROM_DATE_FILTER_KEY);
-        $dateFrom = new \DateTime($dateFrom ?? $groupingCriteria->getDefaultDateFrom());
-
-        $groupingCriteria->adjustDateFromToPeriodStart($dateFrom);
-        $dateUntil = $groupingCriteria->calculateDateUntil($dateFrom);
 
         /** @var string|null */
         $metricsType = $operation->getExtraProperties()[MetricsApiResource::EXTRA_PROPERTY_METRICS_TYPE] ?? null;
@@ -72,27 +61,29 @@ final readonly class MetricsProvider implements ProviderInterface
             throw new \RuntimeException('No metrics type found, you must use the MetricsApiResource attribute');
         }
 
+        $processor = Processor::tryFrom($metricsType);
+
+        $metricsQuery = MetricsQuery::fromInputBag($query);
+        if (null !== $processor) {
+            $metricsQuery = $metricsQuery->withProcessor($processor);
+        }
+
         $cacheKey = \sprintf(
             'user_%s-metrics_%s_%s',
             $user->getId(),
             $metricsType,
-            $groupingCriteria->value,
+            $metricsQuery->groupingCriteria->value,
         );
-
-        $processor = Processor::tryFrom($metricsType);
 
         return $this->cache->get(
             $cacheKey,
             /** @return array<Complexity> */
-            static function (ItemInterface $item) use ($user, $groupingCriteria, $repository, $dateFrom, $dateUntil, $processor): array {
+            static function (ItemInterface $item) use ($user, $repository, $metricsQuery): array {
                 $item->tag(\sprintf('user-metrics-%s', $user->getId()->toString()));
 
                 return $repository->getMetrics(
                     $user,
-                    $groupingCriteria,
-                    $dateFrom,
-                    $dateUntil,
-                    $processor,
+                    $metricsQuery,
                 );
             },
             3600,

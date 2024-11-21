@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity\Metrics;
 
 use App\Enum\Processor;
-use App\Metadata\Metrics\GroupingQueryParameter;
 use App\Metadata\Metrics\MetricsApiResource;
 use App\Repository\Metrics\SentimentRepository;
 use Doctrine\DBAL\Types\Types;
@@ -13,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SentimentRepository::class)]
 #[MetricsApiResource(metricsType: Processor::SENTIMENT)]
-#[GroupingQueryParameter]
 class Sentiment implements MetricsIdentifierInterface
 {
     use MetricsIdentifierTrait;

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -22,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'entries')]
 #[ORM\Entity(repositoryClass: EntryRepository::class)]
 #[ORM\Index(name: 'idx_entry_created_at', columns: ['created_at'])]
-#[ORM\Index(name: 'idx_entry_content_fulltext', columns: ['content'], flags: ['fulltext'])] // PostgreSQL-specific
+#[ORM\Index(name: 'idx_entry_content_fulltext', columns: ['content'], flags: ['fulltext'])]
 #[ApiResource(
     operations: [
         new Get(),
@@ -34,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => [Entry::SERIALIZATION_GROUP_READ_ITEM]],
     denormalizationContext: ['groups' => [Entry::SERIALIZATION_GROUP_WRITE]],
 )]
+#[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 class Entry
 {
     public const SERIALIZATION_GROUP_SNS = 'entry:sns';

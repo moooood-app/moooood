@@ -6,7 +6,6 @@
 parameters:
 
 services:
-    # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
@@ -28,13 +27,13 @@ services:
                 'google': 'google'
                 'apple': 'apple'
 
-    notifier.options.new_entry_topic:
-        class: Symfony\Component\Notifier\Bridge\AmazonSns\AmazonSnsOptions
-        arguments: ['%env(NEW_ENTRY_SNS_ARN)%']
-
     texter:
         class: Symfony\Component\Notifier\Texter
         arguments:
             - '@texter.transports'
             - null
             - '@event_dispatcher'
+
+    notifier.options.new_entry_topic:
+        class: Symfony\Component\Notifier\Bridge\AmazonSns\AmazonSnsOptions
+        arguments: ['%env(NEW_ENTRY_SNS_ARN)%']
