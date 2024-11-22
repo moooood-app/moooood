@@ -22,16 +22,19 @@ lint:
 	$(DOCKER_EXEC_API) bin/console lint:twig
 	$(DOCKER_EXEC_API) vendor/bin/phpstan --memory-limit=1G analyse
 
-test: test-unit test-integration
+test: test-reset-database
+	$(DOCKER_EXEC_API) vendor/bin/phpunit
 
 test-unit:
 	$(DOCKER_EXEC_API) vendor/bin/phpunit --testsuite=unit
 
-test-integration:
-	$(DOCKER_EXEC_API) bin/console doctrine:database:create  --if-not-exists --env=test
-	$(DOCKER_EXEC_API) bin/console doctrine:schema:drop --no-interaction --full-database --force --env=test
-	$(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction --env=test
-	$(DOCKER_EXEC_API) bin/console doctrine:fixtures:load --no-interaction --env=test
+test-reset-database:
+	$(DOCKER_EXEC_API) bin/console --env=test doctrine:database:create  --if-not-exists
+	$(DOCKER_EXEC_API) bin/console --env=test doctrine:schema:drop --full-database --force --quiet
+	$(DOCKER_EXEC_API) bin/console --env=test doctrine:schema:create --quiet
+	$(DOCKER_EXEC_API) bin/console --env=test doctrine:fixtures:load --no-interaction --quiet
+
+test-integration: test-reset-database
 	$(DOCKER_EXEC_API) vendor/bin/phpunit --testsuite=integration
 
 migrate:

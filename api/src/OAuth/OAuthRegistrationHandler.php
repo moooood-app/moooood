@@ -31,11 +31,12 @@ final readonly class OAuthRegistrationHandler implements RegistrationFormHandler
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            \assert(\is_string($form->get('plainPassword')->getData()));
+            $password = $form->get('plainPassword')->getData();
+            \assert(\is_string($password));
             $user->setPassword(
                 $this->userPasswordHasher->hashPassword(
                     $user,
-                    $form->get('plainPassword')->getData(),
+                    $password,
                 )
             );
 

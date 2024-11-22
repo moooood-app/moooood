@@ -19,7 +19,7 @@ class SentimentRepository extends AbstractProcessorMetricsRepository
         parent::__construct($registry, Sentiment::class);
     }
 
-    public function addSelects(QueryBuilder $builder): QueryBuilder
+    protected function addSelects(QueryBuilder $builder): QueryBuilder
     {
         $builder
             ->addSelect("AVG((metadata->>'compound')::float) as compound")

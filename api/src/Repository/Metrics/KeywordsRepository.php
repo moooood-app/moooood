@@ -19,7 +19,7 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
         parent::__construct($registry, Keywords::class);
     }
 
-    public function addSelects(QueryBuilder $builder): QueryBuilder
+    protected function addSelects(QueryBuilder $builder): QueryBuilder
     {
         $wrapper = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
@@ -27,16 +27,16 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
             ->addSelect('keyword_data.keyword AS keyword')
             ->addSelect('COUNT(keyword_data.keyword) AS keyword_count')
             ->addSelect('AVG(keyword_data.score) AS average_score')
-            ->from('jsonb_array_elements(metadata) element')
-            ->from('jsonb_to_record(element) keyword_data(score FLOAT, keyword TEXT)')
+            ->from('jsonb_array_elements(metadata)', 'element')
+            ->from('jsonb_to_record(element)', 'keyword_data(score FLOAT, keyword TEXT)')
             ->addGroupBy('keyword_data.keyword')
         ;
 
+        $this->addDateFilters($builder);
+
         $wrapper
-            ->select([
-                'aggregated_keywords.id',
-                'aggregated_keywords.grouping',
-            ])
+            ->addSelect('aggregated_keywords.id')
+            ->addSelect('aggregated_keywords.grouping')
             ->addSelect(<<<'SQL'
                     jsonb_object_agg(
                         keyword,
@@ -51,5 +51,10 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
         ;
 
         return $wrapper;
+    }
+
+    protected function shouldAddDateFilters(): bool
+    {
+        return false;
     }
 }

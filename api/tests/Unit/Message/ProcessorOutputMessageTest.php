@@ -7,20 +7,16 @@ namespace App\Tests\Unit\Message;
 use App\Entity\Entry;
 use App\Enum\Processor;
 use App\Message\ProcessorOutputMessage;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(ProcessorOutputMessage::class)]
+#[CoversClass(Entry::class)]
 final class ProcessorOutputMessageTest extends TestCase
 {
-    /**
-     * @covers \App\Message\ProcessorOutputMessage::getEntry
-     * @covers \App\Message\ProcessorOutputMessage::getProcessor
-     * @covers \App\Message\ProcessorOutputMessage::getResult
-     */
     public function testGetResult(): void
     {
         $entry = new Entry();

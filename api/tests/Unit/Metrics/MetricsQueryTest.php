@@ -4,21 +4,21 @@ namespace App\Tests\Unit\Enum\Metrics;
 
 use App\Dto\Metrics\MetricsQuery;
 use App\Enum\Metrics\GroupingCriteria;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\InputBag;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(MetricsQuery::class)]
 final class MetricsQueryTest extends TestCase
 {
     /**
-     * @dataProvider provideMetricsQueryCases
-     *
      * @param array<bool|float|int|string> $inputData
      */
+    #[DataProvider('provideMetricsQueryCases')]
     public function testMetricsQuery(
         array $inputData,
         GroupingCriteria $expectedGrouping,

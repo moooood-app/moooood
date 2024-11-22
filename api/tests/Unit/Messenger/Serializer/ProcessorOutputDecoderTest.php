@@ -9,6 +9,7 @@ use App\Entity\Entry;
 use App\Enum\Processor;
 use App\Message\ProcessorOutputMessage;
 use App\Messenger\Serializer\ProcessorOutputDecoder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -17,10 +18,10 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 /**
- * @covers \App\Messenger\Serializer\ProcessorOutputDecoder
- *
  * @internal
  */
+#[CoversClass(ProcessorOutputDecoder::class)]
+#[CoversClass(ProcessorOutputMessage::class)]
 final class ProcessorOutputDecoderTest extends TestCase
 {
     public function testDecode(): void

@@ -23,10 +23,8 @@ abstract class AbstractProcessorMetricsRepository extends AbstractMetricsReposit
 
         $grouping = $groupingCriteria->getSelectExpression(self::ENTRY_ALIAS);
         $builder
-            ->select([
-                "{$grouping} as id",
-                "'{$groupingCriteria->value}' as grouping",
-            ])
+            ->addSelect("{$grouping} as id")
+            ->addSelect("'{$groupingCriteria->value}' as grouping")
             ->from('entries_metadata', 'em')
             ->leftJoin('em', 'entries', self::ENTRY_ALIAS, \sprintf('em.entry_id = %s.id', self::ENTRY_ALIAS))
             ->where(\sprintf('%s.user_id = :%s', self::ENTRY_ALIAS, self::USER_PARAMETER))
@@ -36,6 +34,11 @@ abstract class AbstractProcessorMetricsRepository extends AbstractMetricsReposit
         ;
 
         return $this->addSelects($builder);
+    }
+
+    protected function shouldAddDateFilters(): bool
+    {
+        return true;
     }
 
     abstract protected function addSelects(QueryBuilder $builder): QueryBuilder;
