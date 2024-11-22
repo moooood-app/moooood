@@ -16,8 +16,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @internal
- *
- * @coversNothing
  */
 #[CoversClass(EntryWriteListener::class)]
 final class EntryWriteListenerTest extends TestCase
