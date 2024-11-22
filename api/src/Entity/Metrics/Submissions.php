@@ -9,7 +9,7 @@ use App\Repository\Metrics\SubmissionsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SubmissionsRepository::class)]
+#[ORM\MappedSuperclass(repositoryClass: SubmissionsRepository::class)]
 #[MetricsApiResource(metricsType: 'submissions')]
 class Submissions implements MetricsIdentifierInterface
 {

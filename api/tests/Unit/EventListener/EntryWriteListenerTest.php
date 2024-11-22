@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\EventListener;
+namespace App\Tests\Unit\EventListener;
 
 use App\Entity\Entry;
 use App\EventListener\EntryWriteListener;
@@ -13,6 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 final class EntryWriteListenerTest extends TestCase
 {
     /**
@@ -21,8 +26,8 @@ final class EntryWriteListenerTest extends TestCase
     public function testGetSubscribedEvents(): void
     {
         $events = EntryWriteListener::getSubscribedEvents();
-        $this->assertArrayHasKey('kernel.view', $events);
-        $this->assertSame(['notify', 31], $events['kernel.view']); // EventPriorities::POST_WRITE = 32
+        self::assertArrayHasKey('kernel.view', $events);
+        self::assertSame(['notify', 31], $events['kernel.view']); // EventPriorities::POST_WRITE = 32
     }
 
     /**
@@ -42,9 +47,10 @@ final class EntryWriteListenerTest extends TestCase
         $kernel = $this->createMock(HttpKernelInterface::class);
         $event = new ViewEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $entry);
 
-        $notifier->expects($this->once())
+        $notifier->expects(self::once())
             ->method('notify')
-            ->with($this->identicalTo($entry));
+            ->with(self::identicalTo($entry))
+        ;
 
         $listener->notify($event);
     }
@@ -66,7 +72,7 @@ final class EntryWriteListenerTest extends TestCase
         $kernel = $this->createMock(HttpKernelInterface::class);
         $event = new ViewEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $entry);
 
-        $notifier->expects($this->never())->method('notify');
+        $notifier->expects(self::never())->method('notify');
 
         $listener->notify($event);
     }
@@ -87,7 +93,7 @@ final class EntryWriteListenerTest extends TestCase
         $kernel = $this->createMock(HttpKernelInterface::class);
         $event = new ViewEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $nonEntryResult);
 
-        $notifier->expects($this->never())->method('notify');
+        $notifier->expects(self::never())->method('notify');
 
         $listener->notify($event);
     }

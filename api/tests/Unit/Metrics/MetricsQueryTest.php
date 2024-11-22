@@ -1,34 +1,43 @@
 <?php
 
-namespace App\Tests\Dto\Metrics;
+namespace App\Tests\Unit\Enum\Metrics;
 
 use App\Dto\Metrics\MetricsQuery;
 use App\Enum\Metrics\GroupingCriteria;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\InputBag;
 
-class MetricsQueryTest extends TestCase
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
+final class MetricsQueryTest extends TestCase
 {
     /**
-     * @dataProvider provideMetricsQueryData
+     * @dataProvider provideMetricsQueryCases
+     *
      * @param array<bool|float|int|string> $inputData
      */
     public function testMetricsQuery(
         array $inputData,
         GroupingCriteria $expectedGrouping,
         string $expectedDateFrom,
-        string $expectedDateUntil
+        string $expectedDateUntil,
     ): void {
         $inputBag = new InputBag($inputData);
 
         $query = MetricsQuery::fromInputBag($inputBag);
 
-        $this->assertEquals($expectedGrouping, $query->groupingCriteria);
-        $this->assertEquals($expectedDateFrom, $query->getDateFrom()->format('Y-m-d H:i:s'));
-        $this->assertEquals($expectedDateUntil, $query->getDateUntil()->format('Y-m-d H:i:s'));
+        self::assertSame($expectedGrouping, $query->groupingCriteria);
+        self::assertSame($expectedDateFrom, $query->getDateFrom()->format('Y-m-d H:i:s'));
+        self::assertSame($expectedDateUntil, $query->getDateUntil()->format('Y-m-d H:i:s'));
     }
 
-    public static function provideMetricsQueryData(): \Generator
+    /**
+     * @return iterable<string, array<mixed>>
+     */
+    public static function provideMetricsQueryCases(): iterable
     {
         yield 'Default date for ENTRY with null date_from' => [
             ['grouping' => GroupingCriteria::ENTRY->value, 'from' => null],

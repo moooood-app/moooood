@@ -10,7 +10,7 @@ use App\Repository\Metrics\KeywordsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: KeywordsRepository::class)]
+#[ORM\MappedSuperclass(repositoryClass: KeywordsRepository::class)]
 #[MetricsApiResource(metricsType: Processor::KEYWORDS)]
 class Keywords implements MetricsIdentifierInterface
 {

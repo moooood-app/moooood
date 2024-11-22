@@ -10,7 +10,7 @@ use App\Repository\Metrics\SentimentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SentimentRepository::class)]
+#[ORM\MappedSuperclass(repositoryClass: SentimentRepository::class)]
 #[MetricsApiResource(metricsType: Processor::SENTIMENT)]
 class Sentiment implements MetricsIdentifierInterface
 {
