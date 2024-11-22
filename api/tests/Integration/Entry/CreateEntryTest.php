@@ -2,15 +2,24 @@
 
 namespace App\Tests\Integration\Entry;
 
+use App\Entity\Entry;
+use App\Entity\User;
+use App\EventListener\EntryWriteListener;
+use App\Notifier\EntrySnsNotifier;
+use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @internal
  */
-#[CoversNothing]
+#[CoversClass(Entry::class)]
+#[CoversClass(User::class)]
+#[CoversClass(EntryWriteListener::class)]
+#[CoversClass(UserRepository::class)]
+#[CoversClass(EntrySnsNotifier::class)]
 final class CreateEntryTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
