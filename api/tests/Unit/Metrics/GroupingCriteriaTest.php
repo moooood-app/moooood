@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Enum\Metrics;
 
 use App\Enum\Metrics\GroupingCriteria;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(GroupingCriteria::class)]
 final class GroupingCriteriaTest extends TestCase
 {
     public function testGetSelectExpression(): void

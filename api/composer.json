@@ -11,7 +11,7 @@
         "ext-iconv": "*",
         "api-platform/doctrine-orm": "^4.0",
         "api-platform/symfony": "^4.0",
-        "doctrine/dbal": "^3",
+        "doctrine/dbal": "^4.0",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.3",
@@ -21,7 +21,7 @@
         "lexik/jwt-authentication-bundle": "^3.1",
         "nelmio/cors-bundle": "^2.5",
         "phpdocumentor/reflection-docblock": "^5.6",
-        "phpstan/phpdoc-parser": "^1.0",
+        "phpstan/phpdoc-parser": "^2.0",
         "runtime/frankenphp-symfony": "^0.2.0",
         "stof/doctrine-extensions-bundle": "^1.12",
         "symfony/amazon-sns-notifier": "7.1.*",
@@ -89,12 +89,13 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "7.1.*",
             "docker": true
         }
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^8.2",
         "doctrine/doctrine-fixtures-bundle": "^3.6",
         "friendsofphp/php-cs-fixer": "^3.64",
         "phpstan/extension-installer": "^1.4",
@@ -102,7 +103,7 @@
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^11.0",
         "symfony/browser-kit": "7.1.*",
         "symfony/css-selector": "7.1.*",
         "symfony/maker-bundle": "^1.61",

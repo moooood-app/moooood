@@ -7,6 +7,7 @@ namespace App\Tests\Unit\EventListener;
 use App\Entity\Entry;
 use App\EventListener\EntryWriteListener;
 use App\Notifier\EntrySnsNotifier;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,11 +19,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *
  * @coversNothing
  */
+#[CoversClass(EntryWriteListener::class)]
 final class EntryWriteListenerTest extends TestCase
 {
-    /**
-     * @covers \App\EventListener\EntryWriteListener::getSubscribedEvents
-     */
     public function testGetSubscribedEvents(): void
     {
         $events = EntryWriteListener::getSubscribedEvents();
@@ -30,9 +29,6 @@ final class EntryWriteListenerTest extends TestCase
         self::assertSame(['notify', 31], $events['kernel.view']); // EventPriorities::POST_WRITE = 32
     }
 
-    /**
-     * @covers \App\EventListener\EntryWriteListener::notify
-     */
     public function testNotifyTriggersNotifierForPostRequestWithEntry(): void
     {
         /** @var EntrySnsNotifier&MockObject $notifier */
@@ -55,9 +51,6 @@ final class EntryWriteListenerTest extends TestCase
         $listener->notify($event);
     }
 
-    /**
-     * @covers \App\EventListener\EntryWriteListener::notify
-     */
     public function testNotifyDoesNothingForNonPostRequest(): void
     {
         /** @var EntrySnsNotifier&MockObject $notifier */
@@ -77,9 +70,6 @@ final class EntryWriteListenerTest extends TestCase
         $listener->notify($event);
     }
 
-    /**
-     * @covers \App\EventListener\EntryWriteListener::notify
-     */
     public function testNotifyDoesNothingForNonEntryControllerResult(): void
     {
         /** @var EntrySnsNotifier&MockObject $notifier */

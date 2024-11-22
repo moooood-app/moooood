@@ -3,14 +3,14 @@
 namespace App\Tests\Integration\Entry;
 
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class CreateEntryTest extends WebTestCase
 {
     use AuthenticatedClientTrait;

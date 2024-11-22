@@ -11,6 +11,7 @@ use App\Message\ProcessorOutputMessage;
 use App\MessageHandler\ProcessorOutputMessageHandler;
 use App\Repository\EntryMetadataRepository;
 use App\Repository\EntryRepository;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -19,9 +20,10 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(ProcessorOutputMessageHandler::class)]
+#[CoversClass(Entry::class)]
+#[CoversClass(ProcessorOutputMessage::class)]
 final class ProcessorOutputMessageHandlerTest extends TestCase
 {
     public function testMessageHandling(): void

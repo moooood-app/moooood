@@ -43,10 +43,9 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
 
         $builder = $this->getQueryBuilder($query->groupingCriteria);
 
-        $builder
-            ->andWhere(\sprintf('%s.created_at >= :%s', self::ENTRY_ALIAS, self::FROM_PARAMETER))
-            ->andWhere(\sprintf('%s.created_at <= :%s', self::ENTRY_ALIAS, self::UNTIL_PARAMETER))
-        ;
+        if ($this->shouldAddDateFilters()) {
+            $this->addDateFilters($builder);
+        }
 
         $parameters = [
             self::USER_PARAMETER => $user->getId(),
@@ -66,4 +65,14 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
     }
 
     abstract protected function getQueryBuilder(GroupingCriteria $groupingCriteria): QueryBuilder;
+
+    abstract protected function shouldAddDateFilters(): bool;
+
+    protected function addDateFilters(QueryBuilder $builder): void
+    {
+        $builder
+            ->andWhere(\sprintf('%s.created_at >= :%s', self::ENTRY_ALIAS, self::FROM_PARAMETER))
+            ->andWhere(\sprintf('%s.created_at <= :%s', self::ENTRY_ALIAS, self::UNTIL_PARAMETER))
+        ;
+    }
 }

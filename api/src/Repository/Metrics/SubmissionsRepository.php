@@ -26,14 +26,12 @@ class SubmissionsRepository extends AbstractMetricsRepository
 
         $grouping = $groupingCriteria->getSelectExpression(self::ENTRY_ALIAS);
         $builder
-            ->select([
-                "{$grouping} as id",
-                "'{$groupingCriteria->value}' as grouping",
-                'COUNT(*) as submissions',
-                "SUM(LENGTH(REGEXP_REPLACE(content, '\\s+', '', 'g'))) AS character_count",
-                "SUM(array_length(regexp_split_to_array(content, '\\s+'), 1)) AS word_count",
-                "SUM(array_length(regexp_split_to_array(content, '[.!?]'), 1)) AS sentence_count",
-            ])
+            ->addSelect("{$grouping} as id")
+            ->addSelect("'{$groupingCriteria->value}' as grouping")
+            ->addSelect('COUNT(*) as submissions')
+            ->addSelect("SUM(LENGTH(REGEXP_REPLACE(content, '\\s+', '', 'g'))) AS character_count")
+            ->addSelect("SUM(array_length(regexp_split_to_array(content, '\\s+'), 1)) AS word_count")
+            ->addSelect("SUM(array_length(regexp_split_to_array(content, '[.!?]'), 1)) AS sentence_count")
             ->from('entries', self::ENTRY_ALIAS)
             ->where(\sprintf('%s.user_id = :user', self::ENTRY_ALIAS))
             ->groupBy($grouping)
@@ -41,5 +39,10 @@ class SubmissionsRepository extends AbstractMetricsRepository
         ;
 
         return $builder;
+    }
+
+    protected function shouldAddDateFilters(): bool
+    {
+        return true;
     }
 }

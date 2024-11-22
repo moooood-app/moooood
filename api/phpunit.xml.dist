@@ -1,21 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="phpunit.xsd"
          backupGlobals="false"
-         colors="true"
+         testdox="false"
          bootstrap="tests/bootstrap.php"
-         convertDeprecationsToExceptions="false"
->
+         displayDetailsOnPhpunitDeprecations="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutCoverageMetadata="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         colors="true">
     <php>
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="9.6" />
+        <server name="KERNEL_CLASS" value="App\Kernel" />
+        <server name="XDEBUG_MODE" value="coverage" />
     </php>
+
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <file>Kernel.php</file>
+            <directory>Entity</directory>
+            <directory>DataFixtures</directory>
+        </exclude>
+    </source>
 
     <testsuites>
         <testsuite name="unit">
@@ -26,16 +40,13 @@
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
+    <coverage>
+        <report>
+            <html outputDirectory="coverage" lowUpperBound="50" highLowerBound="90"/>
+        </report>
     </coverage>
 
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
-    </listeners>
-
     <extensions>
+        <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
     </extensions>
 </phpunit>
