@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Messenger\Serializer;
+namespace App\Tests\Unit\Messenger\Serializer;
 
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Entry;
 use App\Enum\Processor;
 use App\Message\ProcessorOutputMessage;
 use App\Messenger\Serializer\ProcessorOutputDecoder;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
@@ -18,8 +18,10 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 /**
  * @covers \App\Messenger\Serializer\ProcessorOutputDecoder
+ *
+ * @internal
  */
-class ProcessorOutputDecoderTest extends TestCase
+final class ProcessorOutputDecoderTest extends TestCase
 {
     public function testDecode(): void
     {
@@ -35,7 +37,7 @@ class ProcessorOutputDecoderTest extends TestCase
             'body' => '{"Message":"{\"@id\":\"/entries/123\",\"result\":{\"key\":\"value\"},\"processor\":\"sentiment\"}"}',
         ];
 
-        $decoder->expects($this->exactly(2))
+        $decoder->expects(self::exactly(2))
             ->method('decode')
             ->willReturnCallback(function (string $body, string $format) use ($encodedEnvelope) {
                 $this->assertSame(JsonEncoder::FORMAT, $format);
@@ -52,12 +54,14 @@ class ProcessorOutputDecoderTest extends TestCase
                     ],
                     default => $this->fail('Unexpected decode input.'),
                 };
-            });
+            })
+        ;
 
-        $iriConverter->expects($this->once())
+        $iriConverter->expects(self::once())
             ->method('getResourceFromIri')
             ->with('/entries/123')
-            ->willReturn($entry);
+            ->willReturn($entry)
+        ;
 
         /** @var LoggerInterface&MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
@@ -66,13 +70,13 @@ class ProcessorOutputDecoderTest extends TestCase
 
         $envelope = $decoderInstance->decode($encodedEnvelope);
 
-        $this->assertInstanceOf(ProcessorOutputMessage::class, $envelope->getMessage());
+        self::assertInstanceOf(ProcessorOutputMessage::class, $envelope->getMessage());
 
         /** @var ProcessorOutputMessage $message */
         $message = $envelope->getMessage();
-        $this->assertSame($entry, $message->getEntry());
-        $this->assertSame(['key' => 'value'], $message->getResult());
-        $this->assertSame(Processor::SENTIMENT, $message->getProcessor());
+        self::assertSame($entry, $message->getEntry());
+        self::assertSame(['key' => 'value'], $message->getResult());
+        self::assertSame(Processor::SENTIMENT, $message->getProcessor());
     }
 
     public function testEncodeThrowsLogicException(): void

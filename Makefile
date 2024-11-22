@@ -16,14 +16,23 @@ install:
 
 
 lint:
-	$(DOCKER_EXEC_API) vendor/bin/php-cs-fixer fix src
+	$(DOCKER_EXEC_API) vendor/bin/php-cs-fixer fix
 	$(DOCKER_EXEC_API) bin/console lint:container
 	$(DOCKER_EXEC_API) bin/console lint:yaml config
 	$(DOCKER_EXEC_API) bin/console lint:twig
 	$(DOCKER_EXEC_API) vendor/bin/phpstan --memory-limit=1G analyse
 
-test:
-	$(DOCKER_EXEC_API) vendor/bin/phpunit
+test: test-unit test-integration
+
+test-unit:
+	$(DOCKER_EXEC_API) vendor/bin/phpunit --testsuite=unit
+
+test-integration:
+	$(DOCKER_EXEC_API) bin/console doctrine:database:create  --if-not-exists --env=test
+	$(DOCKER_EXEC_API) bin/console doctrine:schema:drop --no-interaction --full-database --force --env=test
+	$(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction --env=test
+	$(DOCKER_EXEC_API) bin/console doctrine:fixtures:load --no-interaction --env=test
+	$(DOCKER_EXEC_API) vendor/bin/phpunit --testsuite=integration
 
 migrate:
 	$(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction

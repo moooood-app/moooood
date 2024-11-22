@@ -2,24 +2,27 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\MessageHandler;
+namespace App\Tests\Unit\MessageHandler;
 
-use App\MessageHandler\ProcessorOutputMessageHandler;
-use App\Message\ProcessorOutputMessage;
-use App\Enum\Metrics\GroupingCriteria;
 use App\Entity\Entry;
 use App\Entity\User;
 use App\Enum\Processor;
-use PHPUnit\Framework\TestCase;
-use Symfony\Contracts\Cache\CacheInterface;
-use App\Repository\EntryRepository;
+use App\Message\ProcessorOutputMessage;
+use App\MessageHandler\ProcessorOutputMessageHandler;
 use App\Repository\EntryMetadataRepository;
-use Psr\Log\LoggerInterface;
+use App\Repository\EntryRepository;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-class ProcessorOutputMessageHandlerTest extends TestCase
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
+final class ProcessorOutputMessageHandlerTest extends TestCase
 {
     public function testMessageHandling(): void
     {
@@ -41,22 +44,25 @@ class ProcessorOutputMessageHandlerTest extends TestCase
 
         /** @var EntryRepository&MockObject $entryRepository */
         $entryRepository = $this->createMock(EntryRepository::class);
-        $entryRepository->expects($this->once())
+        $entryRepository->expects(self::once())
             ->method('removeExistingMetadataForProcessor')
-            ->with($entry, $message->getProcessor());
+            ->with($entry, $message->getProcessor())
+        ;
 
         /** @var EntryMetadataRepository&MockObject $entryMetadataRepository */
         $entryMetadataRepository = $this->createMock(EntryMetadataRepository::class);
-        $entryMetadataRepository->expects($this->once())
+        $entryMetadataRepository->expects(self::once())
             ->method('createMetadataFromProcessorOutput')
-            ->with($entry, $message);
+            ->with($entry, $message)
+        ;
 
         /** @var TagAwareCacheInterface&MockObject $cache */
         $cache = $this->createMock(TagAwareCacheInterface::class);
 
-        $cache->expects($this->once())
+        $cache->expects(self::once())
             ->method('invalidateTags')
-            ->with(['user-metrics-09e6c349-fb5c-4f9c-8b05-d434f00e4b73']);
+            ->with(['user-metrics-09e6c349-fb5c-4f9c-8b05-d434f00e4b73'])
+        ;
 
         // Create the handler and invoke it
         $handler = new ProcessorOutputMessageHandler(

@@ -50,7 +50,7 @@ final class Version20241116173359 extends AbstractMigration
         $this->addSql("CREATE INDEX idx_entry_metatada_keywords_summary ON entries_metadata ((metadata->>'summary')) WHERE processor = 'sumary'");
 
         // Generic index for processor field
-        $this->addSql("CREATE INDEX idx_entry_metatada_metadata_generic ON entries_metadata USING gin (metadata jsonb_path_ops)");
+        $this->addSql('CREATE INDEX idx_entry_metatada_metadata_generic ON entries_metadata USING gin (metadata jsonb_path_ops)');
     }
 
     public function down(Schema $schema): void
@@ -59,26 +59,26 @@ final class Version20241116173359 extends AbstractMigration
         $this->addSql('ALTER TABLE entries_metadata DROP CONSTRAINT FK_2153D45CBA364942');
         $this->addSql('DROP TABLE entries_metadata');
 
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_flesch_kincaid_grade_level");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_flesch_reading_ease");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_gunning_fog_index");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_smog_index");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_automated_readability_index");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_coleman_liau_index");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_linsear_write_formula");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_dale_chall_readability_score");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_readability_consensus");
-        $this->addSql("DROP INDEX idx_entry_metatada_complexity_complexity_rating");
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_flesch_kincaid_grade_level');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_flesch_reading_ease');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_gunning_fog_index');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_smog_index');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_automated_readability_index');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_coleman_liau_index');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_linsear_write_formula');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_dale_chall_readability_score');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_readability_consensus');
+        $this->addSql('DROP INDEX idx_entry_metatada_complexity_complexity_rating');
 
-        $this->addSql("DROP INDEX idx_entry_metatada_sentiment_neutral");
-        $this->addSql("DROP INDEX idx_entry_metatada_sentiment_compound");
-        $this->addSql("DROP INDEX idx_entry_metatada_sentiment_negative");
-        $this->addSql("DROP INDEX idx_entry_metatada_sentiment_positive");
+        $this->addSql('DROP INDEX idx_entry_metatada_sentiment_neutral');
+        $this->addSql('DROP INDEX idx_entry_metatada_sentiment_compound');
+        $this->addSql('DROP INDEX idx_entry_metatada_sentiment_negative');
+        $this->addSql('DROP INDEX idx_entry_metatada_sentiment_positive');
 
-        $this->addSql("DROP INDEX idx_entry_metatada_keywords_key");
+        $this->addSql('DROP INDEX idx_entry_metatada_keywords_key');
 
-        $this->addSql("DROP INDEX idx_entry_metatada_keywords_summary");
+        $this->addSql('DROP INDEX idx_entry_metatada_keywords_summary');
 
-        $this->addSql("DROP INDEX idx_entry_metatada_metadata_generic");
+        $this->addSql('DROP INDEX idx_entry_metatada_metadata_generic');
     }
 }
