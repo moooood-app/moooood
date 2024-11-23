@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "definitions": {
+    "Submissions.jsonld": {
+      "type": "object",
+      "description": "",
+      "deprecated": false,
+      "required": [
+        "submissions",
+        "characterCount",
+        "wordCount",
+        "sentenceCount",
+        "id",
+        "grouping"
+      ],
+      "properties": {
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "submissions": {
+          "description": "The number of submissions",
+          "type": "integer"
+        },
+        "characterCount": {
+          "description": "The total number of characters in all submissions",
+          "type": "integer"
+        },
+        "wordCount": {
+          "description": "The total number of words in all submissions",
+          "type": "integer"
+        },
+        "sentenceCount": {
+          "description": "The total number of sentences in all submissions",
+          "type": "integer"
+        },
+        "id": {
+          "description": "The unique identifier of the metrics. It could the ID of the entry if grouped by entry, or the formatted date if grouped by date.",
+          "type": "string"
+        },
+        "grouping": {
+          "description": "The grouping criteria used to group the metrics.",
+          "type": "string",
+          "enum": [
+            "entry",
+            "hour",
+            "day",
+            "week",
+            "month"
+          ]
+        }
+      }
+    }
+  },
+  "properties": {
+    "member": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Submissions.jsonld"
+      }
+    },
+    "totalItems": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "@id": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "@type": {
+          "type": "string"
+        },
+        "first": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "last": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "previous": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "next": {
+          "type": "string",
+          "format": "iri-reference"
+        }
+      },
+      "example": {
+        "@id": "string",
+        "type": "string",
+        "first": "string",
+        "last": "string",
+        "previous": "string",
+        "next": "string"
+      }
+    },
+    "search": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "variableRepresentation": {
+          "type": "string"
+        },
+        "mapping": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "@type": {
+                "type": "string"
+              },
+              "variable": {
+                "type": "string"
+              },
+              "property": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "member"
+  ]
+}

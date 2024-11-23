@@ -2,9 +2,11 @@
 
 namespace App\Tests\Integration\Entry;
 
+use App\DataFixtures\UserFixtures;
 use App\Entity\Entry;
 use App\Entity\User;
 use App\EventListener\EntryWriteListener;
+use App\Metadata\Metrics\MetricsApiResource;
 use App\Notifier\EntrySnsNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
@@ -20,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 #[CoversClass(EntryWriteListener::class)]
 #[CoversClass(UserRepository::class)]
 #[CoversClass(EntrySnsNotifier::class)]
+#[CoversClass(MetricsApiResource::class)]
 final class CreateEntryTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
@@ -38,7 +41,7 @@ final class CreateEntryTest extends WebTestCase
 
     public function testEntryIsCreatedWhenUserAuthenticated(): void
     {
-        $client = $this->createAuthenticatedClient('peter@forcepure.com');
+        $client = $this->createAuthenticatedClient(UserFixtures::FIRST_USER);
 
         /** @var non-empty-string $jsonPayload */
         $jsonPayload = json_encode([

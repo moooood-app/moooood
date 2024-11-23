@@ -33,6 +33,7 @@ class MetricsApiResource extends ApiResource
                         self::EXTRA_PROPERTY_METRICS_TYPE => $type,
                     ],
                     paginationEnabled: false,
+                    description: "Get {$type} metrics for the given grouping criteria",
                 ),
             ],
             paginationEnabled: false,

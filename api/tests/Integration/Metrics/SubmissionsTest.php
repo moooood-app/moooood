@@ -11,6 +11,7 @@ use App\Notifier\EntrySnsNotifier;
 use App\Repository\Metrics\SubmissionsRepository;
 use App\Repository\UserRepository;
 use App\State\Provider\Metrics\MetricsProvider;
+use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -27,14 +28,17 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(MetricsProvider::class)]
 final class SubmissionsTest extends AbstractMetricsTestCase
 {
+    use ValidateJsonSchemaTrait;
+
     protected function getMetricsName(): string
     {
         return 'submissions';
     }
 
-    protected function assertResponseIsValid(array $data): void
+    protected function assertResponseIsValid(object $data): void
     {
-        self::assertSame(0, $data['totalItems']);
-        self::assertSame([], $data['member']);
+        self::assertSame(7, $data->totalItems);
+        self::assertCount(7, $data->member);
+        self::assertJsonSchemaIsValid($data, 'metrics/submissions.json');
     }
 }
