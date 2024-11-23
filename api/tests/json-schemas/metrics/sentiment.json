@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "definitions": {
+    "Sentiment.jsonld": {
+      "type": "object",
+      "description": "Get sentiment metrics for the given grouping criteria",
+      "deprecated": false,
+      "properties": {
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "positive": {
+          "description": "The positive sentiment score, from 0 to 1.",
+          "type": "number"
+        },
+        "neutral": {
+          "description": "The neutral sentiment score, from 0 to 1.",
+          "type": "number"
+        },
+        "negative": {
+          "description": "The negative sentiment score, from 0 to 1.",
+          "type": "number"
+        },
+        "compound": {
+          "description": "The compound sentiment score, from -1 to 1.",
+          "type": "number"
+        },
+        "id": {
+          "description": "The unique identifier of the metrics. It could the ID of the entry if grouped by entry, or the formatted date if grouped by date.",
+          "type": "string"
+        },
+        "grouping": {
+          "description": "The grouping criteria used to group the metrics.",
+          "type": "string",
+          "enum": [
+            "entry",
+            "hour",
+            "day",
+            "week",
+            "month"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "grouping"
+      ]
+    }
+  },
+  "properties": {
+    "member": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Sentiment.jsonld"
+      }
+    },
+    "totalItems": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "@id": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "@type": {
+          "type": "string"
+        },
+        "first": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "last": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "previous": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "next": {
+          "type": "string",
+          "format": "iri-reference"
+        }
+      },
+      "example": {
+        "@id": "string",
+        "type": "string",
+        "first": "string",
+        "last": "string",
+        "previous": "string",
+        "next": "string"
+      }
+    },
+    "search": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "variableRepresentation": {
+          "type": "string"
+        },
+        "mapping": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "@type": {
+                "type": "string"
+              },
+              "variable": {
+                "type": "string"
+              },
+              "property": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "member"
+  ]
+}

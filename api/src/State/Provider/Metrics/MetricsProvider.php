@@ -47,7 +47,7 @@ final readonly class MetricsProvider implements ProviderInterface
             throw new \RuntimeException('Invalid repository');
         }
 
-        if (!$context['request'] instanceof Request) {
+        if (!($context['request'] ?? null) instanceof Request) {
             throw new \RuntimeException('No request');
         }
 
@@ -58,7 +58,7 @@ final readonly class MetricsProvider implements ProviderInterface
         $metricsType = $operation->getExtraProperties()[MetricsApiResource::EXTRA_PROPERTY_METRICS_TYPE] ?? null;
 
         if (null === $metricsType) {
-            throw new \RuntimeException('No metrics type found, you must use the MetricsApiResource attribute');
+            throw new \RuntimeException('No metrics type found, you must use the MetricsApiResource attribute.');
         }
 
         $processor = Processor::tryFrom($metricsType);

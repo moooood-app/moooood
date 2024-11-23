@@ -2,6 +2,7 @@
 
 namespace App\Tests\Integration\Metrics;
 
+use App\DataFixtures\UserFixtures;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,11 +17,11 @@ abstract class AbstractMetricsTestCase extends WebTestCase
     abstract protected function getMetricsName(): string;
 
     /**
-     * @param array<string, mixed> $data
+     * @param object{totalItems: int, member: array<mixed>} $data
      */
-    abstract protected function assertResponseIsValid(array $data): void;
+    abstract protected function assertResponseIsValid(object $data): void;
 
-    public function testRequestIsRejectedWhenUserNotAuthenticated(): void
+    public function testRequestIsRejectedWhenUserIsNotAuthenticated(): void
     {
         $client = self::createClient();
 
@@ -31,9 +32,9 @@ abstract class AbstractMetricsTestCase extends WebTestCase
         $this->assertResponseStatusCodeSame(401);
     }
 
-    public function testEntryIsCreatedWhenUserAuthenticated(): void
+    public function testMetricsAreCorrectlyReturnedWhenUserIsAuthenticated(): void
     {
-        $client = $this->createAuthenticatedClient('peter@forcepure.com');
+        $client = $this->createAuthenticatedClient(UserFixtures::FIRST_USER);
 
         $client->request(Request::METHOD_GET, '/api/metrics/'.$this->getMetricsName(), ['grouping' => 'day'], [], [
             'CONTENT_TYPE' => 'application/ld+json',
@@ -43,7 +44,7 @@ abstract class AbstractMetricsTestCase extends WebTestCase
         $content = $client->getResponse()->getContent();
 
         /**
-         * @var array{
+         * @var object{
          *   "@id": string,
          *   "@context": string,
          *   "@type": string,
@@ -53,11 +54,11 @@ abstract class AbstractMetricsTestCase extends WebTestCase
          *   search: object,
          * } $data
          */
-        $data = json_decode($content, true);
+        $data = json_decode($content);
 
-        self::assertSame('/api/metrics/'.$this->getMetricsName(), $data['@id']);
-        self::assertSame('/api/contexts/'.ucfirst($this->getMetricsName()), $data['@context']);
-        self::assertSame('Collection', $data['@type']);
+        self::assertSame('/api/metrics/'.$this->getMetricsName(), $data->{'@id'});
+        self::assertSame('/api/contexts/'.ucfirst($this->getMetricsName()), $data->{'@context'});
+        self::assertSame('Collection', $data->{'@type'});
 
         $this->assertResponseIsValid($data);
 

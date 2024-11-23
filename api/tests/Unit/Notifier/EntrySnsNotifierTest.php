@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Notifier;
 
 use App\Entity\Entry;
+use App\Metadata\Metrics\MetricsApiResource;
 use App\Notifier\EntrySnsNotifier;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Log\LoggerInterface;
@@ -22,6 +23,7 @@ use Symfony\Component\Uid\Uuid;
  */
 #[CoversClass(EntrySnsNotifier::class)]
 #[CoversClass(Entry::class)]
+#[CoversClass(MetricsApiResource::class)]
 final class EntrySnsNotifierTest extends KernelTestCase
 {
     public function testNotifySuccess(): void

@@ -26,8 +26,8 @@
         </include>
         <exclude>
             <file>Kernel.php</file>
-            <directory>Entity</directory>
-            <directory>DataFixtures</directory>
+            <directory>src/Entity</directory>
+            <directory>src/DataFixtures</directory>
         </exclude>
     </source>
 
