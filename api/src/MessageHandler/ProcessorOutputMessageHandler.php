@@ -14,7 +14,6 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 #[AsMessageHandler]
 final class ProcessorOutputMessageHandler
 {
-    /** @todo inject the EntryMetadataRepository instead here */
     public function __construct(
         private readonly EntryRepository $entryRepository,
         private readonly EntryMetadataRepository $entryMetadataRepository,
