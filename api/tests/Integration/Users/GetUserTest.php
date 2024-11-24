@@ -9,6 +9,7 @@ use App\EventListener\EntryWriteListener;
 use App\Notifier\EntrySnsNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
+use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -26,6 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class GetUserTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
+    use ValidateJsonSchemaTrait;
 
     public function testRequestIsRejectedWhenUserNotAuthenticated(): void
     {
@@ -52,7 +54,7 @@ final class GetUserTest extends WebTestCase
         $content = $client->getResponse()->getContent();
 
         /**
-         * @var array{
+         * @var object{
          *   "@id": string,
          *   "@context": string,
          *   "@type": string,
@@ -61,19 +63,18 @@ final class GetUserTest extends WebTestCase
          *   email: string,
          * } $data
          */
-        $data = json_decode($content, true);
+        $data = json_decode($content);
 
         $this->assertResponseIsSuccessful();
 
-        self::assertStringStartsWith("/api/users/{$user->getId()}", $data['@id']);
-        self::assertSame('/api/contexts/User', $data['@context']);
-        self::assertSame('User', $data['@type']);
-        self::assertSame($user->getFirstName(), $data['firstName']);
-        self::assertSame($user->getLastname(), $data['lastName']);
-        self::assertSame($user->getEmail(), $data['email']);
-        self::assertArrayNotHasKey('password', $data);
-        self::assertArrayNotHasKey('google', $data);
-        self::assertArrayNotHasKey('apple', $data);
+        self::assertSame("/api/users/{$user->getId()}", $data->{'@id'});
+        self::assertSame('/api/contexts/User', $data->{'@context'});
+        self::assertSame('User', $data->{'@type'});
+        self::assertSame($user->getFirstName(), $data->firstName);
+        self::assertSame($user->getLastname(), $data->lastName);
+        self::assertSame($user->getEmail(), $data->email);
+
+        $this->assertJsonSchemaIsValid($data, 'users/user.json');
     }
 
     public function testUserCannotAccessAnotherUserInformation(): void
