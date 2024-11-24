@@ -1,0 +1,19 @@
+meta {
+  name: User
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://{{url}}/api/users/01933d63-efb1-7cfb-9a6a-2fa60d204f0a
+  body: none
+  auth: none
+}
+
+query {
+  ~itemsPerPage: 1
+}
+
+headers {
+  Authorization: bearer {{jwt}}
+}

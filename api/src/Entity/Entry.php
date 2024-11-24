@@ -29,12 +29,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(),
         new GetCollection(
-            normalizationContext: ['groups' => [Entry::SERIALIZATION_GROUP_READ_COLLECTION]],
+            normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_COLLECTION]],
         ),
         new Post(),
     ],
-    normalizationContext: ['groups' => [Entry::SERIALIZATION_GROUP_READ_ITEM]],
-    denormalizationContext: ['groups' => [Entry::SERIALIZATION_GROUP_WRITE]],
+    normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_ITEM]],
+    denormalizationContext: ['groups' => [self::SERIALIZATION_GROUP_WRITE]],
 )]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 class Entry

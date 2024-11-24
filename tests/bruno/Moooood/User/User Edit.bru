@@ -1,0 +1,28 @@
+meta {
+  name: User Edit
+  type: http
+  seq: 2
+}
+
+patch {
+  url: https://{{url}}/api/users/01933d63-efb1-7cfb-9a6a-2fa60d204f0a
+  body: json
+  auth: none
+}
+
+query {
+  ~itemsPerPage: 1
+}
+
+headers {
+  Authorization: bearer {{jwt}}
+  Content-Type: application/merge-patch+json
+}
+
+body:json {
+  {
+    "firstName": "New Philippe",
+    "lastName": "New Carle",
+    "email": "philippe@moooood.app"
+  }
+}

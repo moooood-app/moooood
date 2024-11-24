@@ -6,6 +6,7 @@ use App\DataFixtures\UserFixtures;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @internal
@@ -29,7 +30,7 @@ abstract class AbstractMetricsTestCase extends WebTestCase
             'CONTENT_TYPE' => 'application/ld+json',
         ]);
 
-        $this->assertResponseStatusCodeSame(401);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testMetricsAreCorrectlyReturnedWhenUserIsAuthenticated(): void

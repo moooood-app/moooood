@@ -13,6 +13,7 @@ use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @internal
@@ -36,9 +37,12 @@ final class CreateEntryTest extends WebTestCase
         ], '{}',
         );
 
-        $this->assertResponseStatusCodeSame(401);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
+    /**
+     * @todo test validation
+     */
     public function testEntryIsCreatedWhenUserAuthenticated(): void
     {
         $client = $this->createAuthenticatedClient(UserFixtures::FIRST_USER);
@@ -77,6 +81,6 @@ final class CreateEntryTest extends WebTestCase
         self::assertNotNull($data['createdAt']);
         self::assertNotNull($data['updatedAt']);
 
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 }
