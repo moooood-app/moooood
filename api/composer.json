@@ -17,6 +17,7 @@
         "doctrine/orm": "^3.3",
         "egulias/email-validator": "^4.0",
         "gedmo/doctrine-extensions": "^3.17",
+        "gesdinet/jwt-refresh-token-bundle": "^1.4",
         "hwi/oauth-bundle": "^2.2",
         "lexik/jwt-authentication-bundle": "^3.1",
         "nelmio/cors-bundle": "^2.5",
