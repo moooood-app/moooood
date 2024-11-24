@@ -5,10 +5,12 @@ namespace App\Tests\Unit\Doctrine;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Doctrine\CurrentUserExtension;
 use App\Entity\Entry;
+use App\Entity\EntryMetadata;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Parameter;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -64,7 +66,11 @@ final class CurrentUserExtensionTest extends KernelTestCase
         self::assertSame($uuid, $userParameter->getValue());
     }
 
-    public function testApplyToItemAddsCorrectWhereClause(): void
+    /**
+     * @param class-string $resourceClass
+     */
+    #[DataProvider('provideResourceClasses')]
+    public function testApplyToItemAddsCorrectWhereClause(string $resourceClass, string $expectedProperty): void
     {
         self::bootKernel();
 
@@ -94,11 +100,11 @@ final class CurrentUserExtensionTest extends KernelTestCase
         $extension->applyToItem(
             $queryBuilder,
             $this->createMock(QueryNameGeneratorInterface::class),
-            Entry::class,
+            $resourceClass,
             [],
         );
 
-        self::assertStringContainsString('u.user = :current_user', (string) $queryBuilder->getDQL());
+        self::assertStringContainsString("u.{$expectedProperty} = :current_user", (string) $queryBuilder->getDQL());
 
         $parameters = $queryBuilder->getParameters();
 
@@ -108,7 +114,17 @@ final class CurrentUserExtensionTest extends KernelTestCase
         self::assertSame($uuid, $userParameter->getValue());
     }
 
-    public function testExtensionIsNotApplicable(): void
+    /**
+     * @return iterable<array{class-string, string}>
+     */
+    public static function provideResourceClasses(): iterable
+    {
+        yield [User::class, 'id'];
+        yield [Entry::class, 'user'];
+    }
+
+    #[DataProvider('provideSecurityUser')]
+    public function testExtensionIsNotApplicable(?User $user): void
     {
         self::bootKernel();
 
@@ -118,20 +134,20 @@ final class CurrentUserExtensionTest extends KernelTestCase
         $security = $this->createMock(Security::class);
         $security->expects(self::once())
             ->method('getUser')
-            ->willReturn(null)
+            ->willReturn($user)
         ;
 
         $queryBuilder = $entityManager->createQueryBuilder();
         $queryBuilder
             ->select('u')
-            ->from(User::class, 'u')
+            ->from(EntryMetadata::class, 'u')
         ;
 
         $extension = new CurrentUserExtension($security);
         $extension->applyToCollection(
             $queryBuilder,
             $this->createMock(QueryNameGeneratorInterface::class),
-            Entry::class,
+            EntryMetadata::class,
         );
 
         $parameters = $queryBuilder->getParameters();
@@ -139,5 +155,14 @@ final class CurrentUserExtensionTest extends KernelTestCase
         self::assertStringNotContainsString('u.user = :current_user', (string) $queryBuilder->getDQL());
 
         self::assertEmpty($parameters);
+    }
+
+    /**
+     * @return iterable<array{User|null}>
+     */
+    public static function provideSecurityUser(): iterable
+    {
+        yield [null];
+        yield [new User()];
     }
 }

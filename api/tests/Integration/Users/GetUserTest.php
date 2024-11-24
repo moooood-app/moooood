@@ -85,6 +85,6 @@ final class GetUserTest extends WebTestCase
 
         $client->request(Request::METHOD_GET, "/api/users/{$otherUser->getId()}");
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }
