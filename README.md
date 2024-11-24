@@ -6,6 +6,8 @@
 make install
 ```
 
+## Architecture
+
 ```mermaid
 graph TD
     A[API Endpoint: entries] -->|POST request| B[Postgres Database]
@@ -26,4 +28,73 @@ graph TD
     G -->|Subscription| H[Post-Processing Queue]
     H -->|Consumed| I[Symfony Messenger]
     I -->|Update| B
+```
+
+## Database
+
+```mermaid
+erDiagram
+    users ||--o{ entries : "has many"
+    users ||--o{ parts : "has many"
+    users ||--o{ user_rewards : "has many"
+    users {
+        uuid id PK
+        varchar first_name
+        varchar last_name
+        varchar email
+        varchar password
+        varchar google
+        varchar apple
+        %% not implemented yet
+        timestamptz last_entry_created_at
+        timezone timezone
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    parts ||--o{ entries : "has many"
+    %% not implemented yet
+    parts {
+        uuid id PK
+        varchar name
+        jsonb colors
+        timestamptz last_entry_created_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    user_rewards }o--|| rewards : "has many"
+    %% not implemented yet
+    rewards {
+        uuid id PK
+        varchar name
+        varchar description
+    }
+
+    %% not implemented yet
+    user_rewards {
+        uuid id PK
+        uuid user_id FK
+        uuid rewards_id FK
+        timestamptz granted_at
+    }
+
+
+    entries {
+        uuid id PK
+        uuid part_id FK
+        text content
+        uuid user_id FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    entries ||--o{ entries_metadata : "has many"
+    entries_metadata {
+        int4 id PK
+        uuid entry_id FK
+        jsonb metadata
+        varchar processor
+        timestamptz created_at
+    }
 ```
