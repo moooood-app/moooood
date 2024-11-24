@@ -4,37 +4,62 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'users')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            security: 'object.getId() == user.getId()',
+            securityMessage: 'You are not allowed to see this user',
+        ),
+        new Patch(
+            security: 'object.getId() == user.getId()',
+            securityMessage: 'You are not allowed to edit this user',
+        ),
+    ],
+    normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_ITEM]],
+    denormalizationContext: ['groups' => [self::SERIALIZATION_GROUP_WRITE]],
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const SERIALIZATION_GROUP_WRITE = 'users:write';
+    public const SERIALIZATION_GROUP_READ_ITEM = 'users:read:item';
+
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
     private Uuid $id;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
+    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_WRITE])]
     private string $firstName;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
+    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_WRITE])]
     private string $lastName;
 
     #[ORM\Column(length: 320)]
     #[Assert\NotBlank]
     #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_STRICT)]
+    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_WRITE])]
     private string $email;
 
     #[ORM\Column(length: 255)]
