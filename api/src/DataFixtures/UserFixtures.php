@@ -11,6 +11,7 @@ class UserFixtures extends Fixture
 {
     public const FIRST_USER = 'user@moooood.app';
     public const HACKER_USER = 'hacker@moooood.app';
+    public const PASSWORD = 'p@ssword';
 
     public function __construct(private UserPasswordHasherInterface $userPasswordHasher)
     {
@@ -26,7 +27,7 @@ class UserFixtures extends Fixture
             ->setPassword(
                 $this->userPasswordHasher->hashPassword(
                     $user,
-                    'password',
+                    self::PASSWORD,
                 )
             )
         ;
@@ -42,7 +43,7 @@ class UserFixtures extends Fixture
             ->setPassword(
                 $this->userPasswordHasher->hashPassword(
                     $user,
-                    'password',
+                    self::PASSWORD,
                 )
             )
             ->setGoogle('google')

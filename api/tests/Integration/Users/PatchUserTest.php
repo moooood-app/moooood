@@ -9,6 +9,7 @@ use App\EventListener\EntryWriteListener;
 use App\Notifier\EntrySnsNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
+use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -27,6 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class PatchUserTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
+    use ValidateJsonSchemaTrait;
 
     public function testRequestIsRejectedWhenUserNotAuthenticated(): void
     {
@@ -71,7 +73,7 @@ final class PatchUserTest extends WebTestCase
         $content = $client->getResponse()->getContent();
 
         /**
-         * @var array{
+         * @var object{
          *   "@id": string,
          *   "@context": string,
          *   "@type": string,
@@ -80,19 +82,18 @@ final class PatchUserTest extends WebTestCase
          *   email: string,
          * } $data
          */
-        $data = json_decode($content, true);
+        $data = json_decode($content);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-        self::assertStringStartsWith("/api/users/{$user->getId()}", $data['@id']);
-        self::assertSame('/api/contexts/User', $data['@context']);
-        self::assertSame('User', $data['@type']);
-        self::assertSame($payload['firstName'], $data['firstName']);
-        self::assertSame($payload['lastName'], $data['lastName']);
-        self::assertSame($payload['email'], $data['email']);
-        self::assertArrayNotHasKey('password', $data);
-        self::assertArrayNotHasKey('google', $data);
-        self::assertArrayNotHasKey('apple', $data);
+        self::assertSame("/api/users/{$user->getId()}", $data->{'@id'});
+        self::assertSame('/api/contexts/User', $data->{'@context'});
+        self::assertSame('User', $data->{'@type'});
+        self::assertSame($payload['firstName'], $data->firstName);
+        self::assertSame($payload['lastName'], $data->lastName);
+        self::assertSame($payload['email'], $data->email);
+
+        $this->assertJsonSchemaIsValid($data, 'users/user.json');
 
         /** @var EntityManagerInterface */
         $manager = self::getContainer()->get(EntityManagerInterface::class);

@@ -15,11 +15,17 @@ install:
 	$(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction
 
 
-lint:
+lint: lint-cs lint-sf lint-phpstan
+
+lint-cs:
 	$(DOCKER_EXEC_API) vendor/bin/php-cs-fixer fix
+
+lint-sf:
 	$(DOCKER_EXEC_API) bin/console lint:container
 	$(DOCKER_EXEC_API) bin/console lint:yaml config
 	$(DOCKER_EXEC_API) bin/console lint:twig
+
+lint-phpstan:
 	$(DOCKER_EXEC_API) vendor/bin/phpstan --memory-limit=1G analyse
 
 test: test-reset-database
