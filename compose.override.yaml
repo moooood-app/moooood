@@ -1,6 +1,6 @@
 # Development environment override
 services:
-  php:
+  api:
     build:
       context: ./docker/api
       target: frankenphp_dev
@@ -17,6 +17,19 @@ services:
       - host.docker.internal:host-gateway
     tty: true
 
+  post-processing:
+    build:
+      context: ./docker/post-processing
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      SUPERVISOR_NUM_PROCS: 2
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
   database:
     ports:
       - "5432:5432"
@@ -32,6 +45,11 @@ services:
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       - DEBUG=${DEBUG:-0}
+    healthcheck:
+      test: awslocal sqs get-queue-attributes --queue-url=$$POST_PROCESSING_SQS_QUEUE
+      interval: 5s
+      timeout: 10s
+      retries: 5
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./docker/data/localstack}:/var/lib/localstack"
       - /var/run/docker.sock:/var/run/docker.sock

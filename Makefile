@@ -1,6 +1,6 @@
 .PHONY: help install
 
-DOCKER_EXEC_API = docker compose exec -it -e "TERM=xterm-256color" php
+DOCKER_EXEC_API = docker compose exec -it -e "TERM=xterm-256color" api
 
 tls:
 	docker cp $(docker compose ps -q api):/data/caddy/pki/authorities/local/root.crt /tmp/root.crt && sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /tmp/root.crt

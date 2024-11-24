@@ -2,13 +2,13 @@ framework:
     messenger:
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            post_processing:
+            post-processing:
                 dsn: '%env(MESSENGER_TRANSPORT_POST_PROCESSING_DSN)%'
                 serializer: 'App\Messenger\Serializer\ProcessorOutputDecoder'
                 options:
                     auto_setup: false
         routing:
-            App\Message\ProcessorOutputMessage: post_processing
+            App\Message\ProcessorOutputMessage: post-processing
 
 # when@test:
 #    framework:
