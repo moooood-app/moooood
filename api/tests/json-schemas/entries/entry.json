@@ -42,17 +42,14 @@
           "readOnly": true,
           "type": "string"
         },
-        "id": {
-          "readOnly": true,
-          "type": "string",
-          "format": "uuid"
-        },
         "content": {
+          "description": "The content of the entry",
           "minLength": 10,
           "maxLength": 1000,
           "type": "string"
         },
         "part": {
+          "description": "The part this entry belongs to. Null = \"Self\" entry",
           "anyOf": [
             {
               "$ref": "#/definitions/Part.jsonld-entry.read.item_part.read.item"
@@ -63,14 +60,17 @@
           ]
         },
         "createdAt": {
+          "description": "The date and time the entry was created",
           "type": "string",
           "format": "date-time"
         },
         "updatedAt": {
+          "description": "The date and time the entry was last updated. Updated when new metadata is added.",
           "type": "string",
           "format": "date-time"
         },
         "metadata": {
+          "description": "The metadata of the entry",
           "type": "array",
           "items": {
             "$ref": "#/definitions/EntryMetadata.jsonld-entry.read.item_part.read.item"
@@ -78,7 +78,14 @@
         }
       },
       "required": [
-        "content"
+        "@context",
+        "@id",
+        "@type",
+        "content",
+        "part",
+        "createdAt",
+        "updatedAt",
+        "metadata"
       ],
       "additionalProperties": false
     },
@@ -87,33 +94,6 @@
       "description": "",
       "deprecated": false,
       "properties": {
-        "@context": {
-          "readOnly": true,
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "object",
-              "properties": {
-                "@vocab": {
-                  "type": "string"
-                },
-                "hydra": {
-                  "type": "string",
-                  "enum": [
-                    "http://www.w3.org/ns/hydra/core#"
-                  ]
-                }
-              },
-              "required": [
-                "@vocab",
-                "hydra"
-              ],
-              "additionalProperties": false
-            }
-          ]
-        },
         "@id": {
           "readOnly": true,
           "type": "string"
@@ -122,35 +102,18 @@
           "readOnly": true,
           "type": "string"
         },
-        "id": {
-          "readOnly": true,
-          "description": "The UUID of the part",
-          "type": "string",
-          "format": "uuid"
-        },
         "name": {
           "minLength": 1,
           "maxLength": 100,
           "type": "string"
-        },
-        "colors": {
-          "minItems": 5,
-          "maxItems": 5,
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "@id",
+        "@type",
+        "name"
+      ]
     },
     "EntryMetadata.jsonld-entry.read.item_part.read.item": {
       "type": "object",

@@ -7,21 +7,14 @@
       "description": "Get keywords metrics for the given grouping criteria",
       "deprecated": false,
       "properties": {
-        "@id": {
-          "readOnly": true,
-          "type": "string"
-        },
-        "@type": {
-          "readOnly": true,
-          "type": "string"
-        },
         "keywords": {
           "description": "The average score and count of detected keywords.",
-          "type": "array",
+          "type": "object",
           "items": {
-            "type": "array",
-            "items": {
-              "type": "string"
+            "type": "object",
+            "properties": {
+              "count": {"type": "number"},
+              "average_score": {"type": "number"}
             }
           }
         },
@@ -41,7 +34,9 @@
           ]
         }
       },
+      "additionalProperties": false,
       "required": [
+        "keywords",
         "id",
         "grouping"
       ]

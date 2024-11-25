@@ -30,6 +30,7 @@ class PartFixtures extends Fixture implements DependentFixtureInterface
                 ->setName($faker->word)
                 ->setColors(self::generateRandomColors())
             ;
+            $this->addReference("part-{$i}", $part);
             $manager->persist($part);
         }
 

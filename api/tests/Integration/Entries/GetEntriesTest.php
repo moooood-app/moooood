@@ -58,11 +58,21 @@ final class GetEntriesTest extends WebTestCase
         /** @var non-empty-string */
         $content = $client->getResponse()->getContent();
 
-        /** @var object */
+        /**
+         * @var object{
+         *  search: object{template: non-empty-string},
+         *  totalItems: int,
+         * }
+         */
         $data = json_decode($content);
 
-        self::assertGreaterThan(0, $data->{'totalItems'} ?? 0);
+        self::assertGreaterThan(0, $data->totalItems ?? 0);
 
         self::assertJsonSchemaIsValid($data, 'entries/entries.json');
+
+        self::assertSame(
+            '/api/entries{?createdAt[before],createdAt[strictly_before],createdAt[after],createdAt[strictly_after],part,part[]}',
+            $data->search->template,
+        );
     }
 }

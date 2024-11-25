@@ -6,23 +6,7 @@
       "type": "object",
       "description": "",
       "deprecated": false,
-      "required": [
-        "submissions",
-        "characterCount",
-        "wordCount",
-        "sentenceCount",
-        "id",
-        "grouping"
-      ],
       "properties": {
-        "@id": {
-          "readOnly": true,
-          "type": "string"
-        },
-        "@type": {
-          "readOnly": true,
-          "type": "string"
-        },
         "submissions": {
           "description": "The number of submissions",
           "type": "integer"
@@ -54,7 +38,16 @@
             "month"
           ]
         }
-      }
+      },
+      "additionalProperties": false,
+      "required": [
+        "submissions",
+        "characterCount",
+        "wordCount",
+        "sentenceCount",
+        "id",
+        "grouping"
+      ]
     }
   },
   "properties": {

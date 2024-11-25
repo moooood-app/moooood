@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use App\Enum\Processor;
 use App\Repository\EntryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,13 +30,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(),
-        new GetCollection(normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_COLLECTION, Part::SERIALIZATION_GROUP_READ_ITEM]]),
+        new GetCollection(normalizationContext: [
+            'groups' => [self::SERIALIZATION_GROUP_READ_COLLECTION, Part::SERIALIZATION_GROUP_MINIMAL],
+        ]),
         new Post(),
     ],
-    normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_ITEM, Part::SERIALIZATION_GROUP_READ_ITEM]],
+    normalizationContext: [
+        'groups' => [self::SERIALIZATION_GROUP_READ_ITEM, Part::SERIALIZATION_GROUP_MINIMAL,
+        ]],
     denormalizationContext: ['groups' => [self::SERIALIZATION_GROUP_WRITE]],
 )]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
+#[ApiFilter(SearchFilter::class, properties: ['part' => 'exact'])]
 class Entry
 {
     public const SERIALIZATION_GROUP_SNS = 'entry:sns';
@@ -48,7 +53,6 @@ class Entry
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -65,6 +69,7 @@ class Entry
         minMessage: 'An entry must be at least {{ limit }} characters long',
         maxMessage: 'An entry cannot be longer than {{ limit }} characters',
     )]
+    #[ApiProperty(description: 'The content of the entry')]
     private string $content;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -73,17 +78,24 @@ class Entry
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: Part::class)]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    #[Serializer\Groups([
+        self::SERIALIZATION_GROUP_WRITE,
+        self::SERIALIZATION_GROUP_READ_ITEM,
+        self::SERIALIZATION_GROUP_READ_COLLECTION,
+    ])]
+    #[ApiProperty(description: 'The part this entry belongs to. Null = "Self" entry')]
     private ?Part $part = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    #[ApiProperty(description: 'The date and time the entry was created')]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    #[ApiProperty(description: 'The date and time the entry was last updated. Updated when new metadata is added.')]
     private \DateTimeImmutable $updatedAt;
 
     /**
@@ -91,6 +103,7 @@ class Entry
      */
     #[ORM\OneToMany(targetEntity: EntryMetadata::class, mappedBy: 'entry', orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
+    #[ApiProperty(description: 'The metadata of the entry')]
     private Collection $metadata;
 
     public function __construct()
@@ -169,26 +182,6 @@ class Entry
     public function getMetadata(): Collection
     {
         return $this->metadata;
-    }
-
-    /**
-     * @return array<EntryMetadata>
-     */
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_COLLECTION])]
-    #[ApiProperty(description: 'Sentiment analysis of the entry')]
-    public function getSentiment(): array
-    {
-        return $this->metadata->filter(static fn (EntryMetadata $metadata) => Processor::SENTIMENT === $metadata->getProcessor())->getValues();
-    }
-
-    /**
-     * @return array<EntryMetadata>
-     */
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_COLLECTION])]
-    #[ApiProperty(description: 'Keywords of the entry')]
-    public function getKeywords(): array
-    {
-        return $this->metadata->filter(static fn (EntryMetadata $metadata) => Processor::KEYWORDS === $metadata->getProcessor())->getValues();
     }
 
     public function addMetadata(EntryMetadata $metadata): static

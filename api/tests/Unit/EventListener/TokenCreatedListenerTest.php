@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -29,6 +30,8 @@ final class TokenCreatedListenerTest extends KernelTestCase
 
         /** @var User */
         $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
+
+        /** @var Security&MockObject */
         $security = $this->createMock(Security::class);
         $security->expects(self::once())
             ->method('getUser')
@@ -48,7 +51,6 @@ final class TokenCreatedListenerTest extends KernelTestCase
                 '@context' => '/api/contexts/User',
                 '@id' => "/api/users/{$user->getId()}",
                 '@type' => 'User',
-                'id' => $user->getId()->toString(),
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'email' => $user->getEmail(),
