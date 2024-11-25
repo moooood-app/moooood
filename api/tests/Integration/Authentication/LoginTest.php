@@ -30,7 +30,7 @@ final class LoginTest extends WebTestCase
             'password' => UserFixtures::PASSWORD,
         ]));
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
 
         /** @var non-empty-string */
         $content = $client->getResponse()->getContent();
@@ -56,6 +56,6 @@ final class LoginTest extends WebTestCase
             'password' => 'wrong-password',
         ]));
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 }

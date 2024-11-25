@@ -30,12 +30,12 @@ abstract class AbstractMetricsTestCase extends WebTestCase
             'CONTENT_TYPE' => 'application/ld+json',
         ]);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testMetricsAreCorrectlyReturnedWhenUserIsAuthenticated(): void
     {
-        $client = $this->createAuthenticatedClient(UserFixtures::FIRST_USER);
+        $client = self::createAuthenticatedClient(UserFixtures::FIRST_USER);
 
         $client->request(Request::METHOD_GET, '/api/metrics/'.$this->getMetricsName(), ['grouping' => 'day'], [], [
             'CONTENT_TYPE' => 'application/ld+json',
@@ -63,6 +63,6 @@ abstract class AbstractMetricsTestCase extends WebTestCase
 
         $this->assertResponseIsValid($data);
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 }

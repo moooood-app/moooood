@@ -41,7 +41,7 @@ final class PatchUserTest extends WebTestCase
             'CONTENT_TYPE' => 'application/merge-patch+json',
         ], '{}', );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -49,7 +49,7 @@ final class PatchUserTest extends WebTestCase
      */
     public function testUserCanEditTheirOwnInformation(): void
     {
-        $client = $this->createAuthenticatedClient(UserFixtures::FIRST_USER);
+        $client = self::createAuthenticatedClient(UserFixtures::FIRST_USER);
 
         /** @var User */
         $user = self::getContainer()->get(UserRepository::class)->findOneBy(['email' => UserFixtures::FIRST_USER]);
@@ -84,7 +84,7 @@ final class PatchUserTest extends WebTestCase
          */
         $data = json_decode($content);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
 
         self::assertSame("/api/users/{$user->getId()}", $data->{'@id'});
         self::assertSame('/api/contexts/User', $data->{'@context'});
@@ -107,13 +107,13 @@ final class PatchUserTest extends WebTestCase
 
     public function testUserCannotEditAnotherUserInformation(): void
     {
-        $client = $this->createAuthenticatedClient(UserFixtures::HACKER_USER);
+        $client = self::createAuthenticatedClient(UserFixtures::HACKER_USER);
 
         /** @var User */
         $otherUser = self::getContainer()->get(UserRepository::class)->findOneBy(['email' => UserFixtures::FIRST_USER]);
 
         $client->request(Request::METHOD_GET, "/api/users/{$otherUser->getId()}");
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }

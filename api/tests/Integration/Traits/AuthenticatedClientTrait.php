@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 trait AuthenticatedClientTrait
 {
-    private function createAuthenticatedClient(string $email): KernelBrowser
+    private static function createAuthenticatedClient(string $email): KernelBrowser
     {
         $client = static::createClient();
 

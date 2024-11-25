@@ -42,8 +42,8 @@ final class MetricsQueryTest extends TestCase
         yield 'Default date for ENTRY with null date_from' => [
             ['grouping' => GroupingCriteria::ENTRY->value, 'from' => null],
             GroupingCriteria::ENTRY,
-            '2024-11-18 00:00:00',
-            '2024-11-25 00:00:00',
+            (new \DateTime())->modify('last Sunday')->modify('+1 day')->format('Y-m-d 00:00:00'),
+            (new \DateTime())->modify('last Sunday')->modify('+1 day')->modify('+1 week')->format('Y-m-d 00:00:00'),
         ];
 
         yield 'Align HOUR to week boundary at year end' => [

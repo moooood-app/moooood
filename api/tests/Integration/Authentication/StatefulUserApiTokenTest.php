@@ -30,7 +30,7 @@ final class StatefulUserApiTokenTest extends WebTestCase
 
         $client->request('GET', '/auth');
         $this->assertResponseHasHeader('Content-Type', 'application/json');
-        $this->assertResponseStatusCodeSame(201);
+        self::assertResponseStatusCodeSame(201);
 
         /** @var string */
         $content = $client->getResponse()->getContent();
@@ -46,7 +46,7 @@ final class StatefulUserApiTokenTest extends WebTestCase
         $client = self::createClient();
 
         $client->request('GET', '/auth');
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
         $this->assertResponseHasHeader('Content-Type', 'application/json');
 
         /** @var string */

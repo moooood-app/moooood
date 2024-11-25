@@ -10,10 +10,14 @@ use App\Metadata\Metrics\MetricsApiResource;
 use App\Notifier\EntrySnsNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
+use App\Tests\Integration\Traits\ValidationErrorsTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Profiler\Profile;
+use Symfony\Component\Notifier\DataCollector\NotificationDataCollector;
+use Symfony\Component\Notifier\Message\ChatMessage;
 
 /**
  * @internal
@@ -27,6 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class CreateEntryTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
+    use ValidationErrorsTrait;
 
     public function testRequestIsRejectedWhenUserNotAuthenticated(): void
     {
@@ -34,18 +39,15 @@ final class CreateEntryTest extends WebTestCase
 
         $client->request(Request::METHOD_POST, '/api/entries', [], [], [
             'CONTENT_TYPE' => 'application/ld+json',
-        ], '{}',
-        );
+        ], '{}');
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * @todo test validation
-     */
     public function testEntryIsCreatedWhenUserAuthenticated(): void
     {
-        $client = $this->createAuthenticatedClient(UserFixtures::FIRST_USER);
+        $client = self::createAuthenticatedClient(UserFixtures::FIRST_USER);
+        $client->enableProfiler();
 
         /** @var non-empty-string $jsonPayload */
         $jsonPayload = json_encode([
@@ -81,6 +83,67 @@ final class CreateEntryTest extends WebTestCase
         self::assertNotNull($data['createdAt']);
         self::assertNotNull($data['updatedAt']);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
+        if (!$client->getProfile() instanceof Profile) {
+            self::fail('Profiler not enabled');
+        }
+
+        /** @var NotificationDataCollector */
+        $notifierCollector = $client->getProfile()->getCollector('notifier');
+
+        self::assertCount(1, $notifierCollector->getEvents()->getMessages());
+        $message = $notifierCollector->getEvents()->getMessages()[0];
+        self::assertInstanceOf(ChatMessage::class, $message);
+        /** @var array<string, mixed> */
+        $payload = json_decode($message->getSubject(), true, 512, \JSON_THROW_ON_ERROR);
+        self::assertEqualsCanonicalizing([
+            '@context' => '/api/contexts/Entry',
+            '@id' => $data['@id'],
+            '@type' => 'Entry',
+            'content' => 'This is a test',
+        ], $payload);
+    }
+
+    public function testValidationErrorForLongContent(): void
+    {
+        $client = self::createAuthenticatedClient(UserFixtures::FIRST_USER);
+
+        /** @var non-empty-string $jsonPayload */
+        $jsonPayload = json_encode([
+            'content' => str_repeat('a', 1001),
+        ]);
+
+        $client->request(Request::METHOD_POST, '/api/entries', [], [], [
+            'CONTENT_TYPE' => 'application/ld+json',
+        ], $jsonPayload);
+
+        self::assertValidationErrors($client, [
+            [
+                'propertyPath' => 'content',
+                'message' => 'An entry cannot be longer than 1000 characters',
+            ],
+        ]);
+    }
+
+    public function testValidationErrorForShortContent(): void
+    {
+        $client = self::createAuthenticatedClient(UserFixtures::FIRST_USER);
+
+        /** @var non-empty-string $jsonPayload */
+        $jsonPayload = json_encode([
+            'content' => str_repeat('a', 9),
+        ]);
+
+        $client->request(Request::METHOD_POST, '/api/entries', [], [], [
+            'CONTENT_TYPE' => 'application/ld+json',
+        ], $jsonPayload);
+
+        self::assertValidationErrors($client, [
+            [
+                'propertyPath' => 'content',
+                'message' => 'An entry must be at least 10 characters long',
+            ],
+        ]);
     }
 }
