@@ -7,12 +7,14 @@ use App\Entity\Metrics\Keywords;
 use App\Entity\User;
 use App\Enum\Metrics\GroupingCriteria;
 use App\EventListener\EntryWriteListener;
+use App\EventListener\TokenCreatedListener;
 use App\Notifier\EntrySnsNotifier;
 use App\Repository\Metrics\KeywordsRepository;
 use App\Repository\UserRepository;
 use App\State\Provider\Metrics\MetricsProvider;
 use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 
 /**
  * @internal
@@ -23,9 +25,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(UserRepository::class)]
 #[CoversClass(MetricsQuery::class)]
 #[CoversClass(GroupingCriteria::class)]
-#[CoversClass(EntryWriteListener::class)]
-#[CoversClass(EntrySnsNotifier::class)]
 #[CoversClass(MetricsProvider::class)]
+#[UsesClass(EntryWriteListener::class)]
+#[UsesClass(EntrySnsNotifier::class)]
+#[UsesClass(TokenCreatedListener::class)]
 final class KeywordsTest extends AbstractMetricsTestCase
 {
     use ValidateJsonSchemaTrait;
