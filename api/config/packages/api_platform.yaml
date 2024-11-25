@@ -13,3 +13,5 @@ api_platform:
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
         pagination_client_items_per_page: true
+        normalization_context:
+            skip_null_values: false

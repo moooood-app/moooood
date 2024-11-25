@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -37,13 +36,12 @@ class Part
     public const SERIALIZATION_GROUP_WRITE = 'part:write';
     public const SERIALIZATION_GROUP_READ_ITEM = 'part:read:item';
     public const SERIALIZATION_GROUP_READ_COLLECTION = 'part:read:collection';
+    public const SERIALIZATION_GROUP_MINIMAL = 'part:read:minimal';
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[ApiProperty(identifier: true, description: 'The UUID of the part')]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
     private Uuid $id;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -53,7 +51,12 @@ class Part
 
     #[ORM\Column(length: 100)]
     #[Assert\Length(min: 1, max: 100)]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION, self::SERIALIZATION_GROUP_WRITE])]
+    #[Serializer\Groups([
+        self::SERIALIZATION_GROUP_READ_ITEM,
+        self::SERIALIZATION_GROUP_READ_COLLECTION,
+        self::SERIALIZATION_GROUP_MINIMAL,
+        self::SERIALIZATION_GROUP_WRITE,
+    ])]
     private string $name;
 
     /**
@@ -71,12 +74,12 @@ class Part
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
     private \DateTimeImmutable $updatedAt;
 
     /**

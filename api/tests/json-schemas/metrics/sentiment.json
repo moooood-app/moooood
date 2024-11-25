@@ -7,14 +7,6 @@
       "description": "Get sentiment metrics for the given grouping criteria",
       "deprecated": false,
       "properties": {
-        "@id": {
-          "readOnly": true,
-          "type": "string"
-        },
-        "@type": {
-          "readOnly": true,
-          "type": "string"
-        },
         "positive": {
           "description": "The positive sentiment score, from 0 to 1.",
           "type": "number"
@@ -47,7 +39,12 @@
           ]
         }
       },
+      "additionalProperties": false,
       "required": [
+        "positive",
+        "neutral",
+        "negative",
+        "compound",
         "id",
         "grouping"
       ]

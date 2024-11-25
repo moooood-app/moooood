@@ -1,13 +1,17 @@
 meta {
-  name: Entry
+  name: Parts
   type: http
   seq: 3
 }
 
 get {
-  url: https://{{url}}/api/entries/{{current_entry_id}}
+  url: https://{{url}}/api/parts
   body: none
   auth: none
+}
+
+query {
+  ~itemsPerPage: 1
 }
 
 headers {

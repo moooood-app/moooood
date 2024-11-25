@@ -1,0 +1,27 @@
+meta {
+  name: Create Part
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://{{url}}/api/parts
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/ld+json
+  Authorization: bearer {{jwt}}
+}
+
+body:json {
+  {
+    "name": "Hello",
+    "colors":["#000000", "#FFFFFF", "#FF0000", "#00FF00", "#0000FF"]
+  }
+}
+
+script:post-response {
+  bru.setVar("current_part_id",res.body.id)
+}

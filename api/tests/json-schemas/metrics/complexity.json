@@ -7,14 +7,6 @@
       "description": "Get complexity metrics for the given grouping criteria",
       "deprecated": false,
       "properties": {
-        "@id": {
-          "readOnly": true,
-          "type": "string"
-        },
-        "@type": {
-          "readOnly": true,
-          "type": "string"
-        },
         "smogIndex": {
           "description": "The SMOG Index (Simple Measure of Gobbledygook) estimates the years of education needed to understand a text. Based on the number of complex words (three or more syllables).",
           "type": "number"
@@ -71,7 +63,18 @@
           ]
         }
       },
+      "additionalProperties": false,
       "required": [
+        "smogIndex",
+        "complexityRating",
+        "gunningFogIndex",
+        "colemanLiauIndex",
+        "fleschReadingEase",
+        "linsearWriteFormula",
+        "readabilityConsensus",
+        "fleschKincaidGradeLevel",
+        "automatedReadabilityIndex",
+        "daleChallReadabilityScore",
         "id",
         "grouping"
       ]

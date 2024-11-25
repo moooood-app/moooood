@@ -42,12 +42,6 @@
           "readOnly": true,
           "type": "string"
         },
-        "id": {
-          "readOnly": true,
-          "description": "The UUID of the user",
-          "type": "string",
-          "format": "uuid"
-        },
         "firstName": {
           "minLength": 2,
           "maxLength": 50,
@@ -70,6 +64,9 @@
         }
       },
       "required": [
+        "@context",
+        "@id",
+        "@type",
         "firstName",
         "lastName",
         "email"

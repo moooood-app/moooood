@@ -42,6 +42,6 @@ final class KeywordsTest extends AbstractMetricsTestCase
     {
         self::assertSame(7, $data->totalItems);
         self::assertCount(7, $data->member);
-        self::assertJsonSchemaIsValid($data, 'metrics/sentiment.json');
+        self::assertJsonSchemaIsValid($data, 'metrics/keywords.json');
     }
 }

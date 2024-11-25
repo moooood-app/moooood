@@ -15,17 +15,14 @@
           "readOnly": true,
           "type": "string"
         },
-        "id": {
-          "readOnly": true,
-          "type": "string",
-          "format": "uuid"
-        },
         "content": {
+          "description": "The content of the entry",
           "minLength": 10,
           "maxLength": 1000,
           "type": "string"
         },
         "part": {
+          "description": "The part this entry belongs to. Null = \"Self\" entry",
           "anyOf": [
             {
               "$ref": "#/definitions/Part.jsonld-entry.read.collection_part.read.item"
@@ -36,69 +33,22 @@
           ]
         },
         "createdAt": {
+          "description": "The date and time the entry was created",
           "type": "string",
           "format": "date-time"
         },
-        "sentiment": {
-          "readOnly": true,
-          "description": "Sentiment analysis of the entry",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "metadata": {
-                "type": "object",
-                "properties": {
-                  "compound": {
-                    "type": "number"
-                  },
-                  "positive": {
-                    "type": "number"
-                  },
-                  "neutral": {
-                    "type": "number"
-                  },
-                  "negative": {
-                    "type": "number"
-                  }
-                }
-              },
-              "processor": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "keywords": {
-          "readOnly": true,
-          "description": "Keywords of the entry",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "metadata": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "score": {
-                      "type": "number"
-                    },
-                    "keyword": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "processor": {
-                "type": "string"
-              }
-            }
-          }
+        "updatedAt": {
+          "description": "The date and time the entry was last updated. Updated when new metadata is added.",
+          "type": "string",
+          "format": "date-time"
         }
       },
       "required": [
-        "content"
+        "@id",
+        "@type",
+        "content",
+        "createdAt",
+        "updatedAt"
       ],
       "additionalProperties": false
     },
@@ -107,33 +57,6 @@
       "description": "",
       "deprecated": false,
       "properties": {
-        "@context": {
-          "readOnly": true,
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "object",
-              "properties": {
-                "@vocab": {
-                  "type": "string"
-                },
-                "hydra": {
-                  "type": "string",
-                  "enum": [
-                    "http://www.w3.org/ns/hydra/core#"
-                  ]
-                }
-              },
-              "required": [
-                "@vocab",
-                "hydra"
-              ],
-              "additionalProperties": false
-            }
-          ]
-        },
         "@id": {
           "readOnly": true,
           "type": "string"
@@ -142,35 +65,18 @@
           "readOnly": true,
           "type": "string"
         },
-        "id": {
-          "readOnly": true,
-          "description": "The UUID of the part",
-          "type": "string",
-          "format": "uuid"
-        },
         "name": {
           "minLength": 1,
           "maxLength": 100,
           "type": "string"
-        },
-        "colors": {
-          "minItems": 5,
-          "maxItems": 5,
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "@id",
+        "@type",
+        "name"
+      ]
     },
     "EntryMetadata.jsonld-entry.read.collection_part.read.item": {
       "type": "object",
@@ -223,6 +129,13 @@
           ]
         }
       },
+      "required": [
+        "@context",
+        "@id",
+        "@type",
+        "metadata",
+        "processor"
+      ],
       "additionalProperties": false
     }
   },

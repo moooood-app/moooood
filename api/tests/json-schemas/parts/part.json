@@ -42,12 +42,6 @@
           "readOnly": true,
           "type": "string"
         },
-        "id": {
-          "readOnly": true,
-          "description": "The UUID of the part",
-          "type": "string",
-          "format": "uuid"
-        },
         "name": {
           "minLength": 1,
           "maxLength": 100,
@@ -71,6 +65,15 @@
           "format": "date-time"
         }
       },
+
+      "required": [
+        "@id",
+        "@type",
+        "name",
+        "colors",
+        "createdAt",
+        "updatedAt"
+      ],
       "additionalProperties": false
     }
   }
