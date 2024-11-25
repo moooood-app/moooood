@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Integration\Entry;
+namespace App\Tests\Integration\Entries;
 
 use App\DataFixtures\UserFixtures;
 use App\Entity\Entry;
@@ -59,8 +59,7 @@ final class CreateEntryTest extends WebTestCase
 
         $client->request(Request::METHOD_POST, '/api/entries', [], [], [
             'CONTENT_TYPE' => 'application/ld+json',
-        ], $jsonPayload,
-        );
+        ], $jsonPayload);
 
         /** @var non-empty-string */
         $content = $client->getResponse()->getContent();

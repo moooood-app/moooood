@@ -6,10 +6,12 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Enum\Processor;
 use App\Repository\EntryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -129,6 +131,26 @@ class Entry
     public function getMetadata(): Collection
     {
         return $this->metadata;
+    }
+
+    /**
+     * @return array<EntryMetadata>
+     */
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    #[ApiProperty(description: 'Sentiment analysis of the entry')]
+    public function getSentiment(): array
+    {
+        return $this->metadata->filter(static fn (EntryMetadata $metadata) => Processor::SENTIMENT === $metadata->getProcessor())->getValues();
+    }
+
+    /**
+     * @return array<EntryMetadata>
+     */
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    #[ApiProperty(description: 'Keywords of the entry')]
+    public function getKeywords(): array
+    {
+        return $this->metadata->filter(static fn (EntryMetadata $metadata) => Processor::KEYWORDS === $metadata->getProcessor())->getValues();
     }
 
     public function addMetadata(EntryMetadata $metadata): static

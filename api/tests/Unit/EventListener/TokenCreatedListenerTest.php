@@ -5,6 +5,7 @@ namespace App\Tests\Unit\EventListener;
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\EventListener\TokenCreatedListener;
+use App\Metadata\Metrics\MetricsApiResource;
 use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -18,6 +19,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 #[CoversClass(TokenCreatedListener::class)]
 #[UsesClass(UserRepository::class)]
+#[UsesClass(MetricsApiResource::class)]
 final class TokenCreatedListenerTest extends KernelTestCase
 {
     public function testJwtContainsUserData(): void
