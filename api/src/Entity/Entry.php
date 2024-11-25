@@ -69,7 +69,12 @@ class Entry
         self::SERIALIZATION_GROUP_READ_COLLECTION,
     ])]
     #[Assert\NotBlank]
-    #[Assert\Length(min: 1, max: 5000)]
+    #[Assert\Length(
+        min: 10,
+        max: 1000,
+        minMessage: 'An entry must be at least {{ limit }} characters long',
+        maxMessage: 'An entry cannot be longer than {{ limit }} characters',
+    )]
     private string $content;
 
     #[ORM\ManyToOne(targetEntity: User::class)]

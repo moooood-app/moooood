@@ -6,7 +6,7 @@ use Swaggest\JsonSchema\Schema;
 
 trait ValidateJsonSchemaTrait
 {
-    public static function assertJsonSchemaIsValid(object $data, string $schema): void
+    private static function assertJsonSchemaIsValid(object $data, string $schema): void
     {
         $path = realpath("tests/json-schemas/{$schema}");
         if (false === $path) {

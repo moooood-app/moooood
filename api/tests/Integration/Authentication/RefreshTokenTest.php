@@ -30,7 +30,7 @@ final class RefreshTokenTest extends WebTestCase
             'password' => UserFixtures::PASSWORD,
         ]));
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
 
         /** @var non-empty-string */
         $content = $client->getResponse()->getContent();
@@ -49,7 +49,7 @@ final class RefreshTokenTest extends WebTestCase
             'refresh_token' => $data->refresh_token,
         ]);
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
 
         /** @var non-empty-string */
         $content = $client->getResponse()->getContent();
@@ -72,6 +72,6 @@ final class RefreshTokenTest extends WebTestCase
             'refresh_token' => 'invalid-refresh-token',
         ]);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 }

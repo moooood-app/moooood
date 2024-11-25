@@ -38,12 +38,12 @@ final class GetUserTest extends WebTestCase
 
         $client->request(Request::METHOD_GET, "/api/users/{$user->getId()}");
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testUserCanAccessTheirOwnInformation(): void
     {
-        $client = $this->createAuthenticatedClient(UserFixtures::FIRST_USER);
+        $client = self::createAuthenticatedClient(UserFixtures::FIRST_USER);
 
         /** @var User */
         $user = self::getContainer()->get(UserRepository::class)->findOneBy(['email' => UserFixtures::FIRST_USER]);
@@ -65,7 +65,7 @@ final class GetUserTest extends WebTestCase
          */
         $data = json_decode($content);
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
 
         self::assertSame("/api/users/{$user->getId()}", $data->{'@id'});
         self::assertSame('/api/contexts/User', $data->{'@context'});
@@ -79,13 +79,13 @@ final class GetUserTest extends WebTestCase
 
     public function testUserCannotAccessAnotherUserInformation(): void
     {
-        $client = $this->createAuthenticatedClient(UserFixtures::HACKER_USER);
+        $client = self::createAuthenticatedClient(UserFixtures::HACKER_USER);
 
         /** @var User */
         $otherUser = self::getContainer()->get(UserRepository::class)->findOneBy(['email' => UserFixtures::FIRST_USER]);
 
         $client->request(Request::METHOD_GET, "/api/users/{$otherUser->getId()}");
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }
