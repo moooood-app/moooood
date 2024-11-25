@@ -37,33 +37,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const SERIALIZATION_GROUP_WRITE = 'users:write';
     public const SERIALIZATION_GROUP_READ_ITEM = 'users:read:item';
+    public const SERIALIZATION_GROUP_JWT = 'users:jwt';
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
+    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT])]
     #[ApiProperty(identifier: true, description: 'The UUID of the user')]
     private Uuid $id;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
-    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_WRITE])]
+    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
     #[ApiProperty(description: 'The first name of the user')]
     private string $firstName;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
-    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_WRITE])]
+    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
     #[ApiProperty(description: 'The last name of the user')]
     private string $lastName;
 
     #[ORM\Column(length: 320)]
     #[Assert\NotBlank]
     #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_STRICT)]
-    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_WRITE])]
+    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
     #[ApiProperty(description: 'The email/username of the user')]
     private string $email;
 

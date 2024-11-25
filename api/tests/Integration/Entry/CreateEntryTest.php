@@ -6,12 +6,14 @@ use App\DataFixtures\UserFixtures;
 use App\Entity\Entry;
 use App\Entity\User;
 use App\EventListener\EntryWriteListener;
+use App\EventListener\TokenCreatedListener;
 use App\Metadata\Metrics\MetricsApiResource;
 use App\Notifier\EntrySnsNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use App\Tests\Integration\Traits\ValidationErrorsTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,10 +26,11 @@ use Symfony\Component\Notifier\Message\ChatMessage;
  */
 #[CoversClass(Entry::class)]
 #[CoversClass(User::class)]
-#[CoversClass(EntryWriteListener::class)]
 #[CoversClass(UserRepository::class)]
+#[CoversClass(EntryWriteListener::class)]
 #[CoversClass(EntrySnsNotifier::class)]
-#[CoversClass(MetricsApiResource::class)]
+#[UsesClass(MetricsApiResource::class)]
+#[UsesClass(TokenCreatedListener::class)]
 final class CreateEntryTest extends WebTestCase
 {
     use AuthenticatedClientTrait;

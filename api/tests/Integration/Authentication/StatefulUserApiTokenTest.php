@@ -5,6 +5,7 @@ namespace App\Tests\Integration\JWT;
 use App\Controller\TokenController;
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
+use App\EventListener\TokenCreatedListener;
 use App\Repository\UserRepository;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 #[CoversClass(TokenController::class)]
 #[UsesClass(UserRepository::class)]
+#[UsesClass(TokenCreatedListener::class)]
 final class StatefulUserApiTokenTest extends WebTestCase
 {
     public function testAuthenticatedUserCanRetrieveJWT(): void

@@ -4,9 +4,11 @@ namespace App\Tests\Integration\Authentication;
 
 use App\DataFixtures\UserFixtures;
 use App\Entity\UserRefreshToken;
+use App\EventListener\TokenCreatedListener;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 #[CoversClass(UserRefreshToken::class)]
 #[CoversClass(UserRepository::class)]
+#[UsesClass(TokenCreatedListener::class)]
 final class RefreshTokenTest extends WebTestCase
 {
     use ValidateJsonSchemaTrait;

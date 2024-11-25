@@ -6,6 +6,7 @@ use App\DataFixtures\UserFixtures;
 use App\Doctrine\CurrentUserExtension;
 use App\Entity\User;
 use App\EventListener\EntryWriteListener;
+use App\EventListener\TokenCreatedListener;
 use App\Notifier\EntrySnsNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[UsesClass(CurrentUserExtension::class)]
 #[UsesClass(EntryWriteListener::class)]
 #[UsesClass(EntrySnsNotifier::class)]
+#[UsesClass(TokenCreatedListener::class)]
 final class GetUserTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
