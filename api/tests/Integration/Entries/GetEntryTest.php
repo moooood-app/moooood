@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(EntrySnsNotifier::class)]
 #[UsesClass(MetricsApiResource::class)]
 #[UsesClass(TokenCreatedListener::class)]
-final class GetEntriesTest extends WebTestCase
+final class GetEntryTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
     use ValidateJsonSchemaTrait;
@@ -43,15 +43,33 @@ final class GetEntriesTest extends WebTestCase
     {
         $client = self::createClient();
 
-        $client->request(Request::METHOD_GET, '/api/entries');
+        /** @var UserRepository */
+        $repository = self::getContainer()->get(UserRepository::class);
+
+        /** @var User */
+        $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
+
+        /** @var Entry */
+        $entry = $user->getEntries()->first();
+
+        $client->request(Request::METHOD_GET, "/api/entries/{$entry->getId()}");
 
         self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testEntriesAreReturnedWhenUserAuthenticated(): void
+    public function testEntryIsReturnedWhenUserAuthenticated(): void
     {
         $client = self::createAuthenticatedClient(UserFixtures::FIRST_USER);
-        $client->request(Request::METHOD_GET, '/api/entries');
+
+        /** @var UserRepository */
+        $repository = self::getContainer()->get(UserRepository::class);
+
+        /** @var User */
+        $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
+
+        /** @var Entry */
+        $entry = $user->getEntries()->first();
+        $client->request(Request::METHOD_GET, "/api/entries/{$entry->getId()}");
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
 
@@ -61,8 +79,6 @@ final class GetEntriesTest extends WebTestCase
         /** @var object */
         $data = json_decode($content);
 
-        self::assertGreaterThan(0, $data->{'totalItems'} ?? 0);
-
-        self::assertJsonSchemaIsValid($data, 'entries/entries.json');
+        self::assertJsonSchemaIsValid($data, 'entries/entry.json');
     }
 }
