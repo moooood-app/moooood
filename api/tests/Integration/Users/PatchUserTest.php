@@ -37,7 +37,7 @@ final class PatchUserTest extends WebTestCase
         $client = self::createClient();
 
         /** @var User */
-        $user = self::getContainer()->get(UserRepository::class)->findOneByEmail(UserFixtures::FIRST_USER);
+        $user = self::getContainer()->get(UserRepository::class)->findOneBy(['email' => UserFixtures::FIRST_USER]);
 
         $client->request(Request::METHOD_PATCH, "/api/users/{$user->getId()}", [], [], [
             'CONTENT_TYPE' => 'application/merge-patch+json',

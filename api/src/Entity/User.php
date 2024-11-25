@@ -80,6 +80,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $apple = null;
 
     /**
+     * @var Collection<int, Part>
+     */
+    #[ORM\OneToMany(targetEntity: Part::class, mappedBy: 'user', fetch: 'EAGER', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private Collection $parts;
+
+    /**
      * @var Collection<int, Entry>
      */
     #[ORM\OneToMany(targetEntity: Entry::class, mappedBy: 'user', fetch: 'EXTRA_LAZY', orphanRemoval: true, cascade: ['persist', 'remove'])]
@@ -87,6 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        $this->parts = new ArrayCollection();
         $this->entries = new ArrayCollection();
     }
 
@@ -163,6 +170,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setApple(string $apple): static
     {
         $this->apple = $apple;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Part>
+     */
+    public function getParts(): Collection
+    {
+        return $this->parts;
+    }
+
+    public function addPart(Part $part): self
+    {
+        if (!$this->parts->contains($part)) {
+            $this->parts->add($part);
+        }
+
+        return $this;
+    }
+
+    public function removePart(Part $part): self
+    {
+        $this->parts->removeElement($part);
 
         return $this;
     }

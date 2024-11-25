@@ -14,7 +14,7 @@ final class Version20241124191030 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Create user refresh tokens table and correct drift';
     }
 
     public function up(Schema $schema): void

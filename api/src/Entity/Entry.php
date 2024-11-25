@@ -30,12 +30,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(),
-        new GetCollection(
-            normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_COLLECTION]],
-        ),
+        new GetCollection(normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_COLLECTION, Part::SERIALIZATION_GROUP_READ_ITEM]]),
         new Post(),
     ],
-    normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_ITEM]],
+    normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_ITEM, Part::SERIALIZATION_GROUP_READ_ITEM]],
     denormalizationContext: ['groups' => [self::SERIALIZATION_GROUP_WRITE]],
 )]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
@@ -45,16 +43,6 @@ class Entry
     public const SERIALIZATION_GROUP_WRITE = 'entry:write';
     public const SERIALIZATION_GROUP_READ_ITEM = 'entry:read:item';
     public const SERIALIZATION_GROUP_READ_COLLECTION = 'entry:read:collection';
-
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
-    #[Gedmo\Timestampable(on: 'create')]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
-    public \DateTimeImmutable $createdAt;
-
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
-    #[Gedmo\Timestampable]
-    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
-    public \DateTimeImmutable $updatedAt;
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -83,6 +71,20 @@ class Entry
     #[ORM\JoinColumn(nullable: false)]
     #[Gedmo\Blameable(on: 'create')]
     private User $user;
+
+    #[ORM\ManyToOne(targetEntity: Part::class)]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    private ?Part $part = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_READ_COLLECTION])]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
+    private \DateTimeImmutable $updatedAt;
 
     /**
      * @var Collection<int, EntryMetadata>
@@ -121,6 +123,42 @@ class Entry
     public function setUser(User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getPart(): ?Part
+    {
+        return $this->part;
+    }
+
+    public function setPart(?Part $part): static
+    {
+        $this->part = $part;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): \DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

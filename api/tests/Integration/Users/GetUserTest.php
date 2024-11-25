@@ -36,7 +36,7 @@ final class GetUserTest extends WebTestCase
         $client = self::createClient();
 
         /** @var User */
-        $user = self::getContainer()->get(UserRepository::class)->findOneByEmail(UserFixtures::FIRST_USER);
+        $user = self::getContainer()->get(UserRepository::class)->findOneBy(['email' => UserFixtures::FIRST_USER]);
 
         $client->request(Request::METHOD_GET, "/api/users/{$user->getId()}");
 
@@ -52,6 +52,8 @@ final class GetUserTest extends WebTestCase
 
         $client->request(Request::METHOD_GET, "/api/users/{$user->getId()}");
 
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
+
         /** @var non-empty-string */
         $content = $client->getResponse()->getContent();
 
@@ -66,8 +68,6 @@ final class GetUserTest extends WebTestCase
          * } $data
          */
         $data = json_decode($content);
-
-        self::assertResponseStatusCodeSame(Response::HTTP_OK);
 
         self::assertSame("/api/users/{$user->getId()}", $data->{'@id'});
         self::assertSame('/api/contexts/User', $data->{'@context'});

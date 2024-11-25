@@ -38,7 +38,7 @@ class EntryFixtures extends Fixture implements DependentFixtureInterface
         for ($d = 0; $d < 7; ++$d) {
             for ($i = 1; $i <= rand(1, 5); ++$i) {
                 $entry = $entryHelper->provideEntry($user);
-                $entry->createdAt = new \DateTimeImmutable("-{$d} days");
+                $entry->setCreatedAt(new \DateTimeImmutable("-{$d} days"));
                 $manager->persist($entry);
             }
         }

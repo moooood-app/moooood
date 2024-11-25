@@ -5,6 +5,7 @@ namespace App\Tests\Integration\Authentication;
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\EventListener\TokenCreatedListener;
+use App\Metadata\Metrics\MetricsApiResource;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(User::class)]
 #[CoversClass(UserRepository::class)]
 #[UsesClass(TokenCreatedListener::class)]
+#[UsesClass(MetricsApiResource::class)]
 final class LoginTest extends WebTestCase
 {
     use ValidateJsonSchemaTrait;

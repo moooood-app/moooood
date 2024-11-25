@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$ref": "#/definitions/User.jsonld-users.read.item",
+  "$ref": "#/definitions/Part.jsonld-part.read.item",
   "definitions": {
-    "User.jsonld-users.read.item": {
+    "Part.jsonld-part.read.item": {
       "type": "object",
       "description": "",
       "deprecated": false,
@@ -44,36 +44,33 @@
         },
         "id": {
           "readOnly": true,
-          "description": "The UUID of the user",
+          "description": "The UUID of the part",
           "type": "string",
           "format": "uuid"
         },
-        "firstName": {
-          "minLength": 2,
-          "maxLength": 50,
-          "description": "The first name of the user",
+        "name": {
+          "minLength": 1,
+          "maxLength": 100,
           "type": "string"
         },
-        "lastName": {
-          "minLength": 2,
-          "maxLength": 50,
-          "description": "The last name of the user",
-          "type": "string"
+        "colors": {
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
-        "email": {
-          "format": "email",
-          "description": "The email/username of the user",
-          "externalDocs": {
-            "url": "https://schema.org/email"
-          },
-          "type": "string"
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
         }
       },
-      "required": [
-        "firstName",
-        "lastName",
-        "email"
-      ],
       "additionalProperties": false
     }
   }
