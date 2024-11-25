@@ -32,11 +32,11 @@ class EntryMetadata
      * @var array<mixed>
      */
     #[ORM\Column(type: Types::JSON, options: ['jsonb' => true])]
-    #[Serializer\Groups([Entry::SERIALIZATION_GROUP_READ_ITEM])]
+    #[Serializer\Groups([Entry::SERIALIZATION_GROUP_READ_ITEM, Entry::SERIALIZATION_GROUP_READ_COLLECTION])]
     private array $metadata = [];
 
     #[ORM\Column(type: Types::STRING, enumType: Processor::class)]
-    #[Serializer\Groups([Entry::SERIALIZATION_GROUP_READ_ITEM])]
+    #[Serializer\Groups([Entry::SERIALIZATION_GROUP_READ_ITEM, Entry::SERIALIZATION_GROUP_READ_COLLECTION])]
     private Processor $processor;
 
     #[ORM\ManyToOne(inversedBy: 'metadata')]
