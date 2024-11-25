@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "definitions": {
-    "Entry.jsonld-entry.read.collection": {
+    "Entry.jsonld-entry.read.collection_part.read.item": {
       "type": "object",
       "description": "",
       "deprecated": false,
@@ -15,10 +15,6 @@
           "readOnly": true,
           "type": "string"
         },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
         "id": {
           "readOnly": true,
           "type": "string",
@@ -28,6 +24,20 @@
           "minLength": 10,
           "maxLength": 1000,
           "type": "string"
+        },
+        "part": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Part.jsonld-entry.read.collection_part.read.item"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
         },
         "sentiment": {
           "readOnly": true,
@@ -39,10 +49,18 @@
               "metadata": {
                 "type": "object",
                 "properties": {
-                  "compound": {"type": "number"},
-                  "positive": {"type": "number"},
-                  "neutral": {"type": "number"},
-                  "negative": {"type": "number"}
+                  "compound": {
+                    "type": "number"
+                  },
+                  "positive": {
+                    "type": "number"
+                  },
+                  "neutral": {
+                    "type": "number"
+                  },
+                  "negative": {
+                    "type": "number"
+                  }
                 }
               },
               "processor": {
@@ -63,8 +81,12 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "score": {"type": "number"},
-                    "keyword": {"type": "string"}
+                    "score": {
+                      "type": "number"
+                    },
+                    "keyword": {
+                      "type": "string"
+                    }
                   }
                 }
               },
@@ -77,14 +99,138 @@
       },
       "required": [
         "content"
-      ]
+      ],
+      "additionalProperties": false
+    },
+    "Part.jsonld-entry.read.collection_part.read.item": {
+      "type": "object",
+      "description": "",
+      "deprecated": false,
+      "properties": {
+        "@context": {
+          "readOnly": true,
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "@vocab": {
+                  "type": "string"
+                },
+                "hydra": {
+                  "type": "string",
+                  "enum": [
+                    "http://www.w3.org/ns/hydra/core#"
+                  ]
+                }
+              },
+              "required": [
+                "@vocab",
+                "hydra"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "id": {
+          "readOnly": true,
+          "description": "The UUID of the part",
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "minLength": 1,
+          "maxLength": 100,
+          "type": "string"
+        },
+        "colors": {
+          "minItems": 5,
+          "maxItems": 5,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    "EntryMetadata.jsonld-entry.read.collection_part.read.item": {
+      "type": "object",
+      "description": "",
+      "deprecated": false,
+      "properties": {
+        "@context": {
+          "readOnly": true,
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "@vocab": {
+                  "type": "string"
+                },
+                "hydra": {
+                  "type": "string",
+                  "enum": [
+                    "http://www.w3.org/ns/hydra/core#"
+                  ]
+                }
+              },
+              "required": [
+                "@vocab",
+                "hydra"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "metadata": {},
+        "processor": {
+          "type": "string",
+          "enum": [
+            "sentiment",
+            "keywords",
+            "complexity",
+            "summary"
+          ]
+        }
+      },
+      "additionalProperties": false
     }
   },
   "properties": {
     "member": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/Entry.jsonld-entry.read.collection"
+        "$ref": "#/definitions/Entry.jsonld-entry.read.collection_part.read.item"
       }
     },
     "totalItems": {
@@ -125,7 +271,8 @@
         "last": "string",
         "previous": "string",
         "next": "string"
-      }
+      },
+      "additionalProperties": false
     },
     "search": {
       "type": "object",
@@ -159,10 +306,12 @@
               "required": {
                 "type": "boolean"
               }
-            }
+            },
+            "additionalProperties": false
           }
         }
-      }
+      },
+      "additionalProperties": false
     }
   },
   "required": [

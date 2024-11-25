@@ -61,6 +61,8 @@ final class CreateEntryTest extends WebTestCase
             'CONTENT_TYPE' => 'application/ld+json',
         ], $jsonPayload);
 
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+
         /** @var non-empty-string */
         $content = $client->getResponse()->getContent();
 
@@ -84,8 +86,6 @@ final class CreateEntryTest extends WebTestCase
         self::assertSame([], $data['metadata']);
         self::assertNotNull($data['createdAt']);
         self::assertNotNull($data['updatedAt']);
-
-        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         if (!$client->getProfile() instanceof Profile) {
             self::fail('Profiler not enabled');

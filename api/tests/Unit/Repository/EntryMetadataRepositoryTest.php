@@ -32,7 +32,7 @@ final class EntryMetadataRepositoryTest extends KernelTestCase
         $userRepository = $container->get(UserRepository::class);
 
         /** @var User */
-        $user = $userRepository->findOneByEmail(UserFixtures::FIRST_USER);
+        $user = $userRepository->findOneBy(['email' => UserFixtures::FIRST_USER]);
 
         $entry = new Entry();
         $entry

@@ -26,7 +26,7 @@ final class StatefulUserApiTokenTest extends WebTestCase
         $userRepository = self::getContainer()->get(UserRepository::class);
 
         /** @var User */
-        $testUser = $userRepository->findOneByEmail(UserFixtures::FIRST_USER);
+        $testUser = $userRepository->findOneBy(['email' => UserFixtures::FIRST_USER]);
 
         $client->loginUser($testUser);
 

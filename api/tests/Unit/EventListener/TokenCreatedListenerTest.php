@@ -28,7 +28,7 @@ final class TokenCreatedListenerTest extends KernelTestCase
         $repository = self::getContainer()->get(UserRepository::class);
 
         /** @var User */
-        $user = $repository->findOneByEmail(UserFixtures::FIRST_USER);
+        $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
         $security = $this->createMock(Security::class);
         $security->expects(self::once())
             ->method('getUser')

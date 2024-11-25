@@ -18,11 +18,6 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 #[ORM\Index(name: 'idx_entry_metatada_created_at', columns: ['created_at'])]
 class EntryMetadata
 {
-    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
-    #[Gedmo\Timestampable(on: 'create')]
-    #[Serializer\Groups([Entry::SERIALIZATION_GROUP_READ_ITEM])]
-    public \DateTimeImmutable $createdAt;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -42,6 +37,11 @@ class EntryMetadata
     #[ORM\ManyToOne(inversedBy: 'metadata')]
     #[ORM\JoinColumn(nullable: false)]
     private Entry $entry;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    #[Serializer\Groups([Entry::SERIALIZATION_GROUP_READ_ITEM])]
+    private \DateTimeImmutable $createdAt;
 
     public function getId(): int
     {
@@ -86,6 +86,18 @@ class EntryMetadata
     public function setEntry(Entry $entry): static
     {
         $this->entry = $entry;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
