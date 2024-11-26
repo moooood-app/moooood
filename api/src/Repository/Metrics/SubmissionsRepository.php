@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
+use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\Submissions;
 use App\Enum\Metrics\GroupingCriteria;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -38,6 +39,11 @@ class SubmissionsRepository extends AbstractMetricsRepository
             ->orderBy($grouping, 'ASC')
         ;
 
+        return $builder;
+    }
+
+    protected function addSelects(QueryBuilder $builder): QueryBuilder
+    {
         return $builder;
     }
 

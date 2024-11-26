@@ -5,14 +5,14 @@ meta {
 }
 
 get {
-  url: https://{{url}}/api/metrics/sentiment?grouping=week&from=2024-11-05
+  url: https://{{url}}/api/metrics/sentiment?grouping=day&groupByParts=1
   body: none
   auth: none
 }
 
 query {
-  grouping: week
-  from: 2024-11-05
+  grouping: day
+  groupByParts: 1
 }
 
 headers {

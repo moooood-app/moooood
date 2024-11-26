@@ -35,8 +35,6 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
         $this->addDateFilters($builder);
 
         $wrapper
-            ->addSelect('aggregated_keywords.id')
-            ->addSelect('aggregated_keywords.grouping')
             ->addSelect(<<<'SQL'
                     jsonb_object_agg(
                         keyword,
@@ -47,8 +45,12 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
                     ) AS keywords
                 SQL)
             ->from('('.$builder->getSQL().') AS aggregated_keywords')
-            ->groupBy('aggregated_keywords.id', 'aggregated_keywords.grouping')
         ;
+
+        foreach (['id', 'grouping', 'part_id', 'part_name', 'part_colors'] as $column) {
+            $wrapper->addSelect("aggregated_keywords.{$column}");
+            $wrapper->addGroupBy("aggregated_keywords.{$column}");
+        }
 
         return $wrapper;
     }
