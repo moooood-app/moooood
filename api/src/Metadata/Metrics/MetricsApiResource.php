@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Metadata\Metrics;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Entity\Part;

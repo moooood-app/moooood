@@ -16,8 +16,7 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 #[MetricsApiResource(metricsType: Processor::COMPLEXITY)]
 class Complexity implements MetricsIdentifierInterface
 {
-    use MetricsIdentifierTrait;
-    use PartTrait;
+    use MetricsPropertiesTrait;
 
     #[ORM\Column(type: Types::FLOAT, precision: 6, scale: 2)]
     #[ApiProperty(description: 'The SMOG Index (Simple Measure of Gobbledygook) estimates the years of education needed to understand a text. Based on the number of complex words (three or more syllables).')]

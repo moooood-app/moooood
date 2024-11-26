@@ -7,6 +7,14 @@
       "description": "",
       "deprecated": false,
       "properties": {
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
         "submissions": {
           "description": "The number of submissions",
           "type": "integer"
@@ -23,30 +31,68 @@
           "description": "The total number of sentences in all submissions",
           "type": "integer"
         },
-        "id": {
-          "description": "The unique identifier of the metrics. It could the ID of the entry if grouped by entry, or the formatted date if grouped by date.",
+        "date": {
+          "description": "The first day of the period covered by the metrics.",
           "type": "string"
         },
-        "grouping": {
-          "description": "The grouping criteria used to group the metrics.",
-          "type": "string",
-          "enum": [
-            "entry",
-            "hour",
-            "day",
-            "week",
-            "month"
+        "part": {
+          "description": "The part this entry belongs to. Null = \"Self\" entry",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Part.jsonld-entry.read.item_part.read.item"
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       },
       "additionalProperties": false,
       "required": [
+        "@id",
+        "@type",
         "submissions",
         "characterCount",
         "wordCount",
         "sentenceCount",
-        "id",
-        "grouping"
+        "date",
+        "part"
+      ]
+    },
+    "Part.jsonld-entry.read.item_part.read.item": {
+      "type": "object",
+      "description": "",
+      "deprecated": false,
+      "properties": {
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "maxLength": 100,
+          "type": "string"
+        },
+        "colors": {
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "@id",
+        "@type",
+        "name",
+        "colors"
       ]
     }
   },

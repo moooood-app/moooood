@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
-use App\Enum\Metrics\GroupingCriteria;
+use App\Dto\Metrics\MetricsQuery;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
@@ -17,27 +17,21 @@ use Doctrine\DBAL\Query\QueryBuilder;
  */
 abstract class AbstractProcessorMetricsRepository extends AbstractMetricsRepository
 {
-    protected function getQueryBuilder(GroupingCriteria $groupingCriteria): QueryBuilder
+    protected function getQueryBuilder(MetricsQuery $query): QueryBuilder
     {
         $builder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $grouping = $groupingCriteria->getSelectExpression(self::ENTRY_ALIAS);
+        $dateSelector = $query->groupingCriteria->getDateSelector(self::ENTRY_ALIAS);
         $builder
-            ->addSelect("{$grouping} as id")
-            ->addSelect("'{$groupingCriteria->value}' as grouping")
+            ->select("{$dateSelector} as date")
             ->from('entries_metadata', 'em')
             ->leftJoin('em', 'entries', self::ENTRY_ALIAS, \sprintf('em.entry_id = %s.id', self::ENTRY_ALIAS))
             ->where(\sprintf('%s.user_id = :%s', self::ENTRY_ALIAS, self::USER_PARAMETER))
             ->andWhere(\sprintf('processor = :%s', self::PROCESSOR_PARAMETER))
-            ->groupBy($grouping)
-            ->orderBy($grouping, 'ASC')
+            ->groupBy($dateSelector)
+            ->orderBy($dateSelector, 'ASC')
         ;
 
         return $builder;
-    }
-
-    protected function shouldAddDateFilters(): bool
-    {
-        return true;
     }
 }

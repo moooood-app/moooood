@@ -7,7 +7,6 @@ namespace App\Repository\Metrics;
 use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Part;
 use App\Entity\User;
-use App\Enum\Metrics\GroupingCriteria;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
@@ -43,16 +42,17 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
 
         $builder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $builder = $this->getQueryBuilder($query->groupingCriteria);
+        $builder = $this->getQueryBuilder($query);
 
+        $doctrineIdentifierForPart = "'none'";
 
         if ($query->groupByParts) {
             $builder
-                ->addSelect(sprintf('%s.id as part_id', self::PART_ALIAS))
-                ->addSelect(sprintf('%s.name as part_name', self::PART_ALIAS))
-                ->addSelect(sprintf('%s.colors as part_colors', self::PART_ALIAS))
+                ->addSelect(\sprintf('%s.id as part_id', self::PART_ALIAS))
+                ->addSelect(\sprintf('%s.name as part_name', self::PART_ALIAS))
+                ->addSelect(\sprintf('%s.colors as part_colors', self::PART_ALIAS))
                 ->leftJoin(self::ENTRY_ALIAS, 'parts', self::PART_ALIAS, \sprintf('%s.part_id = %s.id', self::ENTRY_ALIAS, self::PART_ALIAS))
-                ->addGroupBy(sprintf('%s.id', self::PART_ALIAS))
+                ->addGroupBy(\sprintf('%s.id', self::PART_ALIAS))
             ;
 
             $mapping->addJoinedEntityFromClassMetadata(
@@ -66,14 +66,21 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
                     'colors' => 'part_colors',
                 ],
             );
+
+            $doctrineIdentifierForPart = \sprintf("COALESCE(%s.id::text, 'none')", self::PART_ALIAS);
         }
 
-        $builder->addSelect(self::generateDoctrineIdentifier($query));
+        $builder->addSelect(\sprintf(
+            "CONCAT(%s, '-%s-', %s) as id",
+            $query->groupingCriteria->getDateSelector(self::ENTRY_ALIAS),
+            $query->groupingCriteria->value,
+            $doctrineIdentifierForPart,
+        ));
 
-        $builder = $this->addSelects($builder);
+        $qb = $this->addSelects($builder, $query);
 
-        if ($this->shouldAddDateFilters()) {
-            $this->addDateFilters($builder);
+        if ($qb === $builder) {
+            $this->addDateFilters($qb);
         }
 
         $parameters = [
@@ -87,34 +94,15 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
         }
 
         return $entityManager // @phpstan-ignore-line
-            ->createNativeQuery($builder->getSQL(), $mapping)
+            ->createNativeQuery($qb->getSQL(), $mapping)
             ->setParameters($parameters)
             ->getResult()
         ;
     }
 
-    static protected function generateDoctrineIdentifier(MetricsQuery $query)
-    {
-        $doctrineIdentifierForPart = "'none'";
+    abstract protected function getQueryBuilder(MetricsQuery $query): QueryBuilder;
 
-        if ($query->groupByParts) {
-            $doctrineIdentifierForPart = sprintf("COALESCE(%s.id::text, 'none')", self::PART_ALIAS);
-        }
-
-        return \sprintf(
-            "CONCAT(%s, '-%s-', %s) as doctrine_identifier",
-            $query->groupingCriteria->getSelectExpression(self::ENTRY_ALIAS),
-            $query->groupingCriteria->value,
-            $doctrineIdentifierForPart,
-        );
-    }
-
-    abstract protected function getQueryBuilder(GroupingCriteria $groupingCriteria): QueryBuilder;
-
-    abstract protected function shouldAddDateFilters(): bool;
-
-    abstract protected function addSelects(QueryBuilder $builder): QueryBuilder;
-
+    abstract protected function addSelects(QueryBuilder $builder, MetricsQuery $query): QueryBuilder;
 
     protected function addDateFilters(QueryBuilder $builder): void
     {

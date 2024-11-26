@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
+use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\Complexity;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,7 +20,7 @@ class ComplexityRepository extends AbstractProcessorMetricsRepository
         parent::__construct($registry, Complexity::class);
     }
 
-    protected function addSelects(QueryBuilder $builder): QueryBuilder
+    protected function addSelects(QueryBuilder $builder, MetricsQuery $query): QueryBuilder
     {
         $builder
             ->addSelect("AVG((metadata->>'smog_index')::float) as smog_index")

@@ -16,8 +16,7 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 #[MetricsApiResource(metricsType: Processor::KEYWORDS)]
 class Keywords implements MetricsIdentifierInterface
 {
-    use MetricsIdentifierTrait;
-    use PartTrait;
+    use MetricsPropertiesTrait;
 
     /**
      * @var list<array{average_score: float, count: int}>
