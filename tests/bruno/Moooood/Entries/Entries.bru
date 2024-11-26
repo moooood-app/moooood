@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: https://{{url}}/api/entries?createdAt[after]=2024-11-01
+  url: https://{{url}}/api/entries?createdAt[after]=2024-11-01&part=/api/parts/019361c8-50dc-70e3-98e6-39959a47efc3
   body: none
   auth: none
 }
 
 query {
   createdAt[after]: 2024-11-01
+  part: /api/parts/019361c8-50dc-70e3-98e6-39959a47efc3
   ~itemsPerPage: 1
 }
 

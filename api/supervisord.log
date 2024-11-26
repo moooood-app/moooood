@@ -1,0 +1,117 @@
+2024-11-25 16:50:36,079 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-11-25 16:50:36,083 INFO supervisord started with pid 1
+2024-11-25 16:50:37,105 INFO spawned: 'post-processing_0' with pid 8
+2024-11-25 16:50:37,127 INFO spawned: 'post-processing_1' with pid 9
+2024-11-25 16:50:38,141 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 16:50:38,142 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 16:50:41,527 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 16:50:41,583 INFO spawned: 'post-processing_0' with pid 14
+2024-11-25 16:50:41,644 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 16:50:42,035 INFO spawned: 'post-processing_1' with pid 17
+2024-11-25 16:50:42,094 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 16:50:42,501 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 16:50:43,506 INFO spawned: 'post-processing_0' with pid 20
+2024-11-25 16:50:43,511 INFO spawned: 'post-processing_1' with pid 21
+2024-11-25 16:50:45,210 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 16:50:45,217 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 17:07:20,558 WARN received SIGTERM indicating exit request
+2024-11-25 17:07:20,571 INFO waiting for post-processing_0, post-processing_1 to die
+2024-11-25 17:07:21,603 WARN stopped: post-processing_0 (terminated by SIGTERM)
+2024-11-25 17:07:21,608 WARN stopped: post-processing_1 (terminated by SIGTERM)
+2024-11-25 19:31:28,855 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-11-25 19:31:28,862 INFO supervisord started with pid 1
+2024-11-25 19:31:29,893 INFO spawned: 'post-processing_0' with pid 7
+2024-11-25 19:31:29,904 INFO spawned: 'post-processing_1' with pid 8
+2024-11-25 19:31:30,910 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:31:30,913 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:31:37,720 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 19:31:37,860 INFO spawned: 'post-processing_1' with pid 13
+2024-11-25 19:31:37,978 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 19:31:38,985 INFO spawned: 'post-processing_0' with pid 16
+2024-11-25 19:31:38,997 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:31:39,816 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 19:31:40,750 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:31:40,759 INFO spawned: 'post-processing_1' with pid 19
+2024-11-25 19:31:41,850 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:32:10,996 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 19:32:10,998 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 19:32:12,010 INFO spawned: 'post-processing_0' with pid 22
+2024-11-25 19:32:12,012 INFO spawned: 'post-processing_1' with pid 23
+2024-11-25 19:32:13,044 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:32:13,091 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:32:15,160 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 19:32:16,216 INFO spawned: 'post-processing_1' with pid 28
+2024-11-25 19:32:17,910 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:32:40,166 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 19:32:41,212 INFO spawned: 'post-processing_0' with pid 31
+2024-11-25 19:32:41,262 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 19:32:41,741 INFO spawned: 'post-processing_1' with pid 34
+2024-11-25 19:32:42,241 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:32:43,261 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 19:32:43,266 WARN received SIGTERM indicating exit request
+2024-11-25 19:32:43,281 INFO waiting for post-processing_0, post-processing_1 to die
+2024-11-25 19:32:43,285 WARN stopped: post-processing_1 (terminated by SIGTERM)
+2024-11-25 19:32:43,298 WARN stopped: post-processing_0 (terminated by SIGTERM)
+2024-11-25 21:09:02,182 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-11-25 21:09:02,190 INFO supervisord started with pid 1
+2024-11-25 21:09:03,196 INFO spawned: 'post-processing_0' with pid 7
+2024-11-25 21:09:03,197 INFO spawned: 'post-processing_1' with pid 8
+2024-11-25 21:09:04,207 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 21:09:04,209 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 21:09:10,730 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 21:09:10,773 INFO spawned: 'post-processing_0' with pid 13
+2024-11-25 21:09:10,866 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 21:09:11,636 INFO spawned: 'post-processing_1' with pid 16
+2024-11-25 21:09:11,763 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 21:09:13,513 INFO spawned: 'post-processing_0' with pid 19
+2024-11-25 21:09:13,534 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 21:09:13,539 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 21:09:14,451 INFO spawned: 'post-processing_1' with pid 22
+2024-11-25 21:09:15,232 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 21:09:16,246 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 22:09:16,322 INFO exited: post-processing_0 (exit status 0; expected)
+2024-11-25 22:09:17,095 INFO spawned: 'post-processing_0' with pid 25
+2024-11-25 22:09:17,097 INFO exited: post-processing_1 (exit status 0; expected)
+2024-11-25 22:09:18,101 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 22:09:18,103 INFO spawned: 'post-processing_1' with pid 28
+2024-11-25 22:09:19,107 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 22:14:58,292 WARN received SIGTERM indicating exit request
+2024-11-25 22:14:58,315 INFO waiting for post-processing_0, post-processing_1 to die
+2024-11-25 22:14:59,330 WARN stopped: post-processing_0 (terminated by SIGTERM)
+2024-11-25 22:14:59,331 WARN stopped: post-processing_1 (terminated by SIGTERM)
+2024-11-25 23:33:05,897 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-11-25 23:33:05,911 INFO supervisord started with pid 1
+2024-11-25 23:33:06,931 INFO spawned: 'post-processing_0' with pid 7
+2024-11-25 23:33:06,939 INFO spawned: 'post-processing_1' with pid 8
+2024-11-25 23:33:07,947 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 23:33:07,947 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-25 23:33:10,927 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 23:33:10,942 INFO spawned: 'post-processing_1' with pid 13
+2024-11-25 23:33:10,952 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 23:33:11,421 INFO spawned: 'post-processing_0' with pid 16
+2024-11-25 23:33:11,465 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 23:33:12,232 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 23:33:13,241 INFO spawned: 'post-processing_0' with pid 19
+2024-11-25 23:33:13,247 INFO spawned: 'post-processing_1' with pid 20
+2024-11-25 23:33:13,724 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-25 23:33:13,727 INFO gave up: post-processing_1 entered FATAL state, too many start retries too quickly
+2024-11-25 23:33:13,734 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-25 23:33:14,738 INFO gave up: post-processing_0 entered FATAL state, too many start retries too quickly
+2024-11-26 03:52:59,438 WARN received SIGTERM indicating exit request
+2024-11-26 03:53:14,060 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-11-26 03:53:14,068 INFO supervisord started with pid 1
+2024-11-26 03:53:15,167 INFO spawned: 'post-processing_0' with pid 6
+2024-11-26 03:53:15,199 INFO spawned: 'post-processing_1' with pid 7
+2024-11-26 03:53:16,217 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-26 03:53:16,222 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-26 03:53:21,623 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-26 03:53:21,687 INFO spawned: 'post-processing_0' with pid 12
+2024-11-26 03:53:21,745 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-26 03:53:22,140 INFO spawned: 'post-processing_1' with pid 15
+2024-11-26 03:53:22,188 WARN exited: post-processing_0 (exit status 1; not expected)
+2024-11-26 03:53:23,667 INFO spawned: 'post-processing_0' with pid 18
+2024-11-26 03:53:23,668 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-26 03:53:23,669 WARN exited: post-processing_1 (exit status 1; not expected)
+2024-11-26 03:53:24,675 INFO success: post-processing_0 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-11-26 03:53:24,684 INFO spawned: 'post-processing_1' with pid 21
+2024-11-26 03:53:25,870 INFO success: post-processing_1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

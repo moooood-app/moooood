@@ -33,13 +33,11 @@ abstract class AbstractProcessorMetricsRepository extends AbstractMetricsReposit
             ->orderBy($grouping, 'ASC')
         ;
 
-        return $this->addSelects($builder);
+        return $builder;
     }
 
     protected function shouldAddDateFilters(): bool
     {
         return true;
     }
-
-    abstract protected function addSelects(QueryBuilder $builder): QueryBuilder;
 }

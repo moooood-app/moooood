@@ -7,12 +7,13 @@ use App\Enum\Processor;
 use App\Metadata\Metrics\MetricsApiResource;
 use Symfony\Component\HttpFoundation\InputBag;
 
-class MetricsQuery
+final class MetricsQuery
 {
     private function __construct(
         public readonly GroupingCriteria $groupingCriteria,
         public readonly \DateTimeImmutable $dateFrom,
         public ?Processor $processor = null,
+        public bool $groupByParts = false,
     ) {
     }
 
@@ -24,6 +25,10 @@ class MetricsQuery
         /** @var string */
         $grouping = $query->get(MetricsApiResource::GROUPING_FILTER_KEY);
         $groupingCriteria = GroupingCriteria::from($grouping);
+
+        /** @var string */
+        $groupByParts = $query->get(MetricsApiResource::GROUP_BY_PARTS_FILTER_KEY);
+        $groupByParts = \in_array($groupByParts, [true, 'true', '1'], true);
 
         /** @var string */
         $dateFrom = $query->get(MetricsApiResource::FROM_DATE_FILTER_KEY) ?? 'now';
@@ -54,6 +59,7 @@ class MetricsQuery
         return new self(
             groupingCriteria: $groupingCriteria,
             dateFrom: $dateFrom,
+            groupByParts: $groupByParts,
         );
     }
 
