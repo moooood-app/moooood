@@ -15,8 +15,7 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 #[MetricsApiResource(metricsType: 'submissions')]
 class Submissions implements MetricsIdentifierInterface
 {
-    use MetricsIdentifierTrait;
-    use PartTrait;
+    use MetricsPropertiesTrait;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[ApiProperty(required: true, description: 'The number of submissions')]

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
+use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\Sentiment;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,7 +20,7 @@ class SentimentRepository extends AbstractProcessorMetricsRepository
         parent::__construct($registry, Sentiment::class);
     }
 
-    protected function addSelects(QueryBuilder $builder): QueryBuilder
+    protected function addSelects(QueryBuilder $builder, MetricsQuery $query): QueryBuilder
     {
         $builder
             ->addSelect("AVG((metadata->>'compound')::float) as compound")

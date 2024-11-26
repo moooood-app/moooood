@@ -7,6 +7,14 @@
       "description": "Get complexity metrics for the given grouping criteria",
       "deprecated": false,
       "properties": {
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
         "smogIndex": {
           "description": "The SMOG Index (Simple Measure of Gobbledygook) estimates the years of education needed to understand a text. Based on the number of complex words (three or more syllables).",
           "type": "number"
@@ -47,24 +55,26 @@
           "description": "The Dale-Chall Readability Score measures readability by considering the percentage of words not on a list of commonly understood words.",
           "type": "number"
         },
-        "id": {
-          "description": "The unique identifier of the metrics. It could the ID of the entry if grouped by entry, or the formatted date if grouped by date.",
+        "date": {
+          "description": "The first day of the period covered by the metrics.",
           "type": "string"
         },
-        "grouping": {
-          "description": "The grouping criteria used to group the metrics.",
-          "type": "string",
-          "enum": [
-            "entry",
-            "hour",
-            "day",
-            "week",
-            "month"
+        "part": {
+          "description": "The part this entry belongs to. Null = \"Self\" entry",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Part.jsonld-entry.read.item_part.read.item"
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       },
       "additionalProperties": false,
       "required": [
+        "@id",
+        "@type",
         "smogIndex",
         "complexityRating",
         "gunningFogIndex",
@@ -75,8 +85,44 @@
         "fleschKincaidGradeLevel",
         "automatedReadabilityIndex",
         "daleChallReadabilityScore",
-        "id",
-        "grouping"
+        "date",
+        "part"
+      ]
+    },
+    "Part.jsonld-entry.read.item_part.read.item": {
+      "type": "object",
+      "description": "",
+      "deprecated": false,
+      "properties": {
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "maxLength": 100,
+          "type": "string"
+        },
+        "colors": {
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "@id",
+        "@type",
+        "name",
+        "colors"
       ]
     }
   },

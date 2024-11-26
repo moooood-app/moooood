@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity\Metrics;
 
-use App\Enum\Metrics\GroupingCriteria;
+use App\Entity\Part;
 
 interface MetricsIdentifierInterface
 {
     public function getId(): string;
 
-    public function getGrouping(): GroupingCriteria;
+    public function getDate(): \DateTimeImmutable;
+
+    public function getPart(): ?Part;
 }

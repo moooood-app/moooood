@@ -6,7 +6,6 @@ namespace App\Repository\Metrics;
 
 use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\Submissions;
-use App\Enum\Metrics\GroupingCriteria;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,34 +20,28 @@ class SubmissionsRepository extends AbstractMetricsRepository
         parent::__construct($registry, Submissions::class);
     }
 
-    protected function getQueryBuilder(GroupingCriteria $groupingCriteria): QueryBuilder
+    protected function getQueryBuilder(MetricsQuery $query): QueryBuilder
     {
         $builder = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $grouping = $groupingCriteria->getSelectExpression(self::ENTRY_ALIAS);
+        $dateSelector = $query->groupingCriteria->getDateSelector(self::ENTRY_ALIAS);
         $builder
-            ->addSelect("{$grouping} as id")
-            ->addSelect("'{$groupingCriteria->value}' as grouping")
+            ->addSelect("{$dateSelector} as date")
             ->addSelect('COUNT(*) as submissions')
             ->addSelect("SUM(LENGTH(REGEXP_REPLACE(content, '\\s+', '', 'g'))) AS character_count")
             ->addSelect("SUM(array_length(regexp_split_to_array(content, '\\s+'), 1)) AS word_count")
             ->addSelect("SUM(array_length(regexp_split_to_array(content, '[.!?]'), 1)) AS sentence_count")
             ->from('entries', self::ENTRY_ALIAS)
             ->where(\sprintf('%s.user_id = :user', self::ENTRY_ALIAS))
-            ->groupBy($grouping)
-            ->orderBy($grouping, 'ASC')
+            ->groupBy($dateSelector)
+            ->orderBy($dateSelector, 'ASC')
         ;
 
         return $builder;
     }
 
-    protected function addSelects(QueryBuilder $builder): QueryBuilder
+    protected function addSelects(QueryBuilder $builder, MetricsQuery $query): QueryBuilder
     {
         return $builder;
-    }
-
-    protected function shouldAddDateFilters(): bool
-    {
-        return true;
     }
 }

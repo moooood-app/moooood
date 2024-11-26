@@ -8,8 +8,8 @@ use ApiPlatform\Metadata\HttpOperation;
 use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\Metrics\Sentiment;
+use App\Entity\Part;
 use App\Entity\User;
-use App\Enum\Metrics\GroupingCriteria;
 use App\Enum\Processor;
 use App\Metadata\Metrics\MetricsApiResource;
 use App\Repository\Metrics\MetricsRepositoryInterface;
@@ -89,7 +89,6 @@ final class MetricsProviderTest extends TestCase
         // Assert
         self::assertCount(1, $result);
         self::assertSame('id', $result[0]->getId());
-        self::assertSame(GroupingCriteria::DAY, $result[0]->getGrouping());
     }
 
     public function testProvideThrowsExceptionForInvalidRepository(): void
@@ -198,9 +197,14 @@ final class MetricsProviderTest extends TestCase
                         return 'id';
                     }
 
-                    public function getGrouping(): GroupingCriteria
+                    public function getDate(): \DateTimeImmutable
                     {
-                        return GroupingCriteria::DAY;
+                        return new \DateTimeImmutable();
+                    }
+
+                    public function getPart(): ?Part
+                    {
+                        return null;
                     }
                 }];
             }

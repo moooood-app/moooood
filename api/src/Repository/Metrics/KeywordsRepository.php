@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
+use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\Keywords;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,7 +20,7 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
         parent::__construct($registry, Keywords::class);
     }
 
-    protected function addSelects(QueryBuilder $builder): QueryBuilder
+    protected function addSelects(QueryBuilder $builder, MetricsQuery $query): QueryBuilder
     {
         $wrapper = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
@@ -47,16 +48,15 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
             ->from('('.$builder->getSQL().') AS aggregated_keywords')
         ;
 
-        foreach (['id', 'grouping', 'part_id', 'part_name', 'part_colors'] as $column) {
+        $extraProperties = ['id', 'date'];
+        if ($query->groupByParts) {
+            $extraProperties = array_merge($extraProperties, ['part_id', 'part_name', 'part_colors']);
+        }
+        foreach ($extraProperties as $column) {
             $wrapper->addSelect("aggregated_keywords.{$column}");
             $wrapper->addGroupBy("aggregated_keywords.{$column}");
         }
 
         return $wrapper;
-    }
-
-    protected function shouldAddDateFilters(): bool
-    {
-        return false;
     }
 }

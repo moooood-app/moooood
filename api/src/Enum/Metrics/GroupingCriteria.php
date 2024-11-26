@@ -12,14 +12,14 @@ enum GroupingCriteria: string
     case WEEK = 'week';
     case MONTH = 'month';
 
-    public function getSelectExpression(string $alias): string
+    public function getDateSelector(string $alias): string
     {
         return match ($this) {
             self::ENTRY => "{$alias}.id",
             self::HOUR => "TO_CHAR({$alias}.created_at, 'YYYY-MM-DD HH24:00:00')",
-            self::DAY => "TO_CHAR({$alias}.created_at, 'YYYY-MM-DD')",
-            self::WEEK => "TO_CHAR({$alias}.created_at, 'IYYY-IW')",
-            self::MONTH => "TO_CHAR({$alias}.created_at, 'YYYY-MM')",
+            self::DAY => "DATE_TRUNC('day', {$alias}.created_at)",
+            self::WEEK => "DATE_TRUNC('week', {$alias}.created_at + INTERVAL '1 day')",
+            self::MONTH => "DATE_TRUNC('month', {$alias}.created_at)",
         };
     }
 }

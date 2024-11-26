@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity\Metrics;
 
 use ApiPlatform\Metadata\ApiProperty;
-use App\Entity\Part;
 use App\Enum\Processor;
 use App\Metadata\Metrics\MetricsApiResource;
 use App\Repository\Metrics\SentimentRepository;
@@ -17,8 +16,7 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 #[MetricsApiResource(metricsType: Processor::SENTIMENT)]
 class Sentiment implements MetricsIdentifierInterface
 {
-    use MetricsIdentifierTrait;
-    use PartTrait;
+    use MetricsPropertiesTrait;
 
     #[ORM\Column(type: Types::FLOAT, precision: 6, scale: 2)]
     #[ApiProperty(description: 'The positive sentiment score, from 0 to 1.')]
