@@ -1,13 +1,13 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\DataFixtures\Helpers;
 
 use App\DataFixtures\Helpers\Metadata\MetadataHelperInterface;
 use App\Entity\Entry;
 use App\Entity\User;
 use Faker\Generator;
 
-final class EntryHelper
+final class EntryFixturesHelper
 {
     /**
      * @var MetadataHelperInterface[]
@@ -34,7 +34,7 @@ final class EntryHelper
         ;
 
         foreach ($this->metadataHelpers as $metadataHelper) {
-            $metadata = $metadataHelper->provideMetadata($entry);
+            $metadata = $metadataHelper->provideMetadata();
             $entry->addMetadata($metadata);
         }
 

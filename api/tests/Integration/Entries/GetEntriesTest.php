@@ -2,6 +2,7 @@
 
 namespace App\Tests\Integration\Entries;
 
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\DataFixtures\UserFixtures;
 use App\Doctrine\CurrentUserExtension;
 use App\Entity\Entry;
@@ -62,6 +63,7 @@ final class GetEntriesTest extends WebTestCase
          * @var object{
          *  search: object{template: non-empty-string},
          *  totalItems: int,
+         *  member: list<object{'@id': string}>,
          * }
          */
         $data = json_decode($content);
@@ -74,5 +76,23 @@ final class GetEntriesTest extends WebTestCase
             '/api/entries{?createdAt[before],createdAt[strictly_before],createdAt[after],createdAt[strictly_after],part,part[]}',
             $data->search->template,
         );
+
+        /** @var UserRepository */
+        $repository = self::getContainer()->get(UserRepository::class);
+
+        /** @var User */
+        $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
+
+        self::assertSame($user->getEntries()->count(), $data->totalItems);
+
+        /** @var IriConverterInterface */
+        $iriConverter = self::getContainer()->get(IriConverterInterface::class);
+        foreach ($data->member as $entry) {
+            /** @var string */
+            $iri = $entry->{'@id'};
+            /** @var Entry */
+            $e = $iriConverter->getResourceFromIri($iri);
+            self::assertTrue($user->getId()->equals($e->getUser()->getId()));
+        }
     }
 }

@@ -59,7 +59,7 @@ final class PatchPartTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testPartIsCreatedWhenUserAuthenticated(): void
+    public function testPartIsUpdatedWhenUserAuthenticated(): void
     {
         $client = self::createAuthenticatedClient(UserFixtures::FIRST_USER);
         $client->enableProfiler();
@@ -110,5 +110,26 @@ final class PatchPartTest extends WebTestCase
         self::assertNotNull($data->updatedAt);
 
         self::assertJsonSchemaIsValid($data, 'parts/part.json');
+    }
+
+    public function testAUserCanOnlyUpdateTheirOwnParts(): void
+    {
+        $client = self::createAuthenticatedClient(UserFixtures::HACKER_USER);
+        $client->enableProfiler();
+
+        /** @var UserRepository */
+        $repository = self::getContainer()->get(UserRepository::class);
+
+        /** @var User */
+        $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
+
+        /** @var Part */
+        $part = $user->getParts()->first();
+
+        $client->request(Request::METHOD_PATCH, "/api/parts/{$part->getId()}", [], [], [
+            'CONTENT_TYPE' => 'application/merge-patch+json',
+        ], '{}');
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }

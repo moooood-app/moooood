@@ -2,6 +2,7 @@
 
 namespace App\Tests\Integration\Entries;
 
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\DataFixtures\UserFixtures;
 use App\Doctrine\CurrentUserExtension;
 use App\Entity\Part;
@@ -58,10 +59,45 @@ final class GetPartsTest extends WebTestCase
         /** @var non-empty-string */
         $content = $client->getResponse()->getContent();
 
-        /** @var object */
+        /**
+         * @var object{
+         *  search: object{template: non-empty-string},
+         *  totalItems: int,
+         *  member: list<object{'@id': string}>,
+         * }
+         */
         $data = json_decode($content);
 
-        self::assertGreaterThan(0, $data->{'totalItems'} ?? 0);
+        $partsIris = array_map(
+            static function (object $part): string {
+                return $part->{'@id'}; // @phpstan-ignore-line
+            },
+            $data->member,
+        );
+
+        /** @var UserRepository */
+        $repository = self::getContainer()->get(UserRepository::class);
+
+        /** @var User */
+        $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
+
+        /** @var PartRepository */
+        $partRepository = self::getContainer()->get(PartRepository::class);
+
+        $partRepository->findBy(['user' => $user]);
+
+        /** @var IriConverterInterface */
+        $iriConverter = self::getContainer()->get(IriConverterInterface::class);
+        $userParts = array_map(
+            static function (Part $part) use ($iriConverter): string {
+                return $iriConverter->getIriFromResource($part); // @phpstan-ignore-line
+            },
+            $partRepository->findBy(['user' => $user])
+        );
+
+        sort($partsIris);
+        sort($userParts);
+        self::assertSame($userParts, $partsIris);
 
         self::assertJsonSchemaIsValid($data, 'parts/parts.json');
     }

@@ -83,4 +83,21 @@ final class GetPartTest extends WebTestCase
 
         self::assertJsonSchemaIsValid($data, 'parts/part.json');
     }
+
+    public function testUserCanOnlyAccessTheirOwnPart(): void
+    {
+        $client = self::createAuthenticatedClient(UserFixtures::HACKER_USER);
+
+        /** @var UserRepository */
+        $repository = self::getContainer()->get(UserRepository::class);
+
+        /** @var User */
+        $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
+
+        /** @var Part */
+        $part = $user->getParts()->first();
+        $client->request(Request::METHOD_GET, "/api/parts/{$part->getId()}");
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
 }
