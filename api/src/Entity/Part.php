@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -17,7 +18,6 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Serializer\Annotation as Serializer;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\CssColor;
 
 #[ORM\Entity(repositoryClass: PartRepository::class)]
 #[ORM\Table(name: 'parts')]
@@ -25,8 +25,15 @@ use Symfony\Component\Validator\Constraints\CssColor;
     operations: [
         new Get(),
         new GetCollection(normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_COLLECTION]]),
-        new Patch(),
+        new Patch(
+            security: 'object.getUser().getId() == user.getId()',
+            securityMessage: 'You are not allowed to edit this Part',
+        ),
         new Post(),
+        new Delete(
+            security: 'object.getUser().getId() == user.getId()',
+            securityMessage: 'You are not allowed to delete this Part',
+        ),
     ],
     normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_ITEM]],
     denormalizationContext: ['groups' => [self::SERIALIZATION_GROUP_WRITE]],
@@ -63,7 +70,7 @@ class Part
      * @var array<string>
      */
     #[ORM\Column(type: Types::JSON, options: ['jsonb' => true, 'default' => '[]'])]
-    #[Assert\All([new CssColor(CssColor::HEX_LONG)])]
+    #[Assert\All([new Assert\CssColor(Assert\CssColor::HEX_LONG)])]
     #[Assert\Count(
         exactly: 5,
         exactMessage: 'You must specify exactly {{ limit }} colors',

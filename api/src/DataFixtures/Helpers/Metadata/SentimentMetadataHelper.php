@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures\Helpers\Metadata;
 
-use App\Entity\Entry;
 use App\Entity\EntryMetadata;
 use App\Enum\Processor;
 use Faker\Generator;
@@ -13,10 +12,9 @@ final readonly class SentimentMetadataHelper implements MetadataHelperInterface
     {
     }
 
-    public function provideMetadata(Entry $entry): EntryMetadata
+    public function provideMetadata(): EntryMetadata
     {
         return (new EntryMetadata())
-            ->setEntry($entry)
             ->setProcessor(Processor::SENTIMENT)
             ->setMetadata([
                 'compound' => $this->faker->randomFloat(16, -1, 1),

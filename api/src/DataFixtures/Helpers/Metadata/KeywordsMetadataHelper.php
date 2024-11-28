@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures\Helpers\Metadata;
 
-use App\Entity\Entry;
 use App\Entity\EntryMetadata;
 use App\Enum\Processor;
 use Faker\Generator;
@@ -13,7 +12,7 @@ final readonly class KeywordsMetadataHelper implements MetadataHelperInterface
     {
     }
 
-    public function provideMetadata(Entry $entry): EntryMetadata
+    public function provideMetadata(): EntryMetadata
     {
         $keywords = [];
         for ($j = 1; $j <= 5; ++$j) {
@@ -31,7 +30,6 @@ final readonly class KeywordsMetadataHelper implements MetadataHelperInterface
         }
 
         return (new EntryMetadata())
-            ->setEntry($entry)
             ->setProcessor(Processor::KEYWORDS)
             ->setMetadata($keywords)
         ;

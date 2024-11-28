@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use App\Repository\UserRepository;
@@ -15,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute as Serializer;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -30,6 +31,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(
             security: 'object.getId() == user.getId()',
             securityMessage: 'You are not allowed to edit this user',
+        ),
+        new Delete(
+            security: 'object.getId() == user.getId()',
+            securityMessage: 'You are not allowed to delete this user',
         ),
     ],
     normalizationContext: ['groups' => [self::SERIALIZATION_GROUP_READ_ITEM]],
@@ -50,21 +55,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
-    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
     #[ApiProperty(description: 'The first name of the user')]
     private string $firstName;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
-    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
     #[ApiProperty(description: 'The last name of the user')]
     private string $lastName;
 
     #[ORM\Column(length: 320)]
     #[Assert\NotBlank]
     #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_STRICT)]
-    #[Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]
     #[ApiProperty(description: 'The email/username of the user')]
     private string $email;
 

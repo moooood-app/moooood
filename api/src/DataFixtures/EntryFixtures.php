@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\Helpers\EntryFixturesHelper;
 use App\DataFixtures\Helpers\Metadata\ComplexityMetadataHelper;
 use App\DataFixtures\Helpers\Metadata\KeywordsMetadataHelper;
 use App\DataFixtures\Helpers\Metadata\SentimentMetadataHelper;
@@ -33,7 +34,7 @@ class EntryFixtures extends Fixture implements DependentFixtureInterface
         /** @var User */
         $user = $this->getReference(UserFixtures::FIRST_USER, User::class);
 
-        $entryHelper = (new EntryHelper($faker))
+        $entryHelper = (new EntryFixturesHelper($faker))
             ->addMetadataHelper(new ComplexityMetadataHelper($faker))
             ->addMetadataHelper(new SentimentMetadataHelper($faker))
             ->addMetadataHelper(new KeywordsMetadataHelper($faker))

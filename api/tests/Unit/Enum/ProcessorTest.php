@@ -3,13 +3,13 @@
 namespace App\Tests\Enum;
 
 use App\Enum\Processor;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversClass(Processor::class)]
 final class ProcessorTest extends TestCase
 {
     public function testHasMetricsEndpoint(): void
