@@ -34,3 +34,5 @@ phpstan.neon
 ###< phpstan/phpstan ###
 
 coverage/
+.DS_Store
+supervisord.log
