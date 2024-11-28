@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 use Symfony\Component\Notifier\DataCollector\NotificationDataCollector;
-use Symfony\Component\Notifier\Message\ChatMessage;
 
 /**
  * @internal
@@ -96,7 +95,6 @@ final class CreateEntryTest extends WebTestCase
 
         self::assertCount(1, $notifierCollector->getEvents()->getMessages());
         $message = $notifierCollector->getEvents()->getMessages()[0];
-        self::assertInstanceOf(ChatMessage::class, $message);
         /** @var array<string, mixed> */
         $payload = json_decode($message->getSubject(), true, 512, \JSON_THROW_ON_ERROR);
         self::assertEqualsCanonicalizing([

@@ -7,10 +7,12 @@ use App\Doctrine\CurrentUserExtension;
 use App\Entity\Entry;
 use App\Entity\EntryMetadata;
 use App\Entity\User;
+use App\EventListener\EntryWriteListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Parameter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -20,6 +22,7 @@ use Symfony\Component\Uid\Uuid;
  * @internal
  */
 #[CoversClass(CurrentUserExtension::class)]
+#[UsesClass(EntryWriteListener::class)]
 final class CurrentUserExtensionTest extends KernelTestCase
 {
     public function testApplyToCollectionAddsCorrectWhereClause(): void

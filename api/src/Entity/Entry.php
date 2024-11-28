@@ -101,7 +101,12 @@ class Entry
     /**
      * @var Collection<int, EntryMetadata>
      */
-    #[ORM\OneToMany(targetEntity: EntryMetadata::class, mappedBy: 'entry', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: EntryMetadata::class,
+        mappedBy: 'entry',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove'],
+    )]
     #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM])]
     #[ApiProperty(description: 'The metadata of the entry')]
     private Collection $metadata;

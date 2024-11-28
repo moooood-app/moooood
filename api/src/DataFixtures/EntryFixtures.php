@@ -16,6 +16,8 @@ class EntryFixtures extends Fixture implements DependentFixtureInterface
 {
     public const BASE_ENTRY = 'base-entry';
 
+    public const TWO_MONTHS_BATCH_DATE = '2018-04-01 00:00:00';
+
     public function getDependencies(): array
     {
         return [
@@ -38,15 +40,41 @@ class EntryFixtures extends Fixture implements DependentFixtureInterface
         ;
 
         for ($d = 0; $d < 7; ++$d) {
-            for ($i = 1; $i <= rand(1, 6); ++$i) {
+            for ($i = 1; $i <= 6; ++$i) {
                 $entry = $entryHelper->provideEntry($user);
-                $entry->setCreatedAt(new \DateTimeImmutable("-{$d} days"));
+                $entry->setCreatedAt(new \DateTimeImmutable("{$d} days ago"));
                 $part = null;
                 if (6 !== $i) {
                     $part = $this->getReference("part-{$i}", Part::class);
                 }
                 $entry->setPart($part);
                 $manager->persist($entry);
+            }
+        }
+
+        $start = new \DateTime(self::TWO_MONTHS_BATCH_DATE);
+        $end = (clone $start)->modify('+2 months');
+        $interval = new \DateInterval('P1D');
+
+        $period = new \DatePeriod($start, $interval, $end);
+
+        $parts = [];
+        for ($i = 1; $i <= 5; ++$i) {
+            $parts[] = $this->getReference("part-{$i}", Part::class);
+        }
+
+        // Number of entries per day is equal to the day number
+        foreach ($period as $date) {
+            for ($i = 1; $i <= (int) $date->format('d'); ++$i) {
+                $entry = $entryHelper->provideEntry($user);
+                $entry->setCreatedAt(\DateTimeImmutable::createFromMutable($date));
+                $manager->persist($entry);
+                foreach ($parts as $part) {
+                    $entry = $entryHelper->provideEntry($user);
+                    $entry->setCreatedAt(\DateTimeImmutable::createFromMutable($date));
+                    $entry->setPart($part);
+                    $manager->persist($entry);
+                }
             }
         }
 

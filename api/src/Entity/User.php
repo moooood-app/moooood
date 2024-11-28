@@ -80,13 +80,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Part>
      */
-    #[ORM\OneToMany(targetEntity: Part::class, mappedBy: 'user', fetch: 'EAGER', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: Part::class,
+        mappedBy: 'user',
+        fetch: 'EAGER',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove'],
+    )]
     private Collection $parts;
 
     /**
      * @var Collection<int, Entry>
      */
-    #[ORM\OneToMany(targetEntity: Entry::class, mappedBy: 'user', fetch: 'EXTRA_LAZY', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: Entry::class,
+        mappedBy: 'user',
+        fetch: 'EXTRA_LAZY',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove'],
+    )]
     private Collection $entries;
 
     public function __construct()

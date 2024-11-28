@@ -69,10 +69,12 @@ final readonly class MetricsProvider implements ProviderInterface
         }
 
         $cacheKey = \sprintf(
-            'user_%s-metrics_%s_%s',
+            'user_%s-metrics_%s_%s_%s_%d',
             $user->getId(),
             $metricsType,
             $metricsQuery->groupingCriteria->value,
+            $metricsQuery->getDateFrom()->format('Y-m-d'),
+            (int) $metricsQuery->groupByParts,
         );
 
         return $this->cache->get(

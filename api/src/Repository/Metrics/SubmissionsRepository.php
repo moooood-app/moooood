@@ -33,14 +33,14 @@ class SubmissionsRepository extends AbstractMetricsRepository
             ->addSelect("SUM(array_length(regexp_split_to_array(content, '[.!?]'), 1)) AS sentence_count")
             ->from('entries', self::ENTRY_ALIAS)
             ->where(\sprintf('%s.user_id = :user', self::ENTRY_ALIAS))
-            ->groupBy($dateSelector)
+            ->groupBy($query->groupingCriteria->getGroupByExpression(self::ENTRY_ALIAS))
             ->orderBy($dateSelector, 'ASC')
         ;
 
         return $builder;
     }
 
-    protected function addSelects(QueryBuilder $builder, MetricsQuery $query): QueryBuilder
+    protected function updateQueryBuilder(QueryBuilder $builder, MetricsQuery $query): QueryBuilder
     {
         return $builder;
     }

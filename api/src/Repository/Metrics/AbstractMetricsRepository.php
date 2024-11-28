@@ -71,14 +71,18 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
         }
 
         $builder->addSelect(\sprintf(
-            "CONCAT(%s, '-%s-', %s) as id",
+            "CONCAT(%s, '-', %s, '-%s-', %s) as id",
             $query->groupingCriteria->getDateSelector(self::ENTRY_ALIAS),
+            $query->groupingCriteria->getGroupByExpression(self::ENTRY_ALIAS),
             $query->groupingCriteria->value,
             $doctrineIdentifierForPart,
         ));
 
-        $qb = $this->addSelects($builder, $query);
+        $qb = $this->updateQueryBuilder($builder, $query);
 
+        // We add the date filters only if a new builder was not returned
+        // Otherwise, it's up to the implementation to add the filters
+        // todo: that is a bit confusing and could be refactored
         if ($qb === $builder) {
             $this->addDateFilters($qb);
         }
@@ -102,13 +106,13 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
 
     abstract protected function getQueryBuilder(MetricsQuery $query): QueryBuilder;
 
-    abstract protected function addSelects(QueryBuilder $builder, MetricsQuery $query): QueryBuilder;
+    abstract protected function updateQueryBuilder(QueryBuilder $builder, MetricsQuery $query): QueryBuilder;
 
     protected function addDateFilters(QueryBuilder $builder): void
     {
         $builder
             ->andWhere(\sprintf('%s.created_at >= :%s', self::ENTRY_ALIAS, self::FROM_PARAMETER))
-            ->andWhere(\sprintf('%s.created_at <= :%s', self::ENTRY_ALIAS, self::UNTIL_PARAMETER))
+            ->andWhere(\sprintf('%s.created_at < :%s', self::ENTRY_ALIAS, self::UNTIL_PARAMETER))
         ;
     }
 }
