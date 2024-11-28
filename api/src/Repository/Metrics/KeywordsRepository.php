@@ -20,7 +20,7 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
         parent::__construct($registry, Keywords::class);
     }
 
-    protected function addSelects(QueryBuilder $builder, MetricsQuery $query): QueryBuilder
+    protected function updateQueryBuilder(QueryBuilder $builder, MetricsQuery $query): QueryBuilder
     {
         $wrapper = $this->getEntityManager()->getConnection()->createQueryBuilder();
 

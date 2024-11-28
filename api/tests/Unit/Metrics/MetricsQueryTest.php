@@ -42,43 +42,36 @@ final class MetricsQueryTest extends TestCase
         yield 'Default date for ENTRY with null date_from' => [
             ['grouping' => GroupingCriteria::ENTRY->value, 'from' => null],
             GroupingCriteria::ENTRY,
-            (new \DateTime())->modify('last Sunday')->modify('+1 day')->format('Y-m-d 00:00:00'),
-            (new \DateTime())->modify('last Sunday')->modify('+1 day')->modify('+1 week')->format('Y-m-d 00:00:00'),
+            (new \DateTime())->format('Y-m-d 00:00:00'),
+            (new \DateTime())->modify('+1 week')->format('Y-m-d 00:00:00'),
         ];
 
         yield 'Align HOUR to week boundary at year end' => [
             ['grouping' => GroupingCriteria::HOUR->value, 'from' => '2024-12-31'],
             GroupingCriteria::HOUR,
-            '2024-12-30 00:00:00',
-            '2025-01-06 00:00:00',
+            '2024-12-31 00:00:00',
+            '2025-01-07 00:00:00',
         ];
 
-        yield 'Leap year DAY alignment for February 29' => [
-            ['grouping' => GroupingCriteria::DAY->value, 'from' => '2024-02-29'],
-            GroupingCriteria::DAY,
-            '2024-02-01 00:00:00',
-            '2024-03-01 00:00:00',
-        ];
-
-        yield 'Align DAY to start of the month' => [
+        yield 'DAY is unchanged' => [
             ['grouping' => GroupingCriteria::DAY->value, 'from' => '2024-11-20'],
             GroupingCriteria::DAY,
-            '2024-11-01 00:00:00',
-            '2024-12-01 00:00:00',
+            '2024-11-20 00:00:00',
+            '2024-12-20 00:00:00',
         ];
 
-        yield 'Align WEEK to start of quarter crossing year boundary' => [
+        yield 'Align WEEK to cross year boundary' => [
             ['grouping' => GroupingCriteria::WEEK->value, 'from' => '2024-12-25'],
             GroupingCriteria::WEEK,
-            '2024-10-01 00:00:00',
-            '2025-01-01 00:00:00',
+            '2024-12-23 00:00:00',
+            '2025-01-20 00:00:00',
         ];
 
-        yield 'Align WEEK to Q1 boundary' => [
-            ['grouping' => GroupingCriteria::WEEK->value, 'from' => '2024-01-01'],
+        yield 'Align WEEK to first day of year' => [
+            ['grouping' => GroupingCriteria::WEEK->value, 'from' => '2025-01-01'],
             GroupingCriteria::WEEK,
-            '2024-01-01 00:00:00',
-            '2024-04-01 00:00:00',
+            '2024-12-30 00:00:00',
+            '2025-01-27 00:00:00',
         ];
 
         yield 'Align MONTH to start of the year' => [
@@ -98,8 +91,8 @@ final class MetricsQueryTest extends TestCase
         yield 'Default date for DAY with null from' => [
             ['grouping' => GroupingCriteria::DAY->value, 'from' => null],
             GroupingCriteria::DAY,
-            (new \DateTime('first day of this month'))->format('Y-m-d 00:00:00'),
-            (new \DateTime('first day of this month'))->modify('+1 month')->format('Y-m-d 00:00:00'),
+            (new \DateTime())->format('Y-m-d 00:00:00'),
+            (new \DateTime())->modify('+1 month')->format('Y-m-d 00:00:00'),
         ];
 
         yield 'Default date for MONTH with null from' => [

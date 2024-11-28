@@ -28,20 +28,20 @@ lint-sf:
 lint-phpstan:
 	$(DOCKER_EXEC_API) vendor/bin/phpstan --memory-limit=1G analyse
 
-test: test-reset-database
-	$(DOCKER_EXEC_API) vendor/bin/phpunit
+test:
+	$(DOCKER_EXEC_API) php -d memory_limit=1G vendor/bin/phpunit
+
+test-integration:
+	$(DOCKER_EXEC_API) php -d memory_limit=1G vendor/bin/phpunit --testsuite=integration
 
 test-unit:
-	$(DOCKER_EXEC_API) vendor/bin/phpunit --testsuite=unit
+	$(DOCKER_EXEC_API) php -d memory_limit=1G vendor/bin/phpunit --testsuite=unit
 
 test-reset-database:
 	$(DOCKER_EXEC_API) bin/console --env=test doctrine:database:create  --if-not-exists
 	$(DOCKER_EXEC_API) bin/console --env=test doctrine:schema:drop --full-database --force --quiet
 	$(DOCKER_EXEC_API) bin/console --env=test doctrine:schema:create --quiet
-	$(DOCKER_EXEC_API) bin/console --env=test doctrine:fixtures:load --no-interaction --quiet
-
-test-integration: test-reset-database
-	$(DOCKER_EXEC_API) vendor/bin/phpunit --testsuite=integration
+	$(DOCKER_EXEC_API) php -d memory_limit=1G bin/console --env=test doctrine:fixtures:load --no-interaction --quiet
 
 migrate:
 	$(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction

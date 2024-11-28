@@ -85,7 +85,13 @@ class Part
     /**
      * @var Collection<int, Entry>
      */
-    #[ORM\OneToMany(targetEntity: Entry::class, mappedBy: 'part', fetch: 'LAZY', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: Entry::class,
+        mappedBy: 'part',
+        fetch: 'LAZY',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove'],
+    )]
     private Collection $entries;
 
     public function __construct()

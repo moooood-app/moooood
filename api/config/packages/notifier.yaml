@@ -11,3 +11,9 @@ framework:
             low: ['chat/sns']
         admin_recipients:
             - { email: admin@example.com }
+
+when@test:
+    framework:
+        notifier:
+            texter_transports:
+                sns: 'null://null'

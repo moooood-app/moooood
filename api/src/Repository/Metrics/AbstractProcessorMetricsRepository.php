@@ -28,7 +28,7 @@ abstract class AbstractProcessorMetricsRepository extends AbstractMetricsReposit
             ->leftJoin('em', 'entries', self::ENTRY_ALIAS, \sprintf('em.entry_id = %s.id', self::ENTRY_ALIAS))
             ->where(\sprintf('%s.user_id = :%s', self::ENTRY_ALIAS, self::USER_PARAMETER))
             ->andWhere(\sprintf('processor = :%s', self::PROCESSOR_PARAMETER))
-            ->groupBy($dateSelector)
+            ->groupBy($query->groupingCriteria->getGroupByExpression(self::ENTRY_ALIAS))
             ->orderBy($dateSelector, 'ASC')
         ;
 

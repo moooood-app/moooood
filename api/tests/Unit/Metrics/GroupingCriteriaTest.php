@@ -18,10 +18,10 @@ final class GroupingCriteriaTest extends TestCase
     {
         $alias = 'test_alias';
 
-        self::assertSame('test_alias.id', GroupingCriteria::ENTRY->getDateSelector($alias));
+        self::assertSame('test_alias.created_at', GroupingCriteria::ENTRY->getDateSelector($alias));
         self::assertSame("TO_CHAR(test_alias.created_at, 'YYYY-MM-DD HH24:00:00')", GroupingCriteria::HOUR->getDateSelector($alias));
         self::assertSame("DATE_TRUNC('day', test_alias.created_at)", GroupingCriteria::DAY->getDateSelector($alias));
-        self::assertSame("DATE_TRUNC('week', test_alias.created_at + INTERVAL '1 day')", GroupingCriteria::WEEK->getDateSelector($alias));
+        self::assertSame("DATE_TRUNC('week', test_alias.created_at)", GroupingCriteria::WEEK->getDateSelector($alias));
         self::assertSame("DATE_TRUNC('month', test_alias.created_at)", GroupingCriteria::MONTH->getDateSelector($alias));
     }
 }

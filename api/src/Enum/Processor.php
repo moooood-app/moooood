@@ -10,4 +10,12 @@ enum Processor: string
     case KEYWORDS = 'keywords';
     case COMPLEXITY = 'complexity';
     case SUMMARY = 'summary';
+
+    public function hasMetricsEndpoint(): bool
+    {
+        return match ($this) {
+            self::SUMMARY => false,
+            default => true,
+        };
+    }
 }

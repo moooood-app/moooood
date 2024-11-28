@@ -11,7 +11,7 @@ final class MetricsQuery
 {
     private function __construct(
         public readonly GroupingCriteria $groupingCriteria,
-        public readonly \DateTimeImmutable $dateFrom,
+        private readonly \DateTimeImmutable $dateFrom,
         public ?Processor $processor = null,
         public bool $groupByParts = false,
     ) {
@@ -37,15 +37,16 @@ final class MetricsQuery
         switch ($groupingCriteria) {
             case GroupingCriteria::ENTRY:
             case GroupingCriteria::HOUR:
-                $dateFrom->modify('last Sunday')->modify('+1 day');
-                break;
             case GroupingCriteria::DAY:
-                $dateFrom->modify('first day of this month');
+                // do nothing
                 break;
             case GroupingCriteria::WEEK:
-                $month = (int) $dateFrom->format('n');
-                $startMonth = 1 + 3 * floor(($month - 1) / 3);
-                $dateFrom->setDate((int) $dateFrom->format('Y'), (int) $startMonth, 1);
+                $dayOfWeek = (int) $dateFrom->format('N');
+                if (1 === $dayOfWeek) {
+                    break;
+                }
+                $daysToSubtract = $dayOfWeek - 1; // Subtract the days since the last Monday
+                $dateFrom->modify("-{$daysToSubtract} days");
                 break;
             case GroupingCriteria::MONTH:
                 $dateFrom->modify('first day of January');
@@ -83,7 +84,7 @@ final class MetricsQuery
         match ($this->groupingCriteria) {
             GroupingCriteria::ENTRY, GroupingCriteria::HOUR => $dateUntil->modify('+1 week'),
             GroupingCriteria::DAY => $dateUntil->modify('+1 month'),
-            GroupingCriteria::WEEK => $dateUntil->modify('+3 months'),
+            GroupingCriteria::WEEK => $dateUntil->modify('+4 weeks'),
             GroupingCriteria::MONTH => $dateUntil->modify('+1 year'),
         };
 
