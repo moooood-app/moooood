@@ -16,11 +16,11 @@ graph TD
     D -->|Fan-out notifications| E1[SQS Queue Sentiment]
     D --> E2[SQS Queue Complexity]
     D --> E3[SQS Queue Keywords]
-    D --> E4[SQS Queue Summary]
+    D --> E4[SQS Queue Emotions]
     E1 -->|Consumed| F1[Python Sentiment Processor]
     E2 -->|Consumed| F2[Python Complexity Processor]
     E3 -->|Consumed| F3[Python Keywords Processor]
-    E4 -->|Consumed| F4[Python SummaryProcessor]
+    E4 -->|Consumed| F4[Python EmotionsProcessor]
     F1 -->|SNS notification| G[SNS Post-Processing Topic]
     F2 -->|SNS notification| G
     F3 -->|SNS notification| G

@@ -65,7 +65,7 @@ class Entry
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 10,
-        max: 1000,
+        max: 5000,
         minMessage: 'An entry must be at least {{ limit }} characters long',
         maxMessage: 'An entry cannot be longer than {{ limit }} characters',
     )]

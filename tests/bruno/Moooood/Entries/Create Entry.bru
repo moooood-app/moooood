@@ -23,5 +23,5 @@ body:json {
 }
 
 script:post-response {
-  bru.setVar("current_entry_id",res.body.id)
+  bru.setVar("current_entry_id", res.body['@id'].split('/').pop());
 }
