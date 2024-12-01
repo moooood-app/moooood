@@ -167,7 +167,7 @@
             "sentiment",
             "keywords",
             "complexity",
-            "summary"
+            "emotions"
           ]
         },
         "createdAt": {

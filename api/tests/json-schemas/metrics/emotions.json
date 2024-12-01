@@ -1,0 +1,307 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "definitions": {
+    "Emotions.jsonld": {
+      "type": "object",
+      "description": "Get emotions metrics for the given grouping criteria",
+      "deprecated": false,
+      "properties": {
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "joy": {
+          "description": "The joy emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "fear": {
+          "description": "The fear emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "love": {
+          "description": "The love emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "anger": {
+          "description": "The anger emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "grief": {
+          "description": "The grief emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "pride": {
+          "description": "The pride emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "caring": {
+          "description": "The caring emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "desire": {
+          "description": "The desire emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "relief": {
+          "description": "The relief emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "disgust": {
+          "description": "The disgust emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "neutral": {
+          "description": "The neutral emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "remorse": {
+          "description": "The remorse emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "sadness": {
+          "description": "The sadness emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "approval": {
+          "description": "The approval emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "optimism": {
+          "description": "The optimism emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "surprise": {
+          "description": "The surprise emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "amusement": {
+          "description": "The amusement emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "annoyance": {
+          "description": "The annoyance emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "confusion": {
+          "description": "The confusion emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "curiosity": {
+          "description": "The curiosity emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "gratitude": {
+          "description": "The gratitude emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "admiration": {
+          "description": "The admiration emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "excitement": {
+          "description": "The excitement emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "disapproval": {
+          "description": "The disapproval emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "nervousness": {
+          "description": "The nervousness emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "realization": {
+          "description": "The realization emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "embarrassment": {
+          "description": "The embarrassment emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "disappointment": {
+          "description": "The disappointment emotions score, from 0 to 1.",
+          "type": "number"
+        },
+        "date": {
+          "description": "The first day of the period covered by the metrics.",
+          "type": "string"
+        },
+        "part": {
+          "description": "The part this entry belongs to. Null = \"Self\" entry",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Part.jsonld-entry.read.item_part.read.item"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "@id",
+        "@type",
+        "joy",
+        "fear",
+        "love",
+        "anger",
+        "grief",
+        "pride",
+        "caring",
+        "desire",
+        "relief",
+        "disgust",
+        "neutral",
+        "remorse",
+        "sadness",
+        "approval",
+        "optimism",
+        "surprise",
+        "amusement",
+        "annoyance",
+        "confusion",
+        "curiosity",
+        "gratitude",
+        "admiration",
+        "excitement",
+        "disapproval",
+        "nervousness",
+        "realization",
+        "embarrassment",
+        "disappointment",
+        "date",
+        "part"
+      ]
+    },
+    "Part.jsonld-entry.read.item_part.read.item": {
+      "type": "object",
+      "description": "",
+      "deprecated": false,
+      "properties": {
+        "@id": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "@type": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "maxLength": 100,
+          "type": "string"
+        },
+        "colors": {
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "@id",
+        "@type",
+        "name",
+        "colors"
+      ]
+    }
+  },
+  "properties": {
+    "member": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Emotions.jsonld"
+      }
+    },
+    "totalItems": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "@id": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "@type": {
+          "type": "string"
+        },
+        "first": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "last": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "previous": {
+          "type": "string",
+          "format": "iri-reference"
+        },
+        "next": {
+          "type": "string",
+          "format": "iri-reference"
+        }
+      },
+      "example": {
+        "@id": "string",
+        "type": "string",
+        "first": "string",
+        "last": "string",
+        "previous": "string",
+        "next": "string"
+      }
+    },
+    "search": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "variableRepresentation": {
+          "type": "string"
+        },
+        "mapping": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "@type": {
+                "type": "string"
+              },
+              "variable": {
+                "type": "string"
+              },
+              "property": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "member"
+  ]
+}

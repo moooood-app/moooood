@@ -23,7 +23,7 @@ class PartFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create();
 
         /** @var User */
-        $user = $this->getReference(UserFixtures::FIRST_USER);
+        $user = $this->getReference(UserFixtures::FIRST_USER, User::class);
         for ($i = 1; $i <= 5; ++$i) {
             $part = (new Part())
                 ->setUser($user)

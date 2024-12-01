@@ -111,7 +111,7 @@ final class CreateEntryTest extends WebTestCase
 
         /** @var non-empty-string $jsonPayload */
         $jsonPayload = json_encode([
-            'content' => str_repeat('a', 1001),
+            'content' => str_repeat('a', 5001),
         ]);
 
         $client->request(Request::METHOD_POST, '/api/entries', [], [], [
@@ -121,7 +121,7 @@ final class CreateEntryTest extends WebTestCase
         self::assertValidationErrors($client, [
             [
                 'propertyPath' => 'content',
-                'message' => 'An entry cannot be longer than 1000 characters',
+                'message' => 'An entry cannot be longer than 5000 characters',
             ],
         ]);
     }

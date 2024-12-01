@@ -32,6 +32,8 @@ class ProcessorOutputDecoder implements SerializerInterface
         /** @var array{Message: string} $body */
         $body = $this->decoder->decode($encodedEnvelope['body'], JsonEncoder::FORMAT);
 
+        $this->logger->info('Decoding message {message}', ['message' => $body['Message']]);
+
         /** @var array{result: array<mixed>, "@id": string, processor: string} $message */
         $message = $this->decoder->decode($body['Message'], JsonEncoder::FORMAT);
 

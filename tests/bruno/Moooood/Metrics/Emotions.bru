@@ -1,0 +1,19 @@
+meta {
+  name: Emotions
+  type: http
+  seq: 5
+}
+
+get {
+  url: https://{{url}}/api/metrics/emotions?grouping=day
+  body: none
+  auth: none
+}
+
+query {
+  grouping: day
+}
+
+headers {
+  Authorization: bearer {{jwt}}
+}

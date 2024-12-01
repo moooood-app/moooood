@@ -5,6 +5,7 @@ namespace App\Tests\Integration\Metrics;
 use App\DataFixtures\EntryFixtures;
 use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\Complexity;
+use App\Entity\Metrics\Emotions;
 use App\Entity\Metrics\Keywords;
 use App\Entity\Metrics\Sentiment;
 use App\Entity\Metrics\Submissions;
@@ -14,6 +15,7 @@ use App\EventListener\EntryWriteListener;
 use App\EventListener\TokenCreatedListener;
 use App\Notifier\EntrySnsNotifier;
 use App\Repository\Metrics\ComplexityRepository;
+use App\Repository\Metrics\EmotionsRepository;
 use App\Repository\Metrics\KeywordsRepository;
 use App\Repository\Metrics\SentimentRepository;
 use App\Repository\Metrics\SubmissionsRepository;
@@ -30,10 +32,12 @@ use PHPUnit\Framework\Attributes\UsesClass;
 #[CoversClass(Keywords::class)]
 #[CoversClass(Submissions::class)]
 #[CoversClass(Sentiment::class)]
+#[CoversClass(Emotions::class)]
 #[CoversClass(ComplexityRepository::class)]
 #[CoversClass(KeywordsRepository::class)]
 #[CoversClass(SubmissionsRepository::class)]
 #[CoversClass(SentimentRepository::class)]
+#[CoversClass(EmotionsRepository::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserRepository::class)]
 #[CoversClass(MetricsQuery::class)]

@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\DataFixtures\Helpers\EntryFixturesHelper;
 use App\DataFixtures\Helpers\Metadata\ComplexityMetadataHelper;
+use App\DataFixtures\Helpers\Metadata\EmotionsMetadataHelper;
 use App\DataFixtures\Helpers\Metadata\KeywordsMetadataHelper;
 use App\DataFixtures\Helpers\Metadata\SentimentMetadataHelper;
 use App\Entity\Part;
@@ -38,6 +39,7 @@ class EntryFixtures extends Fixture implements DependentFixtureInterface
             ->addMetadataHelper(new ComplexityMetadataHelper($faker))
             ->addMetadataHelper(new SentimentMetadataHelper($faker))
             ->addMetadataHelper(new KeywordsMetadataHelper($faker))
+            ->addMetadataHelper(new EmotionsMetadataHelper($faker))
         ;
 
         for ($d = 0; $d < 7; ++$d) {

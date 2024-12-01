@@ -8,6 +8,8 @@ x-templates:
     working_dir: /app
     depends_on:
       - localstack
+    volumes:
+      - ./processors/python/:/app/
 
   python-processor-build-template: &python-processor-build-template
     context: ./
@@ -78,38 +80,36 @@ services:
     build:
       <<: *python-processor-build-template
       args:
-        PROCESSOR_PATH: processors/sentiment
-    volumes:
-      - ./processors/sentiment/processor.py:/app/processor.py
+        PROCESSOR_NAME: sentiment
+    environment:
+      - PROCESSOR_NAME=sentiment
 
   processors.complexity:
     <<: *python-processor-template
     build:
       <<: *python-processor-build-template
       args:
-        PROCESSOR_PATH: processors/complexity
-    volumes:
-      - ./processors/complexity/processor.py:/app/processor.py
+        PROCESSOR_NAME: complexity
+    environment:
+      - PROCESSOR_NAME=complexity
 
   processors.keywords:
     <<: *python-processor-template
     build:
       <<: *python-processor-build-template
       args:
-        PROCESSOR_PATH: processors/keywords
-    volumes:
-      - ./processors/keywords/processor.py:/app/processor.py
+        PROCESSOR_NAME: keywords
+    environment:
+      - PROCESSOR_NAME=keywords
 
-  processors.summary:
+  processors.emotions:
     <<: *python-processor-template
     build:
       <<: *python-processor-build-template
       args:
-        PROCESSOR_PATH: processors/summary
-        TRANSFORMERS_CACHE: /cache/transformers
-    volumes:
-      - ./data/cache/transformers:/cache/transformers
-      - ./processors/summary/processor.py:/app/processor.py
+        PROCESSOR_NAME: emotions
+    environment:
+      - PROCESSOR_NAME=emotions
 
 volumes:
   caddy_data:
