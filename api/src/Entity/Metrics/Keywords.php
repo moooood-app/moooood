@@ -24,5 +24,25 @@ class Keywords implements MetricsIdentifierInterface
     #[ORM\Column(type: Types::JSON)]
     #[ApiProperty(description: 'The average score and count of detected keywords.')]
     #[Serializer\Groups([MetricsApiResource::METRICS_NORMALIZATION_GROUP])]
-    public array $keywords = [];
+    private array $keywords = [];
+
+    /**
+     * @return list<array{average_score: float, count: int}>
+     */
+    public function getKeywords(): array
+    {
+        usort($this->keywords, static function (array $a, array $b): int {
+            return $b['count'] <=> $a['count'] ?: $b['average_score'] <=> $a['average_score'];
+        });
+
+        return array_slice($this->keywords, 0, 25, true);
+    }
+
+    /**
+     * @param list<array{average_score: float, count: int}> $keywords
+     */
+    public function setKeywords(array $keywords): void
+    {
+        $this->keywords = $keywords;
+    }
 }
