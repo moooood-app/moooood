@@ -35,7 +35,7 @@ class Keywords implements MetricsIdentifierInterface
             return $b['count'] <=> $a['count'] ?: $b['average_score'] <=> $a['average_score'];
         });
 
-        return array_slice($this->keywords, 0, 25, true);
+        return \array_slice($this->keywords, 0, 25, true);
     }
 
     /**
