@@ -3,6 +3,7 @@
 namespace App\Tests\Integration\Traits;
 
 use App\Repository\UserRepository;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 trait AuthenticatedClientTrait
@@ -20,7 +21,8 @@ trait AuthenticatedClientTrait
 
         $client->loginUser($user);
 
-        $jwtManager = self::getContainer()->get('lexik_jwt_authentication.jwt_manager');
+        /** @var JWTTokenManagerInterface */
+        $jwtManager = self::getContainer()->get(JWTTokenManagerInterface::class);
         $token = $jwtManager->create($user);
 
         $client->setServerParameter('HTTP_Authorization', \sprintf('Bearer %s', $token));
