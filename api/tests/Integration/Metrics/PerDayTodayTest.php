@@ -60,6 +60,13 @@ final class PerDayTodayTest extends AbstractMetricsTestCase
                 ->format(\DateTimeInterface::RFC3339),
             $data->member[0]->date,
         );
+
+        if ('Keywords' === $data->{'@type'}) {
+            /** @var array<object{keywords: array<string, object{average_score: float, count: int}>}> */
+            $member = $data->member;
+            $keywords = $member[0]->keywords;
+            self::assertCount(25, $keywords);
+        }
     }
 
     public static function provideQueryParameters(): iterable

@@ -50,8 +50,16 @@ services:
     depends_on:
       - database
 
-  post-processing:
-    container_name: post-processing
+  messenger.post-processing:
+    container_name: messenger.post-processing
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - database
+
+  messenger.mailer:
+    container_name: messenger.mailer
     restart: unless-stopped
     env_file:
       - .env

@@ -1,0 +1,16 @@
+{% trans_default_domain "emails" %}
+
+{% apply inky_to_html %}
+    {% block content %}
+    <container>
+        {% block header %}
+        {% endblock %}
+
+        {% block body %}
+        {% endblock %}
+
+        {% block footer %}
+        {% endblock %}
+    </container>
+    {% endblock %}
+{% endapply %}

@@ -25,7 +25,7 @@ final class ProcessorOutputMessageHandler
     public function __invoke(ProcessorOutputMessage $message): void
     {
         $this->logger->info('Data received from processor {processor} for entry {entry}', [
-            'entry' => $message->getEntry()->getId(),
+            'entry' => $message->getEntry()->getId()->toString(),
             'processor' => $message->getProcessor()->value,
         ]);
 

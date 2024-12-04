@@ -1,0 +1,8 @@
+{% extends 'emails/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <row>
+        <columns><h1>Welcome to Moooood {{ firstName }} {{ lastName }}!</h1></columns>
+    </row>
+{% endblock %}
