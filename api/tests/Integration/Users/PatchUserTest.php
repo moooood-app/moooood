@@ -95,7 +95,7 @@ final class PatchUserTest extends WebTestCase
         self::assertSame($payload['lastName'], $data->lastName);
         self::assertSame($payload['email'], $data->email);
 
-        $this->assertJsonSchemaIsValid($data, 'users/user.json');
+        self::assertJsonSchemaIsValid($data, 'users/user.json');
 
         /** @var EntityManagerInterface */
         $manager = self::getContainer()->get(EntityManagerInterface::class);

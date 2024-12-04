@@ -48,7 +48,7 @@ final class LoginTest extends WebTestCase
          */
         $data = json_decode($content);
 
-        $this->assertJsonSchemaIsValid($data, 'authentication/token.json');
+        self::assertJsonSchemaIsValid($data, 'authentication/token.json');
     }
 
     public function testNonSuccessfulLogin(): void
