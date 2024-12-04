@@ -33,6 +33,7 @@
         "symfony/expression-language": "7.1.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.1.*",
+        "symfony/mailer": "7.1.*",
         "symfony/monolog-bundle": "^3.10",
         "symfony/property-access": "7.1.*",
         "symfony/property-info": "7.1.*",
@@ -42,7 +43,11 @@
         "symfony/twig-bundle": "7.1.*",
         "symfony/uid": "7.1.*",
         "symfony/validator": "7.1.*",
-        "symfony/yaml": "7.1.*"
+        "symfony/yaml": "7.1.*",
+        "twig/cssinliner-extra": "^3.16",
+        "twig/extra-bundle": "^3.16",
+        "twig/inky-extra": "^3.16",
+        "twig/markdown-extra": "^3.16"
     },
     "config": {
         "allow-plugins": {
@@ -112,6 +117,7 @@
         "symfony/maker-bundle": "^1.61",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "7.1.*",
-        "symfony/web-profiler-bundle": "7.1.*"
+        "symfony/web-profiler-bundle": "7.1.*",
+        "zenstruck/messenger-test": "^1.11"
     }
 }

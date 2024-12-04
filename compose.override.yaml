@@ -17,14 +17,37 @@ services:
       - host.docker.internal:host-gateway
     tty: true
 
-  post-processing:
+  messenger.post-processing:
     build:
-      context: ./docker/post-processing
+      context: ./docker/messenger
       target: dev
     volumes:
       - ./api/:/app
     environment:
+      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 3600
+      QUEUE_FAILURE_LIMIT: 10
       SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: post-processing
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
+  messenger.mailer:
+    build:
+      context: ./docker/messenger
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 3600
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: mailer
     tty: true
     depends_on:
       - database
@@ -54,6 +77,16 @@ services:
       - "${LOCALSTACK_VOLUME_DIR:-./docker/data/localstack}:/var/lib/localstack"
       - /var/run/docker.sock:/var/run/docker.sock
       - ./docker/localstack/init_sns_sqs.sh:/etc/localstack/init/ready.d/init_sns_sqs.sh
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: "${MAILPIT_DOCKER_NAME:-mailpit}"
+    ports:
+      - "1025"
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###

@@ -28,6 +28,7 @@ class EntryRepository extends ServiceEntityRepository
             }
             $entry->removeMetadata($metadata);
             $entityManager->remove($metadata);
+            break;
         }
         $entityManager->flush();
     }

@@ -4,31 +4,18 @@ WORKDIR /app
 
 VOLUME /app/var/
 
-ENV QUEUE_CONSUME_LIMIT=100
-ENV QUEUE_MEMORY_LIMIT=128M
-ENV QUEUE_TIME_LIMIT=3600
-ENV QUEUE_FAILURE_LIMIT=10
-ENV SUPERVISOR_NUM_PROCS=2
-
 RUN apk update && apk upgrade
 
 RUN apk add build-base
 RUN apk add autoconf
 RUN apk add --update linux-headers
 
-# Install Bash, cURL, git and OpenSSH
-# RUN apk add bash \
-#     curl \
-#     git \
-#     openssh
-
-# Install PHP extensions
-
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 RUN apk add --no-cache libzip-dev \
 	zip \
-	postgresql-dev
+	postgresql-dev \
+	libxslt-dev
 
 RUN set -eux; \
 	docker-php-ext-install \
@@ -36,6 +23,7 @@ RUN set -eux; \
 		opcache \
 		zip \
 		pdo_pgsql \
+		xsl \
 	;
 
 RUN pecl install apcu && \

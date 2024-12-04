@@ -14,11 +14,11 @@ install:
 	$(DOCKER_EXEC_API) bin/console lexik:jwt:generate-keypair --skip-if-exists
 	$(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction
 
-
 lint: lint-cs lint-sf lint-phpstan
 
 lint-cs:
-	$(DOCKER_EXEC_API) vendor/bin/php-cs-fixer fix
+	# $(DOCKER_EXEC_API) vendor/bin/php-cs-fixer fix
+	docker compose exec -it -e "TERM=xterm-256color" -e "PHP_CS_FIXER_IGNORE_ENV=1" api vendor/bin/php-cs-fixer fix
 
 lint-sf:
 	$(DOCKER_EXEC_API) bin/console lint:container

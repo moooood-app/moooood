@@ -31,11 +31,11 @@ class Keywords implements MetricsIdentifierInterface
      */
     public function getKeywords(): array
     {
-        usort($this->keywords, static function (array $a, array $b): int {
+        uasort($this->keywords, static function (array $a, array $b): int {
             return $b['count'] <=> $a['count'] ?: $b['average_score'] <=> $a['average_score'];
         });
 
-        return \array_slice($this->keywords, 0, 25, true);
+        return \array_slice($this->keywords, 0, 25, true); // @phpstan-ignore-line
     }
 
     /**
