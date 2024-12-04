@@ -46,7 +46,7 @@ final class RefreshTokenTest extends WebTestCase
          */
         $data = json_decode($content);
 
-        $this->assertJsonSchemaIsValid($data, 'authentication/token.json');
+        self::assertJsonSchemaIsValid($data, 'authentication/token.json');
 
         $client->request(Request::METHOD_POST, '/api/token/refresh', [
             'refresh_token' => $data->refresh_token,
@@ -65,7 +65,7 @@ final class RefreshTokenTest extends WebTestCase
          */
         $data = json_decode($content);
 
-        $this->assertJsonSchemaIsValid($data, 'authentication/token.json');
+        self::assertJsonSchemaIsValid($data, 'authentication/token.json');
     }
 
     public function testNonSuccessfulRefresh(): void

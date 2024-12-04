@@ -76,7 +76,7 @@ final class GetUserTest extends WebTestCase
         self::assertSame($user->getLastname(), $data->lastName);
         self::assertSame($user->getEmail(), $data->email);
 
-        $this->assertJsonSchemaIsValid($data, 'users/user.json');
+        self::assertJsonSchemaIsValid($data, 'users/user.json');
     }
 
     public function testUserCannotAccessAnotherUserInformation(): void
