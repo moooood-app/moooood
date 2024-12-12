@@ -3,7 +3,7 @@
 namespace App\Tests\Integration\Metrics;
 
 use App\DataFixtures\UserFixtures;
-use App\Enum\Metrics\GroupingCriteria;
+use App\Enum\Metrics\MetricsGrouping;
 use App\Metadata\Metrics\MetricsApiResource;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
@@ -24,7 +24,7 @@ abstract class AbstractMetricsTestCase extends WebTestCase
     #[DataProvider('provideQueryParametersPerMetricsType')]
     public function testMetricsAreCorrectlyReturnedWhenUserIsAuthenticated(
         string $metricsType,
-        GroupingCriteria $groupingCriteria,
+        MetricsGrouping $groupingCriteria,
         ?\DateTime $dateFrom = null,
         bool $groupByParts = false,
     ): void {
@@ -74,7 +74,7 @@ abstract class AbstractMetricsTestCase extends WebTestCase
     }
 
     /**
-     * @return iterable<array{0: string, 1: GroupingCriteria, 2?: \DateTime|null, 3?: bool|null}>
+     * @return iterable<array{0: string, 1: MetricsGrouping, 2?: \DateTime|null, 3?: bool|null}>
      */
     public static function provideQueryParametersPerMetricsType(): iterable
     {
@@ -86,7 +86,7 @@ abstract class AbstractMetricsTestCase extends WebTestCase
     }
 
     /**
-     * @return iterable<string, array{0: GroupingCriteria, 1?: \DateTime|null, 2?: bool|null}>
+     * @return iterable<string, array{0: MetricsGrouping, 1?: \DateTime|null, 2?: bool|null}>
      */
     abstract public static function provideQueryParameters(): iterable;
 

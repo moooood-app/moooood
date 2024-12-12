@@ -5,10 +5,11 @@ namespace App\Tests\Integration\Entries;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Part;
 use App\Entity\User;
-use App\EventListener\EntryWriteListener;
+use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
 use App\Metadata\Metrics\MetricsApiResource;
-use App\Notifier\EntrySnsNotifier;
+use App\Notifier\AwardEventNotifier;
+use App\Notifier\EntryProcessorNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
@@ -25,8 +26,9 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(Part::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserRepository::class)]
-#[CoversClass(EntryWriteListener::class)]
-#[CoversClass(EntrySnsNotifier::class)]
+#[CoversClass(NewEntryListener::class)]
+#[CoversClass(EntryProcessorNotifier::class)]
+#[CoversClass(AwardEventNotifier::class)]
 #[UsesClass(MetricsApiResource::class)]
 #[UsesClass(TokenCreatedListener::class)]
 final class CreatePartTest extends WebTestCase

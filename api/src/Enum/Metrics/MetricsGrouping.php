@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enum\Metrics;
 
-enum GroupingCriteria: string
+enum MetricsGrouping: string
 {
     case ENTRY = 'entry';
     case HOUR = 'hour';

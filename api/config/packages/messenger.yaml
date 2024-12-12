@@ -7,10 +7,17 @@ framework:
                 serializer: 'App\Messenger\Serializer\ProcessorOutputDecoder'
                 options:
                     auto_setup: false
+            awards:
+                dsn: '%env(MESSENGER_TRANSPORT_AWARD_DSN)%'
+                serializer: 'App\Messenger\Serializer\AwardEventDecoder'
+                options:
+                    auto_setup: false
             mailer:
                 dsn: '%env(MESSENGER_TRANSPORT_MAILER_DSN)%'
         routing:
             App\Message\ProcessorOutputMessage: post-processing
+            App\Message\Awards\NewEntryEventMessage: awards
+            App\Message\Awards\NewPartEventMessage: awards
             Symfony\Component\Mailer\Messenger\SendEmailMessage: mailer
 
 when@test:

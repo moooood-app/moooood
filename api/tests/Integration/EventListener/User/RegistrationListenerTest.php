@@ -5,6 +5,7 @@ namespace App\Tests\Integration\EventListener\User;
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\EventListener\User\RegistrationListener;
+use App\Messenger\Serializer\AwardEventDecoder;
 use App\Messenger\Serializer\ProcessorOutputDecoder;
 use App\Repository\UserRepository;
 use HWI\Bundle\OAuthBundle\Event\FilterUserResponseEvent;
@@ -23,6 +24,7 @@ use Zenstruck\Messenger\Test\InteractsWithMessenger;
  */
 #[CoversClass(RegistrationListener::class)]
 #[UsesClass(ProcessorOutputDecoder::class)]
+#[UsesClass(AwardEventDecoder::class)]
 #[UsesClass(UserRepository::class)]
 final class RegistrationListenerTest extends KernelTestCase
 {

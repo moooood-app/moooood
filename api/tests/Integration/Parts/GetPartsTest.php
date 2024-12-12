@@ -7,10 +7,11 @@ use App\DataFixtures\UserFixtures;
 use App\Doctrine\CurrentUserExtension;
 use App\Entity\Part;
 use App\Entity\User;
-use App\EventListener\EntryWriteListener;
+use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
 use App\Metadata\Metrics\MetricsApiResource;
-use App\Notifier\EntrySnsNotifier;
+use App\Notifier\AwardEventNotifier;
+use App\Notifier\EntryProcessorNotifier;
 use App\Repository\PartRepository;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
@@ -29,8 +30,9 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(PartRepository::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserRepository::class)]
-#[CoversClass(EntryWriteListener::class)]
-#[CoversClass(EntrySnsNotifier::class)]
+#[CoversClass(NewEntryListener::class)]
+#[CoversClass(EntryProcessorNotifier::class)]
+#[CoversClass(AwardEventNotifier::class)]
 #[CoversClass(CurrentUserExtension::class)]
 #[UsesClass(MetricsApiResource::class)]
 #[UsesClass(TokenCreatedListener::class)]

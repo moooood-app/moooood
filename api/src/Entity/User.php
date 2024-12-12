@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
+use App\Entity\Awards\GrantedAward;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -106,10 +107,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private Collection $entries;
 
+    /**
+     * @var Collection<int, GrantedAward>
+     */
+    #[ORM\OneToMany(targetEntity: GrantedAward::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $grantedAwards;
+
     public function __construct()
     {
         $this->parts = new ArrayCollection();
         $this->entries = new ArrayCollection();
+        $this->grantedAwards = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -255,5 +263,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->getEmail();
+    }
+
+    /**
+     * @return Collection<int, GrantedAward>
+     */
+    public function getGrantedAwards(): Collection
+    {
+        return $this->grantedAwards;
+    }
+
+    public function addGrantedAward(GrantedAward $grantedAward): static
+    {
+        if (!$this->grantedAwards->contains($grantedAward)) {
+            $this->grantedAwards->add($grantedAward);
+            $grantedAward->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGrantedAward(GrantedAward $grantedAward): static
+    {
+        $this->grantedAwards->removeElement($grantedAward);
+
+        return $this;
     }
 }
