@@ -6,8 +6,9 @@ namespace App\Tests\Notifier;
 
 use App\Entity\Entry;
 use App\Metadata\Metrics\MetricsApiResource;
-use App\Notifier\EntrySnsNotifier;
+use App\Notifier\EntryProcessorNotifier;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Notifier\Exception\TransportExceptionInterface;
@@ -21,20 +22,20 @@ use Symfony\Component\Uid\Uuid;
 /**
  * @internal
  */
-#[CoversClass(EntrySnsNotifier::class)]
+#[CoversClass(EntryProcessorNotifier::class)]
 #[CoversClass(Entry::class)]
 #[CoversClass(MetricsApiResource::class)]
-final class EntrySnsNotifierTest extends KernelTestCase
+final class EntryProcessorNotifierTest extends KernelTestCase
 {
     public function testNotifySuccess(): void
     {
-        /** @var TexterInterface&\PHPUnit\Framework\MockObject\MockObject $texter */
+        /** @var TexterInterface&MockObject $texter */
         $texter = $this->createMock(TexterInterface::class);
 
-        /** @var LoggerInterface&\PHPUnit\Framework\MockObject\MockObject $logger */
+        /** @var LoggerInterface&MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
-        /** @var MessageOptionsInterface&\PHPUnit\Framework\MockObject\MockObject $entrySnsOptions */
+        /** @var MessageOptionsInterface&MockObject $entrySnsOptions */
         $entrySnsOptions = $this->createMock(MessageOptionsInterface::class);
 
         $container = self::getContainer();
@@ -42,18 +43,16 @@ final class EntrySnsNotifierTest extends KernelTestCase
         /** @var SerializerInterface $serializer */
         $serializer = $container->get(SerializerInterface::class);
 
-        $notifier = new EntrySnsNotifier($texter, $serializer, $logger, $entrySnsOptions);
+        $notifier = new EntryProcessorNotifier($texter, $serializer, $logger, $entrySnsOptions);
 
         $entry = new Entry();
-        $this->setProperty($entry, 'id', new Uuid('09e6c349-fb5c-4f9c-8b05-d434f00e4b73')); // Set the id using PropertyAccess
-        $entry->setContent('Test Entry'); // Assuming Entry has a setMessage method
+        $this->setProperty($entry, 'id', new Uuid('09e6c349-fb5c-4f9c-8b05-d434f00e4b73'));
+        $entry->setContent('Test Entry');
 
-        // Serialize the entry directly
         $serializedEntry = $serializer->serialize($entry, 'jsonld', [
             AbstractNormalizer::GROUPS => ['entry:sns'],
         ]);
 
-        // Assert that Texter sends the correct message
         $texter
             ->expects(self::once())
             ->method('send')
@@ -63,7 +62,6 @@ final class EntrySnsNotifierTest extends KernelTestCase
             }))
         ;
 
-        // Logger should not be called in this case
         $logger->expects(self::never())->method('error');
 
         $notifier->notify($entry);
@@ -71,13 +69,13 @@ final class EntrySnsNotifierTest extends KernelTestCase
 
     public function testNotifyFails(): void
     {
-        /** @var TexterInterface&\PHPUnit\Framework\MockObject\MockObject $texter */
+        /** @var TexterInterface&MockObject $texter */
         $texter = $this->createMock(TexterInterface::class);
 
-        /** @var LoggerInterface&\PHPUnit\Framework\MockObject\MockObject $logger */
+        /** @var LoggerInterface&MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
 
-        /** @var MessageOptionsInterface&\PHPUnit\Framework\MockObject\MockObject $entrySnsOptions */
+        /** @var MessageOptionsInterface&MockObject $entrySnsOptions */
         $entrySnsOptions = $this->createMock(MessageOptionsInterface::class);
 
         $container = self::getContainer();
@@ -85,20 +83,20 @@ final class EntrySnsNotifierTest extends KernelTestCase
         /** @var SerializerInterface $serializer */
         $serializer = $container->get(SerializerInterface::class);
 
-        $notifier = new EntrySnsNotifier($texter, $serializer, $logger, $entrySnsOptions);
+        $notifier = new EntryProcessorNotifier($texter, $serializer, $logger, $entrySnsOptions);
 
         $entry = new Entry();
-        $this->setProperty($entry, 'id', new Uuid('09e6c349-fb5c-4f9c-8b05-d434f00e4b73')); // Set the id using PropertyAccess
-        $entry->setContent('Test Entry'); // Assuming Entry has a setMessage method
+        $this->setProperty($entry, 'id', new Uuid('09e6c349-fb5c-4f9c-8b05-d434f00e4b73'));
+        $entry->setContent('Test Entry');
 
-        // Stub Texter to throw an exception
+        /** @var TransportExceptionInterface&MockObject $exception */
+        $exception = $this->createMock(TransportExceptionInterface::class);
         $texter
             ->expects(self::once())
             ->method('send')
-            ->willThrowException($this->createMock(TransportExceptionInterface::class))
+            ->willThrowException($exception)
         ;
 
-        // Logger should log the error
         $logger
             ->expects(self::once())
             ->method('error')

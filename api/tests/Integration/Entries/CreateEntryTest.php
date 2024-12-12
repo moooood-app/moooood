@@ -5,10 +5,12 @@ namespace App\Tests\Integration\Entries;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Entry;
 use App\Entity\User;
-use App\EventListener\EntryWriteListener;
+use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
+use App\Message\Awards\NewEntryEventMessage;
 use App\Metadata\Metrics\MetricsApiResource;
-use App\Notifier\EntrySnsNotifier;
+use App\Notifier\AwardEventNotifier;
+use App\Notifier\EntryProcessorNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use App\Tests\Integration\Traits\ValidationErrorsTrait;
@@ -26,8 +28,10 @@ use Symfony\Component\Notifier\DataCollector\NotificationDataCollector;
 #[CoversClass(Entry::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserRepository::class)]
-#[CoversClass(EntryWriteListener::class)]
-#[CoversClass(EntrySnsNotifier::class)]
+#[CoversClass(NewEntryEventMessage::class)]
+#[CoversClass(NewEntryListener::class)]
+#[CoversClass(EntryProcessorNotifier::class)]
+#[CoversClass(AwardEventNotifier::class)]
 #[UsesClass(MetricsApiResource::class)]
 #[UsesClass(TokenCreatedListener::class)]
 final class CreateEntryTest extends WebTestCase
@@ -93,15 +97,31 @@ final class CreateEntryTest extends WebTestCase
         /** @var NotificationDataCollector */
         $notifierCollector = $client->getProfile()->getCollector('notifier');
 
-        self::assertCount(1, $notifierCollector->getEvents()->getMessages());
-        $message = $notifierCollector->getEvents()->getMessages()[0];
+        self::assertCount(2, $notifierCollector->getEvents()->getMessages());
+        $newEntryMessage = $notifierCollector->getEvents()->getMessages()[0];
         /** @var array<string, mixed> */
-        $payload = json_decode($message->getSubject(), true, 512, \JSON_THROW_ON_ERROR);
-        self::assertEqualsCanonicalizing([
+        $payload = json_decode($newEntryMessage->getSubject(), true, 512, \JSON_THROW_ON_ERROR);
+        self::assertSame([
             '@context' => '/api/contexts/Entry',
             '@id' => $data['@id'],
             '@type' => 'Entry',
             'content' => 'This is a test',
+        ], $payload);
+
+        /** @var UserRepository */
+        $repository = self::getContainer()->get(UserRepository::class);
+        /** @var User */
+        $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
+
+        $awardMessage = $notifierCollector->getEvents()->getMessages()[1];
+        /** @var array<string, mixed> */
+        $payload = json_decode($awardMessage->getSubject(), true, 512, \JSON_THROW_ON_ERROR);
+        self::assertArrayHasKey('@id', $payload);
+        unset($payload['@id']);
+        self::assertSame([
+            '@type' => 'NewEntryEventMessage',
+            'entry' => $data['@id'],
+            'user' => \sprintf('/api/users/%s', $user->getId()),
         ], $payload);
     }
 

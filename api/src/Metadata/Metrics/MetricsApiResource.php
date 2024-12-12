@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Entity\Part;
-use App\Enum\Metrics\GroupingCriteria;
+use App\Enum\Metrics\MetricsGrouping;
 use App\Enum\Processor;
 use App\State\Provider\Metrics\MetricsProvider;
 use Symfony\Component\Validator\Constraints\Date;
@@ -44,7 +44,7 @@ class MetricsApiResource extends ApiResource
             parameters: [
                 self::GROUPING_FILTER_KEY => new QueryParameter(
                     required: true,
-                    schema: array_map(static fn (GroupingCriteria $criteria) => $criteria->value, GroupingCriteria::cases()),
+                    schema: array_map(static fn (MetricsGrouping $criteria) => $criteria->value, MetricsGrouping::cases()),
                     description: 'Grouping criteria',
                 ),
                 self::GROUP_BY_PARTS_FILTER_KEY => new QueryParameter(

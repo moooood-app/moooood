@@ -7,7 +7,7 @@ use App\Doctrine\CurrentUserExtension;
 use App\Entity\Entry;
 use App\Entity\EntryMetadata;
 use App\Entity\User;
-use App\EventListener\EntryWriteListener;
+use App\EventListener\NewEntryListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Parameter;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -22,7 +22,7 @@ use Symfony\Component\Uid\Uuid;
  * @internal
  */
 #[CoversClass(CurrentUserExtension::class)]
-#[UsesClass(EntryWriteListener::class)]
+#[UsesClass(NewEntryListener::class)]
 final class CurrentUserExtensionTest extends KernelTestCase
 {
     public function testApplyToCollectionAddsCorrectWhereClause(): void

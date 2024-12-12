@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
-use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\User;
 

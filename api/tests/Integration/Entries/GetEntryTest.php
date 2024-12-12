@@ -6,10 +6,11 @@ use App\DataFixtures\UserFixtures;
 use App\Doctrine\CurrentUserExtension;
 use App\Entity\Entry;
 use App\Entity\User;
-use App\EventListener\EntryWriteListener;
+use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
 use App\Metadata\Metrics\MetricsApiResource;
-use App\Notifier\EntrySnsNotifier;
+use App\Notifier\AwardEventNotifier;
+use App\Notifier\EntryProcessorNotifier;
 use App\Repository\EntryRepository;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
@@ -29,8 +30,9 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(UserRepository::class)]
 #[CoversClass(CurrentUserExtension::class)]
 #[CoversClass(EntryRepository::class)]
-#[CoversClass(EntryWriteListener::class)]
-#[CoversClass(EntrySnsNotifier::class)]
+#[CoversClass(NewEntryListener::class)]
+#[CoversClass(EntryProcessorNotifier::class)]
+#[CoversClass(AwardEventNotifier::class)]
 #[UsesClass(MetricsApiResource::class)]
 #[UsesClass(TokenCreatedListener::class)]
 final class GetEntryTest extends WebTestCase

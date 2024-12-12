@@ -13,13 +13,13 @@ use Symfony\Component\Notifier\TexterInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class EntrySnsNotifier
+class EntryProcessorNotifier
 {
     public function __construct(
         private readonly TexterInterface $texter,
         private readonly SerializerInterface $serializer,
         private readonly LoggerInterface $logger,
-        private readonly MessageOptionsInterface $entrySnsOptions,
+        private readonly MessageOptionsInterface $entryProcessorSnsOptions,
     ) {
     }
 
@@ -29,7 +29,7 @@ class EntrySnsNotifier
             AbstractNormalizer::GROUPS => [Entry::SERIALIZATION_GROUP_SNS],
         ]);
 
-        $message = new ChatMessage($payload, $this->entrySnsOptions);
+        $message = new ChatMessage($payload, $this->entryProcessorSnsOptions);
 
         try {
             $this->texter->send($message);

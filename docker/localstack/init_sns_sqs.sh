@@ -19,3 +19,8 @@ awslocal sqs create-queue --queue-name ${MAILER_SQS_QUEUE}
 # Post-processing SQS queue and subscription
 awslocal sqs create-queue --queue-name ${POST_PROCESSING_SQS_QUEUE}
 awslocal sns subscribe --topic-arn "arn:aws:sns:${AWS_DEFAULT_REGION}:${AWS_ACCOUNT_ID}:${POST_PROCESSING_SNS_TOPIC}" --protocol sqs --notification-endpoint "arn:aws:sqs:${AWS_DEFAULT_REGION}:${AWS_ACCOUNT_ID}:${POST_PROCESSING_SQS_QUEUE}"
+
+# Awards
+awslocal sns create-topic --name ${AWARD_EVENTS_SNS_TOPIC}
+awslocal sqs create-queue --queue-name ${AWARD_EVENTS_SQS_QUEUE}
+awslocal sns subscribe --topic-arn "arn:aws:sns:${AWS_DEFAULT_REGION}:${AWS_ACCOUNT_ID}:${AWARD_EVENTS_SNS_TOPIC}" --protocol sqs --notification-endpoint "arn:aws:sqs:${AWS_DEFAULT_REGION}:${AWS_ACCOUNT_ID}:${AWARD_EVENTS_SQS_QUEUE}"

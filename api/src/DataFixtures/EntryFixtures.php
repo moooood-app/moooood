@@ -16,8 +16,6 @@ use Faker\Factory;
 
 class EntryFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const BASE_ENTRY = 'base-entry';
-
     public const TWO_MONTHS_BATCH_DATE = '2018-04-01 00:00:00';
 
     public function getDependencies(): array

@@ -9,7 +9,7 @@ use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\Operations;
 use ApiPlatform\Metadata\Parameters;
 use ApiPlatform\Metadata\QueryParameter;
-use App\Enum\Metrics\GroupingCriteria;
+use App\Enum\Metrics\MetricsGrouping;
 use App\Enum\Processor;
 use App\Metadata\Metrics\MetricsApiResource;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -55,7 +55,7 @@ final class MetricsApiResourceTest extends TestCase
         self::assertInstanceOf(QueryParameter::class, $groupingFilter);
         self::assertTrue($groupingFilter->getRequired());
         self::assertSame(
-            array_map(static fn (GroupingCriteria $criteria) => $criteria->value, GroupingCriteria::cases()),
+            array_map(static fn (MetricsGrouping $criteria) => $criteria->value, MetricsGrouping::cases()),
             $groupingFilter->getSchema()
         );
         self::assertSame('Grouping criteria', $groupingFilter->getDescription());

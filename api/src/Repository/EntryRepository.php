@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Entry;
+use App\Entity\User;
 use App\Enum\Processor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,5 +32,16 @@ class EntryRepository extends ServiceEntityRepository
             break;
         }
         $entityManager->flush();
+    }
+
+    public function countEntriesForUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('e')
+            ->select('COUNT(e)')
+            ->where('e.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
     }
 }

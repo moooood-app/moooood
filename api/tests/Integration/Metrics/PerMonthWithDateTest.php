@@ -3,20 +3,21 @@
 namespace App\Tests\Integration\Metrics;
 
 use App\DataFixtures\EntryFixtures;
-use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\Complexity;
 use App\Entity\Metrics\Emotions;
 use App\Entity\Metrics\Keywords;
 use App\Entity\Metrics\Sentiment;
 use App\Entity\Metrics\Submissions;
 use App\Entity\User;
-use App\Enum\Metrics\GroupingCriteria;
-use App\EventListener\EntryWriteListener;
+use App\Enum\Metrics\MetricsGrouping;
+use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
-use App\Notifier\EntrySnsNotifier;
+use App\Notifier\AwardEventNotifier;
+use App\Notifier\EntryProcessorNotifier;
 use App\Repository\Metrics\ComplexityRepository;
 use App\Repository\Metrics\EmotionsRepository;
 use App\Repository\Metrics\KeywordsRepository;
+use App\Repository\Metrics\MetricsQuery;
 use App\Repository\Metrics\SentimentRepository;
 use App\Repository\Metrics\SubmissionsRepository;
 use App\Repository\UserRepository;
@@ -41,10 +42,11 @@ use PHPUnit\Framework\Attributes\UsesClass;
 #[CoversClass(User::class)]
 #[CoversClass(UserRepository::class)]
 #[CoversClass(MetricsQuery::class)]
-#[CoversClass(GroupingCriteria::class)]
+#[CoversClass(MetricsGrouping::class)]
 #[CoversClass(MetricsProvider::class)]
-#[UsesClass(EntryWriteListener::class)]
-#[UsesClass(EntrySnsNotifier::class)]
+#[UsesClass(NewEntryListener::class)]
+#[UsesClass(EntryProcessorNotifier::class)]
+#[UsesClass(AwardEventNotifier::class)]
 #[UsesClass(TokenCreatedListener::class)]
 final class PerMonthWithDateTest extends AbstractMetricsTestCase
 {
@@ -62,7 +64,7 @@ final class PerMonthWithDateTest extends AbstractMetricsTestCase
     public static function provideQueryParameters(): iterable
     {
         yield \sprintf('per month, from %s', EntryFixtures::TWO_MONTHS_BATCH_DATE) => [
-            GroupingCriteria::MONTH,
+            MetricsGrouping::MONTH,
             new \DateTime(EntryFixtures::TWO_MONTHS_BATCH_DATE),
         ];
     }

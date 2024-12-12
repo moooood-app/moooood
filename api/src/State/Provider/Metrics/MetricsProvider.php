@@ -6,11 +6,11 @@ namespace App\State\Provider\Metrics;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
-use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\User;
 use App\Enum\Processor;
 use App\Metadata\Metrics\MetricsApiResource;
+use App\Repository\Metrics\MetricsQuery;
 use App\Repository\Metrics\MetricsRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;

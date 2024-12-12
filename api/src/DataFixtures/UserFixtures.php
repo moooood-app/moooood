@@ -11,6 +11,7 @@ class UserFixtures extends Fixture
 {
     public const FIRST_USER = 'user@moooood.app';
     public const HACKER_USER = 'hacker@moooood.app';
+    public const USER_NO_DATA = 'no-data@moooood.app';
     public const PASSWORD = 'p@ssword';
 
     public function __construct(private UserPasswordHasherInterface $userPasswordHasher)
@@ -52,6 +53,22 @@ class UserFixtures extends Fixture
 
         $manager->persist($user);
         $this->addReference(self::HACKER_USER, $user);
+
+        $user = new User();
+        $user
+            ->setEmail(self::USER_NO_DATA)
+            ->setFirstName('No')
+            ->setLastName('Data')
+            ->setPassword(
+                $this->userPasswordHasher->hashPassword(
+                    $user,
+                    self::PASSWORD,
+                )
+            )
+        ;
+
+        $manager->persist($user);
+        $this->addReference(self::USER_NO_DATA, $user);
 
         $manager->flush();
     }

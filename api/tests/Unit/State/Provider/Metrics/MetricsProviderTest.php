@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\State\Provider\Metrics;
 
 use ApiPlatform\Metadata\HttpOperation;
-use App\Dto\Metrics\MetricsQuery;
 use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\Metrics\Sentiment;
 use App\Entity\Part;
 use App\Entity\User;
 use App\Enum\Processor;
 use App\Metadata\Metrics\MetricsApiResource;
+use App\Repository\Metrics\MetricsQuery;
 use App\Repository\Metrics\MetricsRepositoryInterface;
 use App\State\Provider\Metrics\MetricsProvider;
 use Doctrine\ORM\EntityManagerInterface;
