@@ -8,6 +8,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -44,6 +45,13 @@ class RegistrationFormType extends AbstractType
                         'max' => 50,
                         'maxMessage' => 'Last name cannot exceed {{ limit }} characters',
                     ]),
+                ],
+            ])
+            ->add('timezone', TimezoneType::class, [
+                'label' => 'Timezone',
+                'intl' => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'Timezone is required']),
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [

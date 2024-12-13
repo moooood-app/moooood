@@ -45,6 +45,7 @@ final class TokenCreatedListenerTest extends KernelTestCase
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'email' => $user->getEmail(),
+                'timezone' => $user->getTimezone(),
             ],
             $event->getData(),
         );

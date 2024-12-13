@@ -31,6 +31,7 @@ class UserFixtures extends Fixture
                     self::PASSWORD,
                 )
             )
+            ->setTimezone('America/Vancouver')
         ;
 
         $manager->persist($user);
@@ -49,6 +50,7 @@ class UserFixtures extends Fixture
             )
             ->setGoogle('google')
             ->setApple('apple')
+            ->setTimezone('America/Vancouver')
         ;
 
         $manager->persist($user);
@@ -65,6 +67,7 @@ class UserFixtures extends Fixture
                     self::PASSWORD,
                 )
             )
+            ->setTimezone('America/Vancouver')
         ;
 
         $manager->persist($user);
