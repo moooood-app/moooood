@@ -24,6 +24,9 @@ class Award
     #[ORM\Column(length: 1024)]
     private string $description;
 
+    #[ORM\Column(length: 512)]
+    private string $image;
+
     /**
      * @var array<string, mixed>
      */
@@ -61,6 +64,18 @@ class Award
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getImage(): string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

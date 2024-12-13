@@ -83,6 +83,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $apple = null;
 
+    #[ORM\Column(type: 'string', length: 64, nullable: false)]
+    #[Assert\NotBlank(message: 'Timezone cannot be blank.')]
+    #[Assert\Timezone(message: 'Invalid timezone.')]
+    #[Serializer\Groups([self::SERIALIZATION_GROUP_JWT])]
+    private string $timezone;
+
     /**
      * @var Collection<int, Part>
      */
@@ -193,6 +199,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setApple(string $apple): static
     {
         $this->apple = $apple;
+
+        return $this;
+    }
+
+    public function getTimezone(): string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): self
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }
