@@ -29,7 +29,7 @@ class AwardFixtures extends Fixture
                 ->setDescription("Awarded for posting {$entryCount} entries")
                 ->setImage('https://dummyimage.com/600x400/333/fff&text=Award')
                 ->setType(AwardType::ENTRIES)
-                ->setPriority(0 - $i)
+                ->setPriority($i)
                 ->setCriteria([EntryCountChecker::ENTRY_COUNT_CRITERIA => $entryCount])
             ;
             $manager->persist($award);

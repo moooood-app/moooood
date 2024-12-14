@@ -35,7 +35,7 @@ class EntryMetadata
     private Processor $processor;
 
     #[ORM\ManyToOne(inversedBy: 'metadata')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Entry $entry;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
