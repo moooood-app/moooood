@@ -2,14 +2,19 @@
 
 namespace App\Awards\Checkers;
 
+use App\Awards\AwardAwareTrait;
 use App\Awards\AwardStatus;
-use App\Awards\AwardStatusCollection;
+use App\Awards\ChainableCheckerTrait;
+use App\Awards\Contracts\ChainableAwardCheckerInterface;
 use App\Entity\User;
 use App\Enum\AwardType;
 use App\Repository\EntryRepository;
 
-final class EntryCountChecker extends AbstractChainableAwardChecker
+final class EntryCountChecker implements ChainableAwardCheckerInterface
 {
+    use AwardAwareTrait;
+    use ChainableCheckerTrait;
+
     public const ENTRY_COUNT_CRITERIA = 'entry_count';
 
     public function __construct(private readonly EntryRepository $entryRepository)
@@ -21,7 +26,7 @@ final class EntryCountChecker extends AbstractChainableAwardChecker
         return AwardType::ENTRIES;
     }
 
-    public function check(User $user, AwardStatusCollection $awardStatusCollection): void
+    public function check(User $user): AwardStatus
     {
         /** @var array{entry_count?: int} */
         $criteria = $this->award->getCriteria();
@@ -31,19 +36,13 @@ final class EntryCountChecker extends AbstractChainableAwardChecker
         $userEntryCount = $this->entryRepository->countEntriesForUser($user);
 
         if (0 === $userEntryCount) {
-            $status = new AwardStatus($this->award, false, 0);
+            return new AwardStatus($this->award, false, 0);
         }
 
-        $status = new AwardStatus(
+        return new AwardStatus(
             $this->award,
             $userEntryCount >= $entryCount,
             (int) ($userEntryCount / $entryCount * 100),
         );
-
-        $awardStatusCollection->add($status);
-
-        if ($status->isGranted() && null !== $this->next) {
-            $this->next->check($user, $awardStatusCollection);
-        }
     }
 }

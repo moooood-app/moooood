@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\App\Awards;
 
-use App\Awards\AwardStatusCollection;
-use App\Awards\ChainableCheckerFactory;
+use App\Awards\AwardCheckerFactory;
+use App\Awards\AwardStatus;
 use App\Awards\Contracts\ChainableAwardCheckerInterface;
 use App\Entity\Awards\Award;
 use App\Entity\User;
@@ -17,8 +17,8 @@ use Symfony\Component\Uid\Uuid;
 /**
  * @internal
  */
-#[CoversClass(ChainableCheckerFactory::class)]
-final class ChainableCheckerFactoryTest extends TestCase
+#[CoversClass(AwardCheckerFactory::class)]
+final class AwardCheckerFactoryTest extends TestCase
 {
     public function testCreateWithNoNonGrantedAwardsReturnsNull(): void
     {
@@ -33,7 +33,7 @@ final class ChainableCheckerFactoryTest extends TestCase
 
         $checkers = [AwardType::ENTRIES->value => $checker];
 
-        $factory = new ChainableCheckerFactory($checkers, $awardRepositoryMock);
+        $factory = new AwardCheckerFactory($checkers, $awardRepositoryMock);
 
         /** @var User|MockObject $userMock */
         $userMock = $this->createMock(User::class);
@@ -65,7 +65,7 @@ final class ChainableCheckerFactoryTest extends TestCase
 
         $checkers = [AwardType::ENTRIES->value => $checker];
 
-        $factory = new ChainableCheckerFactory($checkers, $awardRepositoryMock);
+        $factory = new AwardCheckerFactory($checkers, $awardRepositoryMock);
 
         /** @var User|MockObject $userMock */
         $userMock = $this->createMock(User::class);
@@ -97,7 +97,7 @@ final class ChainableCheckerFactoryTest extends TestCase
 
         $checkers = [AwardType::ENTRIES->value => $checker];
 
-        $factory = new ChainableCheckerFactory($checkers, $awardRepositoryMock);
+        $factory = new AwardCheckerFactory($checkers, $awardRepositoryMock);
 
         /** @var User|MockObject $userMock */
         $userMock = $this->createMock(User::class);
@@ -124,7 +124,7 @@ final class ChainableCheckerFactoryTest extends TestCase
         /** @var AwardRepository|MockObject */
         $awardRepository = $this->createMock(AwardRepository::class);
 
-        new ChainableCheckerFactory(new \ArrayIterator($checkers), $awardRepository);
+        new AwardCheckerFactory(new \ArrayIterator($checkers), $awardRepository);
     }
 
     private function getChecker(): ChainableAwardCheckerInterface
@@ -140,13 +140,19 @@ final class ChainableCheckerFactoryTest extends TestCase
                 return AwardType::ENTRIES;
             }
 
-            public function check(User $user, AwardStatusCollection $awardStatusCollection): void
+            public function check(User $user): AwardStatus
             {
+                return new AwardStatus(new Award(), false, 0);
             }
 
             public function setNext(ChainableAwardCheckerInterface $checker): static
             {
                 return $this;
+            }
+
+            public function getNext(): ?ChainableAwardCheckerInterface
+            {
+                return null;
             }
         };
     }

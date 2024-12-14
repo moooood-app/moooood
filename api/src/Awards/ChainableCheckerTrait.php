@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Awards\Checkers;
+namespace App\Awards;
 
-use App\Awards\AwardAwareTrait;
 use App\Awards\Contracts\ChainableAwardCheckerInterface;
 
-abstract class AbstractChainableAwardChecker implements ChainableAwardCheckerInterface
+trait ChainableCheckerTrait
 {
-    use AwardAwareTrait;
     protected ?ChainableAwardCheckerInterface $next = null;
 
     public function setNext(ChainableAwardCheckerInterface $next): static
@@ -15,5 +13,10 @@ abstract class AbstractChainableAwardChecker implements ChainableAwardCheckerInt
         $this->next = $next;
 
         return $this;
+    }
+
+    public function getNext(): ?ChainableAwardCheckerInterface
+    {
+        return $this->next;
     }
 }

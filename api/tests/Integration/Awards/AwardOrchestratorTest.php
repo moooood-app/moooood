@@ -2,11 +2,10 @@
 
 namespace App\Tests\Integration\Awards;
 
+use App\Awards\AwardCheckerFactory;
 use App\Awards\AwardOrchestrator;
 use App\Awards\AwardStatus;
 use App\Awards\AwardStatusCollection;
-use App\Awards\ChainableCheckerFactory;
-use App\Awards\Checkers\AbstractChainableAwardChecker;
 use App\Awards\Checkers\EntryCountChecker;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Awards\GrantedAward;
@@ -28,8 +27,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 #[CoversClass(AwardOrchestrator::class)]
 #[CoversClass(AwardStatus::class)]
 #[CoversClass(AwardStatusCollection::class)]
-#[CoversClass(ChainableCheckerFactory::class)]
-#[CoversClass(AbstractChainableAwardChecker::class)]
+#[CoversClass(AwardCheckerFactory::class)]
 #[CoversClass(EntryCountChecker::class)]
 #[CoversClass(AwardProgressRepository::class)]
 #[CoversClass(AwardRepository::class)]

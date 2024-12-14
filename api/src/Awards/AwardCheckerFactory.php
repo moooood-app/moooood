@@ -2,6 +2,7 @@
 
 namespace App\Awards;
 
+use App\Awards\Contracts\AwardCheckerInterface;
 use App\Awards\Contracts\ChainableAwardCheckerInterface;
 use App\Entity\User;
 use App\Enum\AwardType;
@@ -10,20 +11,20 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Contracts\Cache\CacheInterface;
 
-final class ChainableCheckerFactory
+final class AwardCheckerFactory
 {
     /**
-     * @var array<string, ChainableAwardCheckerInterface>
+     * @var array<string, AwardCheckerInterface>
      */
     private array $checkers;
 
     private CacheInterface $chains;
 
     /**
-     * @param iterable<ChainableAwardCheckerInterface> $checkers
+     * @param iterable<AwardCheckerInterface> $checkers
      */
     public function __construct(
-        #[AutowireIterator(tag: ChainableAwardCheckerInterface::CHECKER_TAG)]
+        #[AutowireIterator(tag: AwardCheckerInterface::CHECKER_TAG)]
         iterable $checkers,
         private readonly AwardRepository $awardRepository,
     ) {
@@ -38,11 +39,11 @@ final class ChainableCheckerFactory
         }
     }
 
-    public function create(User $user, AwardType $type): ?ChainableAwardCheckerInterface
+    public function create(User $user, AwardType $type): ?AwardCheckerInterface
     {
         return $this->chains->get(
             \sprintf('user_%s-type_%s', $user->getId()->toString(), $type->value),
-            function () use ($user, $type): ?ChainableAwardCheckerInterface {
+            function () use ($user, $type): ?AwardCheckerInterface {
                 /** @var \SplPriorityQueue<int, ChainableAwardCheckerInterface> */
                 $chain = new \SplPriorityQueue();
                 $chain->setExtractFlags(\SplPriorityQueue::EXTR_DATA);
@@ -58,7 +59,11 @@ final class ChainableCheckerFactory
 
                     $checker = $checker->withAward($award);
 
-                    $chain->insert($checker, $award->getPriority());
+                    if (!$checker instanceof ChainableAwardCheckerInterface) {
+                        return $checker;
+                    }
+
+                    $chain->insert($checker, 0 - $award->getPriority());
                 }
 
                 if ($chain->isEmpty()) {
@@ -70,7 +75,7 @@ final class ChainableCheckerFactory
                 $previous = null;
 
                 foreach ($clonedChain as $checker) {
-                    if ($previous) {
+                    if ($previous instanceof ChainableAwardCheckerInterface) {
                         $previous->setNext($checker);
                     }
                     $previous = $checker;
