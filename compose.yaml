@@ -12,13 +12,14 @@ x-templates:
       - ./processors/python/:/app/
 
   python-processor-build-template: &python-processor-build-template
-    context: ./
+    context: .
     dockerfile: docker/processors/python/Dockerfile
 
 services:
   api:
     container_name: api
-    image: ${IMAGES_PREFIX:-}app-php
+    build:
+      dockerfile: docker/api/Dockerfile
     restart: unless-stopped
     env_file:
       - .env
@@ -47,51 +48,36 @@ services:
       - target: 443
         published: ${HTTP3_PORT:-443}
         protocol: udp
-    depends_on:
-      - database
 
-  messenger.post-processing:
-    container_name: messenger.post-processing
+  worker-messenger-post-processing:
+    container_name: worker-messenger-post-processing
+    build:
+      context: .
+      dockerfile: docker/messenger/Dockerfile
     restart: unless-stopped
     env_file:
       - .env
-    depends_on:
-      - database
 
-  messenger.awards:
-    container_name: messenger.awards
+  worker-messenger-awards:
+    container_name: worker-messenger-awards
+    build:
+      context: .
+      dockerfile: docker/messenger/Dockerfile
     restart: unless-stopped
     env_file:
       - .env
-    depends_on:
-      - database
 
-  messenger.mailer:
-    container_name: messenger.mailer
+  worker-messenger-mailer:
+    container_name: worker-messenger-mailer
+    build:
+      context: .
+      dockerfile: docker/messenger/Dockerfile
     restart: unless-stopped
     env_file:
       - .env
-    depends_on:
-      - database
 
-  database:
-    container_name: database
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
-    env_file:
-      - .env
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-moooood}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-moooood}", "-U", "${POSTGRES_USER:-app}"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-    volumes:
-      - ./docker/data/db:/var/lib/postgresql/data:rw
-
-  processors.sentiment:
+  worker-processor-sentiment:
+    container_name: worker-processor-sentiment
     <<: *python-processor-template
     build:
       <<: *python-processor-build-template
@@ -100,7 +86,8 @@ services:
     environment:
       - PROCESSOR_NAME=sentiment
 
-  processors.complexity:
+  worker-processor-complexity:
+    container_name: worker-processor-complexity
     <<: *python-processor-template
     build:
       <<: *python-processor-build-template
@@ -109,16 +96,8 @@ services:
     environment:
       - PROCESSOR_NAME=complexity
 
-  processors.keywords:
-    <<: *python-processor-template
-    build:
-      <<: *python-processor-build-template
-      args:
-        PROCESSOR_NAME: keywords
-    environment:
-      - PROCESSOR_NAME=keywords
-
-  processors.emotions:
+  worker-processor-emotions:
+    container_name: worker-processor-emotions
     <<: *python-processor-template
     build:
       <<: *python-processor-build-template
