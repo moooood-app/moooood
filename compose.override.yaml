@@ -2,8 +2,8 @@
 services:
   api:
     build:
-      context: ./docker/api
-      target: frankenphp_dev
+      context: .
+      target: dev
     volumes:
       - ./api/:/app
       - ./docker/api/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
@@ -16,10 +16,12 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
+    depends_on:
+      - database
+      - redis
 
-  messenger.post-processing:
+  worker-messenger-post-processing:
     build:
-      context: ./docker/messenger
       target: dev
     volumes:
       - ./api/:/app
@@ -34,10 +36,10 @@ services:
     depends_on:
       - database
       - localstack
+      - redis
 
-  messenger.awards:
+  worker-messenger-awards:
     build:
-      context: ./docker/messenger
       target: dev
     volumes:
       - ./api/:/app
@@ -53,9 +55,8 @@ services:
       - database
       - localstack
 
-  messenger.mailer:
+  worker-messenger-mailer:
     build:
-      context: ./docker/messenger
       target: dev
     volumes:
       - ./api/:/app
@@ -72,11 +73,26 @@ services:
       - localstack
 
   database:
+    container_name: database
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
     ports:
       - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-moooood}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-moooood}", "-U", "${POSTGRES_USER:-app}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - ./docker/data/db:/var/lib/postgresql/data:rw
 
   localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    container_name: localstack
     image: localstack/localstack
     ports:
       - "127.0.0.1:4566:4566"            # LocalStack Gateway
@@ -97,8 +113,8 @@ services:
       - ./docker/localstack/init_sns_sqs.sh:/etc/localstack/init/ready.d/init_sns_sqs.sh
 
   mailpit:
+    container_name: mailpit
     image: axllent/mailpit
-    container_name: "${MAILPIT_DOCKER_NAME:-mailpit}"
     ports:
       - "1025"
       - "8025:8025"
@@ -106,5 +122,12 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
+  redis:
+    container_name: redis
+    image: redis:7.4-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: ["redis-server"]

@@ -51,3 +51,6 @@ run: stop
 
 stop:
 	docker compose down --remove-orphans
+
+build:
+	docker compose -f compose.yml -f compose.prod.yml build
