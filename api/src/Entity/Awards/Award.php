@@ -6,10 +6,12 @@ use App\Enum\AwardType;
 use App\Repository\Awards\AwardRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: AwardRepository::class)]
+#[ORM\Table(name: 'awards')]
 class Award
 {
     #[ORM\Id]
@@ -38,6 +40,10 @@ class Award
 
     #[ORM\Column(type: Types::SMALLINT)]
     private int $priority;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private \DateTimeImmutable $createdAt;
 
     public function getId(): Uuid
     {
@@ -118,6 +124,18 @@ class Award
     public function setPriority(int $priority): static
     {
         $this->priority = $priority;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

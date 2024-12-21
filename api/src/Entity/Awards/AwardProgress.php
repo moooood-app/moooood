@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: AwardProgressRepository::class)]
+#[ORM\Table(name: 'awards_progress')]
 #[UniqueConstraint(name: 'unique_award_user', columns: ['award_id', 'user_id'])]
 class AwardProgress
 {

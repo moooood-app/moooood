@@ -72,6 +72,23 @@ services:
       - database
       - localstack
 
+  worker-scheduler-awards:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 3600
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: scheduler_awards
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
   database:
     container_name: database
     image: postgres:${POSTGRES_VERSION:-16}-alpine

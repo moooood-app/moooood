@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: GrantedAwardRepository::class)]
+#[ORM\Table(name: 'awards_granted')]
 class GrantedAward
 {
     #[ORM\Id]

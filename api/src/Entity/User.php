@@ -13,7 +13,9 @@ use App\Entity\Awards\GrantedAward;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -88,6 +90,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Timezone(message: 'Invalid timezone.')]
     #[Serializer\Groups([self::SERIALIZATION_GROUP_JWT])]
     private string $timezone;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private \DateTimeImmutable $createdAt;
 
     /**
      * @var Collection<int, Part>
@@ -211,6 +217,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTimezone(string $timezone): self
     {
         $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

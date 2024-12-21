@@ -7,24 +7,22 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20241213052927 extends AbstractMigration
+final class Version20241220235316 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Add image to award and timezone to user';
+        return 'Add created at to users';
     }
 
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE awards ADD image VARCHAR(512) NOT NULL');
-        $this->addSql('ALTER TABLE users ADD timezone VARCHAR(64) NOT NULL');
+        $this->addSql('ALTER TABLE users ADD created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE users DROP timezone');
-        $this->addSql('ALTER TABLE awards DROP image');
+        $this->addSql('ALTER TABLE users DROP created_at');
     }
 }
