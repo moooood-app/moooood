@@ -5,8 +5,8 @@ namespace App\Tests\Integration\Awards;
 use App\Awards\AwardCheckerFactory;
 use App\Awards\AwardOrchestrator;
 use App\Awards\AwardStatus;
-use App\Awards\AwardStatusCollection;
 use App\Awards\Checkers\EntryCountChecker;
+use App\Awards\Checkers\PositivyImprovementChecker;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Awards\GrantedAward;
 use App\Entity\Entry;
@@ -16,6 +16,7 @@ use App\Repository\Awards\AwardProgressRepository;
 use App\Repository\Awards\AwardRepository;
 use App\Repository\Awards\GrantedAwardRepository;
 use App\Repository\EntryRepository;
+use App\Repository\Metrics\SentimentRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -26,14 +27,15 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 #[CoversClass(AwardOrchestrator::class)]
 #[CoversClass(AwardStatus::class)]
-#[CoversClass(AwardStatusCollection::class)]
 #[CoversClass(AwardCheckerFactory::class)]
 #[CoversClass(EntryCountChecker::class)]
+#[CoversClass(PositivyImprovementChecker::class)]
 #[CoversClass(AwardProgressRepository::class)]
 #[CoversClass(AwardRepository::class)]
 #[CoversClass(GrantedAwardRepository::class)]
 #[CoversClass(EntryRepository::class)]
 #[CoversClass(UserRepository::class)]
+#[CoversClass(SentimentRepository::class)]
 final class AwardOrchestratorTest extends KernelTestCase
 {
     public function testAwardOrchestratorGrantAwardsAndUpdateProgress(): void

@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\InputBag;
 
 final class MetricsQuery
 {
-    private function __construct(
+    public function __construct(
         public readonly MetricsGrouping $groupingCriteria,
         private readonly \DateTimeImmutable $dateFrom,
         public ?Processor $processor = null,

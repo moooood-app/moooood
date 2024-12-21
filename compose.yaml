@@ -76,6 +76,15 @@ services:
     env_file:
       - .env
 
+  worker-scheduler-awards:
+    container_name: worker-scheduler-awards
+    build:
+      context: .
+      dockerfile: docker/messenger/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+
   worker-processor-sentiment:
     container_name: worker-processor-sentiment
     <<: *python-processor-template

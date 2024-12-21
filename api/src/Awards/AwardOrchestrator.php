@@ -25,18 +25,23 @@ readonly class AwardOrchestrator
             $checker = $this->awardCheckerFactory->create($user, $awardType);
 
             if (null === $checker) {
+                $this->logger?->warning('Award checker for {award} not found', [
+                    'award' => $awardType->value,
+                ]);
                 continue;
             }
 
             $result = $checker->check($user);
             $this->handleResult($user, $result);
 
-            if ($checker instanceof ChainableAwardCheckerInterface) {
-                while ($result->isGranted() && null !== $checker->getNext()) {
-                    $checker = $checker->getNext();
-                    $result = $checker->check($user);
-                    $this->handleResult($user, $result);
-                }
+            if (!$checker instanceof ChainableAwardCheckerInterface) {
+                continue;
+            }
+
+            while ($result->isGranted() && null !== $checker->getNext()) {
+                $checker = $checker->getNext();
+                $result = $checker->check($user);
+                $this->handleResult($user, $result);
             }
         }
     }
