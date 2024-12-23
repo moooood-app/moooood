@@ -1,0 +1,26 @@
+meta {
+  name: Refresh Token
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://{{url}}/api/token/refresh
+  body: multipartForm
+  auth: none
+}
+
+body:json {
+  {
+    "email":"{{username}}",
+    "password":"{{password}}"
+  }
+}
+
+body:multipart-form {
+  refresh_token: a70ca3ac16d9a8fbdd7c4c5298060d480df70cf8609039ff5c006dfe8f8711bb1e208e67859eda5f8b697a7afac1e7b417ad8a33004ade70e5cff746e01a86b9
+}
+
+script:post-response {
+  bru.setVar("jwt",res.body.token)
+}
