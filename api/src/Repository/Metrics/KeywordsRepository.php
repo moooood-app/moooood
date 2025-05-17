@@ -48,9 +48,7 @@ class KeywordsRepository extends AbstractProcessorMetricsRepository
         ;
 
         $extraProperties = ['id', 'date'];
-        if ($query->groupByParts) {
-            $extraProperties = array_merge($extraProperties, ['part_id', 'part_name', 'part_colors']);
-        }
+        
         foreach ($extraProperties as $column) {
             $wrapper->addSelect("aggregated_keywords.{$column}");
             $wrapper->addGroupBy("aggregated_keywords.{$column}");

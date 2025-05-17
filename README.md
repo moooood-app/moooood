@@ -35,7 +35,6 @@ graph TD
 ```mermaid
 erDiagram
     users ||--o{ entries : "has many"
-    users ||--o{ parts : "has many"
     users ||--o{ user_rewards : "has many"
     users {
         uuid id PK
@@ -48,17 +47,6 @@ erDiagram
         %% not implemented yet
         timestamptz last_entry_created_at
         timezone timezone
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    parts ||--o{ entries : "has many"
-    %% not implemented yet
-    parts {
-        uuid id PK
-        varchar name
-        jsonb colors
-        timestamptz last_entry_created_at
         timestamptz created_at
         timestamptz updated_at
     }
@@ -82,7 +70,6 @@ erDiagram
 
     entries {
         uuid id PK
-        uuid part_id FK
         text content
         uuid user_id FK
         timestamptz created_at

@@ -7,7 +7,6 @@ namespace App\Tests\State\Provider\Metrics;
 use ApiPlatform\Metadata\HttpOperation;
 use App\Entity\Metrics\MetricsIdentifierInterface;
 use App\Entity\Metrics\Sentiment;
-use App\Entity\Part;
 use App\Entity\User;
 use App\Enum\Processor;
 use App\Metadata\Metrics\MetricsApiResource;
@@ -200,11 +199,6 @@ final class MetricsProviderTest extends TestCase
                     public function getDate(): \DateTimeImmutable
                     {
                         return new \DateTimeImmutable();
-                    }
-
-                    public function getPart(): ?Part
-                    {
-                        return null;
                     }
                 }];
             }

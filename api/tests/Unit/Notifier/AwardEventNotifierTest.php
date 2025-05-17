@@ -7,11 +7,9 @@ namespace App\Tests\Notifier;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Entry;
-use App\Entity\Part;
 use App\Entity\User;
 use App\Message\Awards\AwardEventMessageInterface;
 use App\Message\Awards\NewEntryEventMessage;
-use App\Message\Awards\NewPartEventMessage;
 use App\Notifier\AwardEventNotifier;
 use App\Repository\EntryRepository;
 use App\Repository\UserRepository;
@@ -32,7 +30,6 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 #[CoversClass(AwardEventNotifier::class)]
 #[CoversClass(NewEntryEventMessage::class)]
-#[CoversClass(NewPartEventMessage::class)]
 #[UsesClass(EntryRepository::class)]
 #[UsesClass(UserRepository::class)]
 final class AwardEventNotifierTest extends KernelTestCase
@@ -112,11 +109,9 @@ final class AwardEventNotifierTest extends KernelTestCase
             ->with(self::stringContains('Failed to send SNS notification'))
         ;
 
-        $user = self::getUser();
-        /** @var Part */
-        $part = $user->getParts()->first();
+        $entry = self::getEntry();
 
-        $notifier->notify(new NewPartEventMessage($part));
+        $notifier->notify(new NewEntryEventMessage($entry));
     }
 
     /**
@@ -129,25 +124,15 @@ final class AwardEventNotifierTest extends KernelTestCase
         $entry = self::getEntry();
         $user = self::getUser();
 
-        /** @var Part */
-        $part = $user->getParts()->first();
-
         /** @var IriConverterInterface */
         $iriConverter = $container->get(IriConverterInterface::class);
 
         $userIri = $iriConverter->getIriFromResource($user);
         $entryIri = $iriConverter->getIriFromResource($entry);
-        $partIri = $iriConverter->getIriFromResource($part);
 
         yield 'Entry Award Event' => [new NewEntryEventMessage($entry), [
             '@type' => 'NewEntryEventMessage',
             'entry' => $entryIri,
-            'user' => $userIri,
-        ]];
-
-        yield 'Part Award Event' => [new NewPartEventMessage($part), [
-            '@type' => 'NewPartEventMessage',
-            'part' => $partIri,
             'user' => $userIri,
         ]];
     }

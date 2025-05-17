@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repository\Metrics;
 
-use App\Entity\Part;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -21,7 +20,6 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
 {
     protected const ROOT_ALIAS = 'm';
     protected const ENTRY_ALIAS = 'e';
-    protected const PART_ALIAS = 'p';
     protected const USER_PARAMETER = 'user';
     protected const PROCESSOR_PARAMETER = 'processor';
     protected const FROM_PARAMETER = 'from';
@@ -43,38 +41,11 @@ abstract class AbstractMetricsRepository extends ServiceEntityRepository impleme
 
         $builder = $this->getQueryBuilder($query);
 
-        $doctrineIdentifierForPart = "'none'";
-
-        if ($query->groupByParts) {
-            $builder
-                ->addSelect(\sprintf('%s.id as part_id', self::PART_ALIAS))
-                ->addSelect(\sprintf('%s.name as part_name', self::PART_ALIAS))
-                ->addSelect(\sprintf('%s.colors as part_colors', self::PART_ALIAS))
-                ->leftJoin(self::ENTRY_ALIAS, 'parts', self::PART_ALIAS, \sprintf('%s.part_id = %s.id', self::ENTRY_ALIAS, self::PART_ALIAS))
-                ->addGroupBy(\sprintf('%s.id', self::PART_ALIAS))
-            ;
-
-            $mapping->addJoinedEntityFromClassMetadata(
-                Part::class,
-                self::PART_ALIAS,
-                self::ROOT_ALIAS,
-                'part',
-                [
-                    'id' => 'part_id',
-                    'name' => 'part_name',
-                    'colors' => 'part_colors',
-                ],
-            );
-
-            $doctrineIdentifierForPart = \sprintf("COALESCE(%s.id::text, 'none')", self::PART_ALIAS);
-        }
-
         $builder->addSelect(\sprintf(
-            "CONCAT(%s, '-', %s, '-%s-', %s) as id",
+            "CONCAT(%s, '-', %s, '-%s-') as id",
             $query->groupingCriteria->getDateSelector(self::ENTRY_ALIAS),
             $query->groupingCriteria->getGroupByExpression(self::ENTRY_ALIAS),
             $query->groupingCriteria->value,
-            $doctrineIdentifierForPart,
         ));
 
         $qb = $this->updateQueryBuilder($builder, $query);

@@ -75,7 +75,7 @@ final class GetEntriesTest extends WebTestCase
         self::assertJsonSchemaIsValid($data, 'entries/entries.json');
 
         self::assertSame(
-            '/api/entries{?createdAt[before],createdAt[strictly_before],createdAt[after],createdAt[strictly_after],part,part[]}',
+            '/api/entries{?createdAt[before],createdAt[strictly_before],createdAt[after],createdAt[strictly_after]}',
             $data->search->template,
         );
 

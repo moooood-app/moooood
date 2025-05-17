@@ -31,17 +31,16 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(),
         new GetCollection(normalizationContext: [
-            'groups' => [self::SERIALIZATION_GROUP_READ_COLLECTION, Part::SERIALIZATION_GROUP_MINIMAL],
+            'groups' => [self::SERIALIZATION_GROUP_READ_COLLECTION],
         ]),
         new Post(),
     ],
     normalizationContext: [
-        'groups' => [self::SERIALIZATION_GROUP_READ_ITEM, Part::SERIALIZATION_GROUP_MINIMAL,
-    ]],
+        'groups' => [self::SERIALIZATION_GROUP_READ_ITEM]
+    ],
     denormalizationContext: ['groups' => [self::SERIALIZATION_GROUP_WRITE]],
 )]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
-#[ApiFilter(SearchFilter::class, properties: ['part' => 'exact'])]
 class Entry
 {
     public const SERIALIZATION_GROUP_SNS = 'entry:sns';
@@ -76,15 +75,6 @@ class Entry
     #[ORM\JoinColumn(nullable: false)]
     #[Gedmo\Blameable(on: 'create')]
     private User $user;
-
-    #[ORM\ManyToOne(targetEntity: Part::class)]
-    #[Serializer\Groups([
-        self::SERIALIZATION_GROUP_WRITE,
-        self::SERIALIZATION_GROUP_READ_ITEM,
-        self::SERIALIZATION_GROUP_READ_COLLECTION,
-    ])]
-    #[ApiProperty(description: 'The part this entry belongs to. Null = "Self" entry')]
-    private ?Part $part = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
@@ -141,18 +131,6 @@ class Entry
     public function setUser(User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getPart(): ?Part
-    {
-        return $this->part;
-    }
-
-    public function setPart(?Part $part): static
-    {
-        $this->part = $part;
 
         return $this;
     }

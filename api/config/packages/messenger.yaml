@@ -17,7 +17,6 @@ framework:
         routing:
             App\Message\ProcessorOutputMessage: post-processing
             App\Message\Awards\NewEntryEventMessage: awards
-            App\Message\Awards\NewPartEventMessage: awards
             Symfony\Component\Mailer\Messenger\SendEmailMessage: mailer
 
 when@test:

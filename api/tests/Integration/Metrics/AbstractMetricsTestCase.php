@@ -26,11 +26,9 @@ abstract class AbstractMetricsTestCase extends WebTestCase
         string $metricsType,
         MetricsGrouping $groupingCriteria,
         ?\DateTime $dateFrom = null,
-        bool $groupByParts = false,
     ): void {
         $parameters = [
             MetricsApiResource::GROUPING_FILTER_KEY => $groupingCriteria->value,
-            MetricsApiResource::GROUP_BY_PARTS_FILTER_KEY => $groupByParts ? '1' : '0',
         ];
 
         if (null !== $dateFrom) {

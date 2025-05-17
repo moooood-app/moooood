@@ -96,18 +96,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private \DateTimeImmutable $createdAt;
 
     /**
-     * @var Collection<int, Part>
-     */
-    #[ORM\OneToMany(
-        targetEntity: Part::class,
-        mappedBy: 'user',
-        fetch: 'EAGER',
-        orphanRemoval: true,
-        cascade: ['persist', 'remove'],
-    )]
-    private Collection $parts;
-
-    /**
      * @var Collection<int, Entry>
      */
     #[ORM\OneToMany(
@@ -127,7 +115,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->parts = new ArrayCollection();
         $this->entries = new ArrayCollection();
         $this->grantedAwards = new ArrayCollection();
     }
@@ -232,30 +219,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Part>
-     */
-    public function getParts(): Collection
-    {
-        return $this->parts;
-    }
-
-    public function addPart(Part $part): self
-    {
-        if (!$this->parts->contains($part)) {
-            $this->parts->add($part);
-        }
-
-        return $this;
-    }
-
-    public function removePart(Part $part): self
-    {
-        $this->parts->removeElement($part);
 
         return $this;
     }

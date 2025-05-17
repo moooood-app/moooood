@@ -82,7 +82,7 @@ final class AwardCheckerFactoryTest extends TestCase
     public function testCreateBuildsChainAndReturnsNullIfNoMatchingChecker(): void
     {
         $award = (new Award())
-            ->setType(AwardType::PARTS)
+            ->setType(AwardType::STREAK)
             ->setPriority(100)
         ;
 

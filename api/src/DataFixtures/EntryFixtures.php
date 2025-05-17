@@ -7,7 +7,6 @@ use App\DataFixtures\Helpers\Metadata\ComplexityMetadataHelper;
 use App\DataFixtures\Helpers\Metadata\EmotionsMetadataHelper;
 use App\DataFixtures\Helpers\Metadata\KeywordsMetadataHelper;
 use App\DataFixtures\Helpers\Metadata\SentimentMetadataHelper;
-use App\Entity\Part;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -22,7 +21,6 @@ class EntryFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             UserFixtures::class,
-            PartFixtures::class,
         ];
     }
 
@@ -44,11 +42,6 @@ class EntryFixtures extends Fixture implements DependentFixtureInterface
             for ($i = 1; $i <= 6; ++$i) {
                 $entry = $entryHelper->provideEntry($user);
                 $entry->setCreatedAt(new \DateTimeImmutable("{$d} days ago"));
-                $part = null;
-                if (6 !== $i) {
-                    $part = $this->getReference("part-{$i}", Part::class);
-                }
-                $entry->setPart($part);
                 $manager->persist($entry);
             }
         }
@@ -59,23 +52,12 @@ class EntryFixtures extends Fixture implements DependentFixtureInterface
 
         $period = new \DatePeriod($start, $interval, $end);
 
-        $parts = [];
-        for ($i = 1; $i <= 5; ++$i) {
-            $parts[] = $this->getReference("part-{$i}", Part::class);
-        }
-
         // Number of entries per day is equal to the day number
         foreach ($period as $date) {
             for ($i = 1; $i <= (int) $date->format('d'); ++$i) {
                 $entry = $entryHelper->provideEntry($user);
                 $entry->setCreatedAt(\DateTimeImmutable::createFromMutable($date));
                 $manager->persist($entry);
-                foreach ($parts as $part) {
-                    $entry = $entryHelper->provideEntry($user);
-                    $entry->setCreatedAt(\DateTimeImmutable::createFromMutable($date));
-                    $entry->setPart($part);
-                    $manager->persist($entry);
-                }
             }
         }
 

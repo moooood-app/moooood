@@ -34,17 +34,6 @@
         "date": {
           "description": "The first day of the period covered by the metrics.",
           "type": "string"
-        },
-        "part": {
-          "description": "The part this entry belongs to. Null = \"Self\" entry",
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Part.jsonld-entry.read.item_part.read.item"
-            },
-            {
-              "type": "null"
-            }
-          ]
         }
       },
       "additionalProperties": false,
@@ -55,44 +44,7 @@
         "neutral",
         "negative",
         "compound",
-        "date",
-        "part"
-      ]
-    },
-    "Part.jsonld-entry.read.item_part.read.item": {
-      "type": "object",
-      "description": "",
-      "deprecated": false,
-      "properties": {
-        "@id": {
-          "readOnly": true,
-          "type": "string"
-        },
-        "@type": {
-          "readOnly": true,
-          "type": "string"
-        },
-        "name": {
-          "minLength": 1,
-          "maxLength": 100,
-          "type": "string"
-        },
-        "colors": {
-          "minItems": 5,
-          "maxItems": 5,
-          "uniqueItems": true,
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "@id",
-        "@type",
-        "name",
-        "colors"
+        "date"
       ]
     }
   },

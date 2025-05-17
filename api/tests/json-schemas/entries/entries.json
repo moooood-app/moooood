@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "definitions": {
-    "Entry.jsonld-entry.read.collection_part.read.item": {
+    "Entry.jsonld-entry.read.collection.read.item": {
       "type": "object",
       "description": "",
       "deprecated": false,
@@ -20,17 +20,6 @@
           "minLength": 10,
           "maxLength": 1000,
           "type": "string"
-        },
-        "part": {
-          "description": "The part this entry belongs to. Null = \"Self\" entry",
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Part.jsonld-entry.read.collection_part.read.item"
-            },
-            {
-              "type": "null"
-            }
-          ]
         },
         "createdAt": {
           "description": "The date and time the entry was created",
@@ -52,33 +41,7 @@
       ],
       "additionalProperties": false
     },
-    "Part.jsonld-entry.read.collection_part.read.item": {
-      "type": "object",
-      "description": "",
-      "deprecated": false,
-      "properties": {
-        "@id": {
-          "readOnly": true,
-          "type": "string"
-        },
-        "@type": {
-          "readOnly": true,
-          "type": "string"
-        },
-        "name": {
-          "minLength": 1,
-          "maxLength": 100,
-          "type": "string"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "@id",
-        "@type",
-        "name"
-      ]
-    },
-    "EntryMetadata.jsonld-entry.read.collection_part.read.item": {
+    "EntryMetadata.jsonld-entry.read.collection.read.item": {
       "type": "object",
       "description": "",
       "deprecated": false,
@@ -143,7 +106,7 @@
     "member": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/Entry.jsonld-entry.read.collection_part.read.item"
+        "$ref": "#/definitions/Entry.jsonld-entry.read.collection.read.item"
       }
     },
     "totalItems": {

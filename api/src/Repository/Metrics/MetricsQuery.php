@@ -13,7 +13,6 @@ final class MetricsQuery
         public readonly MetricsGrouping $groupingCriteria,
         private readonly \DateTimeImmutable $dateFrom,
         public ?Processor $processor = null,
-        public bool $groupByParts = false,
     ) {
     }
 
@@ -25,10 +24,6 @@ final class MetricsQuery
         /** @var string */
         $grouping = $query->get(MetricsApiResource::GROUPING_FILTER_KEY);
         $groupingCriteria = MetricsGrouping::from($grouping);
-
-        /** @var string */
-        $groupByParts = $query->get(MetricsApiResource::GROUP_BY_PARTS_FILTER_KEY);
-        $groupByParts = \in_array($groupByParts, [true, 'true', '1'], true);
 
         /** @var string */
         $dateFrom = $query->get(MetricsApiResource::FROM_DATE_FILTER_KEY) ?? 'now';
@@ -60,7 +55,6 @@ final class MetricsQuery
         return new self(
             groupingCriteria: $groupingCriteria,
             dateFrom: $dateFrom,
-            groupByParts: $groupByParts,
         );
     }
 
