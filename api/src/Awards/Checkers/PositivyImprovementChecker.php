@@ -37,7 +37,6 @@ final class PositivyImprovementChecker implements ChainableAwardCheckerInterface
             MetricsGrouping::WEEK,
             new \DateTimeImmutable('2 weeks ago'),
             Processor::SENTIMENT,
-            false,
         ));
 
         [$previousWeek, $lastWeek] = $metrics;

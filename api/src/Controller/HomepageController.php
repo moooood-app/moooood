@@ -12,7 +12,11 @@ class HomepageController extends AbstractController
 {
     #[Route('/', name: 'homepage')]
     #[Template('homepage/index.html.twig')]
-    public function index()
+    /**
+     * @return array<string, mixed>
+     */
+    public function index(): array
     {
+        return [];
     }
 }

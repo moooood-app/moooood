@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
@@ -36,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(),
     ],
     normalizationContext: [
-        'groups' => [self::SERIALIZATION_GROUP_READ_ITEM]
+        'groups' => [self::SERIALIZATION_GROUP_READ_ITEM],
     ],
     denormalizationContext: ['groups' => [self::SERIALIZATION_GROUP_WRITE]],
 )]

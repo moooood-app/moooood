@@ -68,10 +68,10 @@ final class MetricsApiResourceTest extends TestCase
         /** @var array<Constraint> */
         $constraints = $fromDateFilter->getConstraints();
         self::assertCount(1, $constraints);
-        /** @var All */
+        /** @var All|null */
         $all = $constraints[0];
         self::assertInstanceOf(All::class, $all);
-        $allConstraints = $all->constraints;
+        $allConstraints = (array) $all->constraints;
         self::assertCount(1, $allConstraints);
         self::assertInstanceOf(Date::class, $allConstraints[0]);
         self::assertSame('The date must be in the format YYYY-MM-DD.', $allConstraints[0]->message);
