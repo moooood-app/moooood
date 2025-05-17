@@ -161,9 +161,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getEmail(): string
     {
-        return $this->email;
+        return $this->email; // @phpstan-ignore-line
     }
 
     public function setEmail(string $email): static

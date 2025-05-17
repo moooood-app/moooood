@@ -11,6 +11,7 @@ use App\Entity\Part;
 use App\Enum\Metrics\MetricsGrouping;
 use App\Enum\Processor;
 use App\State\Provider\Metrics\MetricsProvider;
+use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Date;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
@@ -53,9 +54,15 @@ class MetricsApiResource extends ApiResource
                 ),
                 self::FROM_DATE_FILTER_KEY => new QueryParameter(
                     description: 'The start date for filtering results (rounded down to the first day of the chosen grouping mechanism).',
-                    required: true,
+                    schema: ['type' => 'string'],
                     constraints: [
-                        new Date(['message' => 'The date is not valid']),
+                        new All(
+                            constraints: [
+                                new Date([
+                                    'message' => 'The date must be in the format YYYY-MM-DD.',
+                                ]),
+                            ],
+                        ),
                     ],
                 ),
             ],
@@ -65,6 +72,7 @@ class MetricsApiResource extends ApiResource
                     Part::SERIALIZATION_GROUP_READ_COLLECTION,
                 ],
             ],
+            strictQueryParameterValidation: true,
         );
     }
 }

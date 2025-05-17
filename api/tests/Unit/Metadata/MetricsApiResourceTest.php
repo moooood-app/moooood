@@ -15,6 +15,7 @@ use App\Metadata\Metrics\MetricsApiResource;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Date;
 
 /**
@@ -62,14 +63,18 @@ final class MetricsApiResourceTest extends TestCase
 
         /** @var QueryParameter */
         $fromDateFilter = $parameters['from'];
-        self::assertTrue($fromDateFilter->getRequired());
         self::assertSame('The start date for filtering results (rounded down to the first day of the chosen grouping mechanism).', $fromDateFilter->getDescription());
 
         /** @var array<Constraint> */
         $constraints = $fromDateFilter->getConstraints();
         self::assertCount(1, $constraints);
-        self::assertInstanceOf(Date::class, $constraints[0]);
-        self::assertSame('The date is not valid', $constraints[0]->message);
+        /** @var All */
+        $all = $constraints[0];
+        self::assertInstanceOf(All::class, $all);
+        $allConstraints = $all->constraints;
+        self::assertCount(1, $allConstraints);
+        self::assertInstanceOf(Date::class, $allConstraints[0]);
+        self::assertSame('The date must be in the format YYYY-MM-DD.', $allConstraints[0]->message);
     }
 
     public function testMetricsApiResourceWithStringType(): void

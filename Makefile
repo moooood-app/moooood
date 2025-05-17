@@ -17,8 +17,7 @@ install:
 lint: lint-cs lint-sf lint-phpstan
 
 lint-cs:
-	# $(DOCKER_EXEC_API) vendor/bin/php-cs-fixer fix
-	docker compose exec -it -e "TERM=xterm-256color" -e "PHP_CS_FIXER_IGNORE_ENV=1" api vendor/bin/php-cs-fixer fix
+	$(DOCKER_EXEC_API) composer run php-cs-fixer
 
 lint-sf:
 	$(DOCKER_EXEC_API) bin/console lint:container
@@ -26,7 +25,7 @@ lint-sf:
 	$(DOCKER_EXEC_API) bin/console lint:twig
 
 lint-phpstan:
-	$(DOCKER_EXEC_API) vendor/bin/phpstan --memory-limit=1G analyse
+	$(DOCKER_EXEC_API) composer run phpstan
 
 test: test-reset-database
 	$(DOCKER_EXEC_API) php -d memory_limit=1G vendor/bin/phpunit

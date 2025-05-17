@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     normalizationContext: [
         'groups' => [self::SERIALIZATION_GROUP_READ_ITEM, Part::SERIALIZATION_GROUP_MINIMAL,
-        ]],
+    ]],
     denormalizationContext: ['groups' => [self::SERIALIZATION_GROUP_WRITE]],
 )]
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]

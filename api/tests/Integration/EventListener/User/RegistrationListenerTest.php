@@ -8,6 +8,7 @@ use App\EventListener\User\RegistrationListener;
 use App\Messenger\Serializer\AwardEventDecoder;
 use App\Messenger\Serializer\ProcessorOutputDecoder;
 use App\Repository\UserRepository;
+use App\Schedule;
 use App\Scheduler\AwardsScheduler;
 use HWI\Bundle\OAuthBundle\Event\FilterUserResponseEvent;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -28,6 +29,7 @@ use Zenstruck\Messenger\Test\InteractsWithMessenger;
 #[UsesClass(AwardEventDecoder::class)]
 #[UsesClass(UserRepository::class)]
 #[UsesClass(AwardsScheduler::class)]
+#[UsesClass(Schedule::class)]
 final class RegistrationListenerTest extends KernelTestCase
 {
     use InteractsWithMessenger;
