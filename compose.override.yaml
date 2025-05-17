@@ -9,9 +9,9 @@ services:
       - ./docker/api/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./docker/api/frankenphp/conf.d/20-app.dev.ini:/usr/local/etc/php/app.conf.d/20-app.dev.ini:ro
     environment:
-      MERCURE_EXTRA_DIRECTIVES: demo
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-coverage}"
+      CADDY_GLOBAL_OPTIONS: "auto_https disable_redirects"
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway

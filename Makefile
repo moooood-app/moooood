@@ -10,7 +10,7 @@ help: ## automatically generates a documentation of the available Makefile targe
 
 install:
 	$(DOCKER_EXEC_API) composer install
-	cp api/.env.sso.dist api/.env.sso
+	cp .env.sso.dist .env.sso
 	$(DOCKER_EXEC_API) bin/console lexik:jwt:generate-keypair --skip-if-exists
 	$(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction
 
@@ -28,7 +28,7 @@ lint-sf:
 lint-phpstan:
 	$(DOCKER_EXEC_API) vendor/bin/phpstan --memory-limit=1G analyse
 
-test:
+test: test-reset-database
 	$(DOCKER_EXEC_API) php -d memory_limit=1G vendor/bin/phpunit
 
 test-integration:
@@ -46,11 +46,11 @@ test-reset-database:
 migrate:
 	$(DOCKER_EXEC_API) bin/console doctrine:migrations:migrate --no-interaction
 
-run: stop
+up: down
 	docker compose up -d --wait
 
-stop:
+down:
 	docker compose down --remove-orphans
 
 build:
-	docker compose -f compose.yml -f compose.prod.yml build
+	docker compose -f compose.yaml -f compose.prod.yaml build
