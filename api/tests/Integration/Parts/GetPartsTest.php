@@ -72,7 +72,7 @@ final class GetPartsTest extends WebTestCase
 
         $partsIris = array_map(
             static function (object $part): string {
-                return $part->{'@id'}; // @phpstan-ignore-line
+                return $part->{'@id'};
             },
             $data->member,
         );
