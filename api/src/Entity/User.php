@@ -69,7 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ApiProperty(description: 'The last name of the user')]
     private string $lastName;
 
-    #[ORM\Column(length: 320)]
+    #[ORM\Column(length: 320, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_STRICT)]
     #[Serializer\Groups([self::SERIALIZATION_GROUP_READ_ITEM, self::SERIALIZATION_GROUP_JWT, self::SERIALIZATION_GROUP_WRITE])]

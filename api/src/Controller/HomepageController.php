@@ -10,11 +10,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomepageController extends AbstractController
 {
-    #[Route('/', name: 'homepage')]
-    #[Template('homepage/index.html.twig')]
     /**
      * @return array<string, mixed>
      */
+    #[Route('/', name: 'homepage')]
+    #[Template('homepage/index.html.twig')]
     public function index(): array
     {
         return [];

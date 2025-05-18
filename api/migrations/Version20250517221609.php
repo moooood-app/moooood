@@ -24,10 +24,10 @@ final class Version20250517221609 extends AbstractMigration
                 ALTER TABLE parts DROP CONSTRAINT fk_6940a7fea76ed395
             SQL);
         $this->addSql(<<<'SQL'
-                DROP TABLE parts
+                ALTER TABLE entries DROP CONSTRAINT fk_2df8b3c54ce34bec
             SQL);
         $this->addSql(<<<'SQL'
-                ALTER TABLE entries DROP CONSTRAINT fk_2df8b3c54ce34bec
+                DROP TABLE parts
             SQL);
         $this->addSql(<<<'SQL'
                 DROP INDEX idx_2df8b3c54ce34bec
