@@ -70,6 +70,15 @@ services:
     env_file:
       - .env
 
+  worker-messenger-processor:
+    container_name: worker-messenger-processor
+    build:
+      context: .
+      dockerfile: docker/messenger/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+
   worker-scheduler-awards:
     container_name: worker-scheduler-awards
     build:
@@ -78,36 +87,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-
-  worker-processor-sentiment:
-    container_name: worker-processor-sentiment
-    <<: *python-processor-template
-    build:
-      <<: *python-processor-build-template
-      args:
-        PROCESSOR_NAME: sentiment
-    environment:
-      - PROCESSOR_NAME=sentiment
-
-  worker-processor-complexity:
-    container_name: worker-processor-complexity
-    <<: *python-processor-template
-    build:
-      <<: *python-processor-build-template
-      args:
-        PROCESSOR_NAME: complexity
-    environment:
-      - PROCESSOR_NAME=complexity
-
-  worker-processor-emotions:
-    container_name: worker-processor-emotions
-    <<: *python-processor-template
-    build:
-      <<: *python-processor-build-template
-      args:
-        PROCESSOR_NAME: emotions
-    environment:
-      - PROCESSOR_NAME=emotions
 
 volumes:
   caddy_data:

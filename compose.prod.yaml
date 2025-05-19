@@ -19,31 +19,3 @@ services:
     build:
       context: .
       target: prod
-
-  worker-processor-sentiment:
-    build:
-      context: .
-      dockerfile: docker/processors/python/Dockerfile
-      args:
-        PROCESSOR_NAME: sentiment
-
-  worker-processor-complexity:
-    build:
-      context: .
-      dockerfile: docker/processors/python/Dockerfile
-      args:
-        PROCESSOR_NAME: complexity
-
-  worker-processor-keywords:
-    build:
-      context: .
-      dockerfile: docker/processors/python/Dockerfile
-      args:
-        PROCESSOR_NAME: keywords
-
-  worker-processor-emotions:
-    build:
-      context: .
-      dockerfile: docker/processors/python/Dockerfile
-      args:
-        PROCESSOR_NAME: emotions

@@ -1,0 +1,4 @@
+transformers>=4.40.1
+onnxruntime-gpu>=1.17.1
+torch>=2.2.2
+numpy>=1.26.4

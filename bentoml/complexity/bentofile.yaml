@@ -1,0 +1,6 @@
+description: |
+    ## 📘 Text Complexity Service
+
+    This service analyzes a piece of text and returns multiple readability metrics to help evaluate how easy or difficult the text is to understand.
+
+    It uses well-established formulas like Flesch-Kincaid, Gunning Fog, and SMOG to estimate the education level required to comprehend the text. It relies on the [textstat](https://pypi.org/project/textstat/) library for these calculations, which is a widely used library for text statistics in Python.

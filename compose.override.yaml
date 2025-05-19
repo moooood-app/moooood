@@ -72,6 +72,24 @@ services:
       - database
       - localstack
 
+  worker-messenger-processor-complexity:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 300
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: processor
+      INFERENCE_API_URL: http://localhost:3000/analyze
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
   worker-scheduler-awards:
     build:
       target: dev
@@ -148,3 +166,30 @@ services:
       timeout: 3s
       retries: 5
     command: ["redis-server"]
+
+  bentoml-builder:
+    profiles: ["builder"]
+    build:
+      context: .
+      dockerfile: docker/bentoml/Dockerfile
+      target: builder
+    volumes:
+      - ./bentoml/complexity:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: [""]
+    tty: true
+
+  complexity:
+    container_name: complexity-inference
+    build:
+      context: .
+      dockerfile: docker/bentoml/Dockerfile
+      target: dev
+      args:
+        BENTO_NAME: complexity
+    ports:
+      - 3000:3000
+    environment:
+      BENTO_NAME: complexity
+    volumes:
+      - ./bentoml/complexity:/workspace

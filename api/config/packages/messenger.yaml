@@ -8,6 +8,9 @@ framework:
             awards:
                 dsn: '%env(MESSENGER_TRANSPORT_AWARD_DSN)%'
                 serializer: App\Messenger\Serializer\NewEntryAwardMessageSerializer
+            processor:
+                dsn: '%env(MESSENGER_TRANSPORT_PROCESSOR_DSN)%'
+                serializer: App\Messenger\Serializer\NewEntryProcessorMessageSerializer
             mailer:
                 dsn: '%env(MESSENGER_TRANSPORT_MAILER_DSN)%'
             new-entry:
