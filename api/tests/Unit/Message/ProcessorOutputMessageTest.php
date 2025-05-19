@@ -19,14 +19,14 @@ final class ProcessorOutputMessageTest extends TestCase
 {
     public function testGetResult(): void
     {
-        $entry = new Entry();
+        $entryIri = '/entries/123';
         $processor = Processor::SENTIMENT;
 
         $result = ['key' => 'value'];
-        $message = new ProcessorOutputMessage($entry, $result, $processor);
+        $message = new ProcessorOutputMessage($entryIri, $result, $processor);
 
-        self::assertSame($entry, $message->getEntry());
-        self::assertSame($result, $message->getResult());
-        self::assertSame($processor, $message->getProcessor());
+        self::assertSame($entryIri, $message->entryIri);
+        self::assertSame($result, $message->result);
+        self::assertSame($processor, $message->processor);
     }
 }

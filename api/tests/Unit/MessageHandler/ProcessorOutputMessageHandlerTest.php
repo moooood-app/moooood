@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\MessageHandler;
 
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Entry;
 use App\Entity\User;
 use App\Enum\Processor;
@@ -39,7 +40,7 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $entry->setUser($user);
 
         $processor = Processor::COMPLEXITY;
-        $message = new ProcessorOutputMessage($entry, ['new' => 'data'], $processor);
+        $message = new ProcessorOutputMessage('/entries/123', ['new' => 'data'], $processor);
 
         /** @var LoggerInterface&MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
@@ -48,7 +49,7 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $entryRepository = $this->createMock(EntryRepository::class);
         $entryRepository->expects(self::once())
             ->method('removeExistingMetadataForProcessor')
-            ->with($entry, $message->getProcessor())
+            ->with($entry, $message->processor)
         ;
 
         /** @var EntryMetadataRepository&MockObject $entryMetadataRepository */
@@ -66,12 +67,21 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
             ->with(['user-metrics-09e6c349-fb5c-4f9c-8b05-d434f00e4b73'])
         ;
 
+        /** @var IriConverterInterface&MockObject $iriConverter */
+        $iriConverter = $this->createMock(IriConverterInterface::class);
+        $iriConverter->expects(self::once())
+            ->method('getResourceFromIri')
+            ->with($message->entryIri)
+            ->willReturn($entry)
+        ;
+
         // Create the handler and invoke it
         $handler = new ProcessorOutputMessageHandler(
             $entryRepository,
             $entryMetadataRepository,
             $logger,
-            $cache
+            $cache,
+            $iriConverter,
         );
 
         $handler->__invoke($message);

@@ -12,8 +12,6 @@ use App\Entity\User;
 use App\Enum\Metrics\MetricsGrouping;
 use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
-use App\Notifier\AwardEventNotifier;
-use App\Notifier\EntryProcessorNotifier;
 use App\Repository\Metrics\ComplexityRepository;
 use App\Repository\Metrics\EmotionsRepository;
 use App\Repository\Metrics\KeywordsRepository;
@@ -45,8 +43,6 @@ use PHPUnit\Framework\Attributes\UsesClass;
 #[CoversClass(MetricsGrouping::class)]
 #[CoversClass(MetricsProvider::class)]
 #[UsesClass(NewEntryListener::class)]
-#[UsesClass(EntryProcessorNotifier::class)]
-#[UsesClass(AwardEventNotifier::class)]
 #[UsesClass(TokenCreatedListener::class)]
 final class PerDayMondayTest extends AbstractMetricsTestCase
 {

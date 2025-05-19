@@ -7,8 +7,6 @@ use App\Doctrine\CurrentUserExtension;
 use App\Entity\User;
 use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
-use App\Notifier\AwardEventNotifier;
-use App\Notifier\EntryProcessorNotifier;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use App\Tests\Integration\Traits\ValidateJsonSchemaTrait;
@@ -26,8 +24,6 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(UserRepository::class)]
 #[UsesClass(CurrentUserExtension::class)]
 #[UsesClass(NewEntryListener::class)]
-#[UsesClass(EntryProcessorNotifier::class)]
-#[UsesClass(AwardEventNotifier::class)]
 #[UsesClass(TokenCreatedListener::class)]
 final class PatchUserTest extends WebTestCase
 {

@@ -2,7 +2,6 @@ framework:
     notifier:
         chatter_transports:
         texter_transports:
-            sns: '%env(NEW_ENTRY_SNS_DSN)%'
         channel_policy:
             # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
             urgent: ['chat/sns']
@@ -16,4 +15,3 @@ when@test:
     framework:
         notifier:
             texter_transports:
-                sns: 'null://null'

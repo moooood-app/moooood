@@ -4,8 +4,6 @@ namespace App\Tests\Integration\Homepage;
 
 use App\Controller\HomepageController;
 use App\EventListener\NewEntryListener;
-use App\Notifier\AwardEventNotifier;
-use App\Notifier\EntryProcessorNotifier;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -16,8 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 #[CoversClass(HomepageController::class)]
 #[UsesClass(NewEntryListener::class)]
-#[UsesClass(AwardEventNotifier::class)]
-#[UsesClass(EntryProcessorNotifier::class)]
 final class HomepageTest extends WebTestCase
 {
     public function testSomething(): void

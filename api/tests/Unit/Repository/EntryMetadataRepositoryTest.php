@@ -44,7 +44,7 @@ final class EntryMetadataRepositoryTest extends KernelTestCase
         $entityManager = $container->get(EntityManagerInterface::class);
         $entityManager->persist($entry);
 
-        $processorOutputMessage = new ProcessorOutputMessage($entry, ['key' => 'value'], Processor::KEYWORDS);
+        $processorOutputMessage = new ProcessorOutputMessage('/entries/123', ['key' => 'value'], Processor::KEYWORDS);
 
         /** @var EntryMetadataRepository $repository */
         $repository = $container->get(EntryMetadataRepository::class);

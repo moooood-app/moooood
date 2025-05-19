@@ -10,8 +10,6 @@ use App\Entity\User;
 use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
 use App\Metadata\Metrics\MetricsApiResource;
-use App\Notifier\AwardEventNotifier;
-use App\Notifier\EntryProcessorNotifier;
 use App\Repository\EntryRepository;
 use App\Repository\UserRepository;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
@@ -32,8 +30,6 @@ use Symfony\Component\HttpFoundation\Response;
 #[CoversClass(CurrentUserExtension::class)]
 #[CoversClass(EntryRepository::class)]
 #[CoversClass(NewEntryListener::class)]
-#[CoversClass(EntryProcessorNotifier::class)]
-#[CoversClass(AwardEventNotifier::class)]
 #[UsesClass(MetricsApiResource::class)]
 #[UsesClass(TokenCreatedListener::class)]
 final class GetEntriesTest extends WebTestCase

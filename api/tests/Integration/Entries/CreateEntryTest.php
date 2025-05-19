@@ -7,11 +7,13 @@ use App\Entity\Entry;
 use App\Entity\User;
 use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
-use App\Message\Awards\NewEntryEventMessage;
+use App\Message\Awards\NewEntryAwardMessage;
+use App\Message\NewEntryProcessorMessage;
+use App\Messenger\Transport\SnsTransportFactory;
 use App\Metadata\Metrics\MetricsApiResource;
-use App\Notifier\AwardEventNotifier;
-use App\Notifier\EntryProcessorNotifier;
 use App\Repository\UserRepository;
+use App\Schedule;
+use App\Scheduler\AwardsScheduler;
 use App\Tests\Integration\Traits\AuthenticatedClientTrait;
 use App\Tests\Integration\Traits\ValidationErrorsTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,7 +22,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Profiler\Profile;
-use Symfony\Component\Notifier\DataCollector\NotificationDataCollector;
+use Symfony\Component\Messenger\DataCollector\MessengerDataCollector;
+use Zenstruck\Messenger\Test\InteractsWithMessenger;
 
 /**
  * @internal
@@ -28,15 +31,18 @@ use Symfony\Component\Notifier\DataCollector\NotificationDataCollector;
 #[CoversClass(Entry::class)]
 #[CoversClass(User::class)]
 #[CoversClass(UserRepository::class)]
-#[CoversClass(NewEntryEventMessage::class)]
 #[CoversClass(NewEntryListener::class)]
-#[CoversClass(EntryProcessorNotifier::class)]
-#[CoversClass(AwardEventNotifier::class)]
 #[UsesClass(MetricsApiResource::class)]
 #[UsesClass(TokenCreatedListener::class)]
+#[UsesClass(NewEntryAwardMessage::class)]
+#[UsesClass(NewEntryProcessorMessage::class)]
+#[UsesClass(SnsTransportFactory::class)]
+#[UsesClass(Schedule::class)]
+#[UsesClass(AwardsScheduler::class)]
 final class CreateEntryTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
+    use InteractsWithMessenger;
     use ValidationErrorsTrait;
 
     public function testRequestIsRejectedWhenUserNotAuthenticated(): void
@@ -94,35 +100,29 @@ final class CreateEntryTest extends WebTestCase
             self::fail('Profiler not enabled');
         }
 
-        /** @var NotificationDataCollector */
-        $notifierCollector = $client->getProfile()->getCollector('notifier');
+        /** @var MessengerDataCollector */
+        $messsengerCollector = $client->getProfile()->getCollector('messenger');
 
-        self::assertCount(2, $notifierCollector->getEvents()->getMessages());
-        $newEntryMessage = $notifierCollector->getEvents()->getMessages()[0];
-        /** @var array<string, mixed> */
-        $payload = json_decode($newEntryMessage->getSubject(), true, 512, \JSON_THROW_ON_ERROR);
-        self::assertSame([
-            '@context' => '/api/contexts/Entry',
-            '@id' => $data['@id'],
-            '@type' => 'Entry',
-            'content' => 'This is a test',
-        ], $payload);
+        $queue = $this->transport('new-entry')->queue();
+        $queue->assertCount(1);
+        $queue->assertContains(NewEntryProcessorMessage::class, 1);
+
+        $queue->first(static function (NewEntryProcessorMessage $m) use ($data): bool {
+            return $m->content === $data['content'] && $m->entryIri === $data['@id'];
+        });
 
         /** @var UserRepository */
         $repository = self::getContainer()->get(UserRepository::class);
         /** @var User */
         $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
 
-        $awardMessage = $notifierCollector->getEvents()->getMessages()[1];
-        /** @var array<string, mixed> */
-        $payload = json_decode($awardMessage->getSubject(), true, 512, \JSON_THROW_ON_ERROR);
-        self::assertArrayHasKey('@id', $payload);
-        unset($payload['@id']);
-        self::assertSame([
-            '@type' => 'NewEntryEventMessage',
-            'entry' => $data['@id'],
-            'user' => \sprintf('/api/users/%s', $user->getId()),
-        ], $payload);
+        $queue = $this->transport('award-events')->queue();
+        $queue->assertCount(1);
+        $queue->assertContains(NewEntryAwardMessage::class, 1);
+
+        $queue->first(static function (NewEntryAwardMessage $m) use ($data, $user): bool {
+            return $m->userIri === \sprintf('/api/users/%s', $user->getId()) && $m->entryIri === $data['@id'];
+        });
     }
 
     public function testValidationErrorForLongContent(): void

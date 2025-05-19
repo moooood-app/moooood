@@ -2,9 +2,6 @@
 
 namespace App\Enum;
 
-use App\Message\Awards\AwardEventMessageInterface;
-use App\Message\Awards\NewEntryEventMessage;
-
 enum AwardType: string
 {
     // Awards related to the number of entries
@@ -18,15 +15,4 @@ enum AwardType: string
     // Awards related to the number of days in a row where the user has made an entry
     // Triggered by new entries
     case STREAK = 'streak';
-
-    /**
-     * @return array<AwardType>
-     */
-    public static function getTypesForAwardEvent(AwardEventMessageInterface $message): array
-    {
-        return match ($message::class) {
-            NewEntryEventMessage::class => [self::ENTRIES, self::STREAK],
-            default => throw new \InvalidArgumentException('Unsupported message type'),
-        };
-    }
 }

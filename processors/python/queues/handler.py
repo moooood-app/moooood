@@ -49,6 +49,7 @@ class MessageHandler:
 
                 for message in response["Messages"]:
                     try:
+                        logger.info(f"Received payload: {message}")
                         message_body = json.loads(message['Body'])
                         payload = json.loads(message_body.get('Message'))
                         logger.info(f"Received SQS message: {payload}")

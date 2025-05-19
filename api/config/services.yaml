@@ -9,9 +9,6 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        bind:
-            Symfony\Component\Notifier\Message\MessageOptionsInterface $entryProcessorSnsOptions: '@notifier.options.new_entry_processing_topic'
-            Symfony\Component\Notifier\Message\MessageOptionsInterface $awardEventsSnsOptions: '@notifier.options.award_events_topic'
 
     App\:
         resource: '../src/'
@@ -35,10 +32,5 @@ services:
             - null
             - '@event_dispatcher'
 
-    notifier.options.new_entry_processing_topic:
-        class: Symfony\Component\Notifier\Bridge\AmazonSns\AmazonSnsOptions
-        arguments: ['%env(NEW_ENTRY_PROCESSING_SNS_ARN)%']
-
-    notifier.options.award_events_topic:
-        class: Symfony\Component\Notifier\Bridge\AmazonSns\AmazonSnsOptions
-        arguments: ['%env(AWARD_EVENTS_SNS_ARN)%']
+    App\Messenger\Transport\SnsTransportFactory:
+        tags: [messenger.transport_factory]

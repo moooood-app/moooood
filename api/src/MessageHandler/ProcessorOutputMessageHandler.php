@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
+use ApiPlatform\Metadata\IriConverterInterface;
+use App\Entity\Entry;
 use App\Message\ProcessorOutputMessage;
 use App\Repository\EntryMetadataRepository;
 use App\Repository\EntryRepository;
@@ -19,19 +21,20 @@ final class ProcessorOutputMessageHandler
         private readonly EntryMetadataRepository $entryMetadataRepository,
         private readonly LoggerInterface $logger,
         private readonly TagAwareCacheInterface $cache,
+        private readonly IriConverterInterface $iriConverter,
     ) {
     }
 
     public function __invoke(ProcessorOutputMessage $message): void
     {
+        /** @var Entry */
+        $entry = $this->iriConverter->getResourceFromIri($message->entryIri);
         $this->logger->info('Data received from processor {processor} for entry {entry}', [
-            'entry' => $message->getEntry()->getId()->toString(),
-            'processor' => $message->getProcessor()->value,
+            'entry' => $entry->getId()->toString(),
+            'processor' => $message->processor->value,
         ]);
 
-        $entry = $message->getEntry();
-
-        $this->entryRepository->removeExistingMetadataForProcessor($entry, $message->getProcessor());
+        $this->entryRepository->removeExistingMetadataForProcessor($entry, $message->processor);
 
         $this->entryMetadataRepository->createMetadataFromProcessorOutput($entry, $message);
 

@@ -4,22 +4,25 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use ApiPlatform\Metadata\IriConverterInterface;
 use ApiPlatform\Symfony\EventListener\EventPriorities;
 use App\Entity\Entry;
-use App\Message\Awards\NewEntryEventMessage;
-use App\Notifier\AwardEventNotifier;
-use App\Notifier\EntryProcessorNotifier;
+use App\Message\Awards\NewEntryAwardMessage;
+use App\Message\NewEntryProcessorMessage;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsEventListener(event: KernelEvents::VIEW, priority: EventPriorities::POST_WRITE)]
 final class NewEntryListener
 {
     public function __construct(
-        private readonly EntryProcessorNotifier $notifier,
-        private readonly AwardEventNotifier $awardEventNotifier,
+        private readonly MessageBusInterface $bus,
+        private readonly IriConverterInterface $iriConverter,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -32,7 +35,20 @@ final class NewEntryListener
             return;
         }
 
-        $this->notifier->notify($entry);
-        $this->awardEventNotifier->notify(new NewEntryEventMessage($entry));
+        /** @var string */
+        $entryIri = $this->iriConverter->getIriFromResource($entry);
+        /** @var string */
+        $userIri = $this->iriConverter->getIriFromResource($entry->getUser());
+
+        $this->bus->dispatch(new NewEntryProcessorMessage($entryIri, $entry->getContent()));
+        $this->logger->info('New entry notified to processors', [
+            'entry' => $entryIri,
+            'user' => $userIri,
+        ]);
+        $this->bus->dispatch(new NewEntryAwardMessage($entryIri, $userIri));
+        $this->logger->info('New entry notified to awards system', [
+            'entry' => $entryIri,
+            'user' => $userIri,
+        ]);
     }
 }

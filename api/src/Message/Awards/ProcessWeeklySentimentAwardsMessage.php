@@ -4,7 +4,7 @@ namespace App\Message\Awards;
 
 use App\Enum\AwardType;
 
-class ProcessWeeklySentimentAwards
+class ProcessWeeklySentimentAwardsMessage
 {
     public function getAwardType(): AwardType
     {

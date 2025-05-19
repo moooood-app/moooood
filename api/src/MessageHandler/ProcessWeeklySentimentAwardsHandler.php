@@ -3,7 +3,7 @@
 namespace App\MessageHandler;
 
 use App\Awards\AwardOrchestrator;
-use App\Message\Awards\ProcessWeeklySentimentAwards;
+use App\Message\Awards\ProcessWeeklySentimentAwardsMessage;
 use App\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -16,7 +16,7 @@ class ProcessWeeklySentimentAwardsHandler
     ) {
     }
 
-    public function __invoke(ProcessWeeklySentimentAwards $message): void
+    public function __invoke(ProcessWeeklySentimentAwardsMessage $message): void
     {
         $users = $this->userRepository->findUsersWithEntriesInConsecutivePeriodsNotGrantedAwardType(
             \DateInterval::createFromDateString('1 week'),

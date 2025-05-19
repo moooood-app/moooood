@@ -1,5 +1,5 @@
 #!/bin/bash
-# SNS topics
+# Processors SNS topics
 awslocal sns create-topic --name ${NEW_ENTRY_SNS_TOPIC}
 awslocal sns create-topic --name ${POST_PROCESSING_SNS_TOPIC}
 

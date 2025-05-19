@@ -42,7 +42,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 class Entry
 {
-    public const SERIALIZATION_GROUP_SNS = 'entry:sns';
     public const SERIALIZATION_GROUP_WRITE = 'entry:write';
     public const SERIALIZATION_GROUP_READ_ITEM = 'entry:read:item';
     public const SERIALIZATION_GROUP_READ_COLLECTION = 'entry:read:collection';
@@ -55,7 +54,6 @@ class Entry
 
     #[ORM\Column(type: Types::TEXT)]
     #[Serializer\Groups([
-        self::SERIALIZATION_GROUP_SNS,
         self::SERIALIZATION_GROUP_WRITE,
         self::SERIALIZATION_GROUP_READ_ITEM,
         self::SERIALIZATION_GROUP_READ_COLLECTION,

@@ -2,7 +2,7 @@
 
 namespace App\Scheduler;
 
-use App\Message\Awards\ProcessWeeklySentimentAwards;
+use App\Message\Awards\ProcessWeeklySentimentAwardsMessage;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
 use Symfony\Component\Scheduler\RecurringMessage;
@@ -23,7 +23,7 @@ final readonly class AwardsScheduler implements ScheduleProviderInterface
     {
         return (new Schedule())
             ->add(
-                RecurringMessage::cron('0 1 * * 1', new ProcessWeeklySentimentAwards()),
+                RecurringMessage::cron('0 1 * * 1', new ProcessWeeklySentimentAwardsMessage()),
             )
             ->stateful($this->cache)
             ->lock($this->lockFactory->createLock('awards'))
