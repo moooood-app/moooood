@@ -34,7 +34,9 @@ final class SnsTransport implements TransportInterface
         $this->logger->debug('Encoded message: {encodedMessage}', [
             'encodedMessage' => $encodedMessage['body'],
         ]);
-        $headers = $encodedMessage['headers'] ?? [];
+        $headers = ($encodedMessage['headers'] ?? []) + [
+            'type' => $envelope->getMessage()::class,
+        ];
         $arguments = [
             'MessageAttributes' => [
                 'Headers' => new MessageAttributeValue(['DataType' => 'String', 'StringValue' => json_encode($headers, \JSON_THROW_ON_ERROR)]),

@@ -4,14 +4,18 @@ framework:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             post-processing:
                 dsn: '%env(MESSENGER_TRANSPORT_POST_PROCESSING_DSN)%'
+                serializer: App\Messenger\Serializer\ProcessorOutputSerializer
             awards:
                 dsn: '%env(MESSENGER_TRANSPORT_AWARD_DSN)%'
+                serializer: App\Messenger\Serializer\NewEntryAwardMessageSerializer
             mailer:
                 dsn: '%env(MESSENGER_TRANSPORT_MAILER_DSN)%'
             new-entry:
                 dsn: 'sns://%env(NEW_ENTRY_PROCESSING_SNS_ARN)%'
+                serializer: messenger.transport.symfony_serializer
             award-events:
                 dsn: 'sns://%env(AWARD_EVENTS_SNS_ARN)%'
+                serializer: messenger.transport.symfony_serializer
         routing:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: mailer
 
