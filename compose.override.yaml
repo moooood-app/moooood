@@ -26,9 +26,9 @@ services:
     volumes:
       - ./api/:/app
     environment:
-      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_CONSUME_LIMIT: 10
       QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 3600
+      QUEUE_TIME_LIMIT: 500
       QUEUE_FAILURE_LIMIT: 10
       SUPERVISOR_NUM_PROCS: 2
       TRANSPORT_NAME: post-processing
@@ -44,9 +44,9 @@ services:
     volumes:
       - ./api/:/app
     environment:
-      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_CONSUME_LIMIT: 10
       QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 3600
+      QUEUE_TIME_LIMIT: 500
       QUEUE_FAILURE_LIMIT: 10
       SUPERVISOR_NUM_PROCS: 2
       TRANSPORT_NAME: awards
@@ -61,9 +61,9 @@ services:
     volumes:
       - ./api/:/app
     environment:
-      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_CONSUME_LIMIT: 10
       QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 3600
+      QUEUE_TIME_LIMIT: 500
       QUEUE_FAILURE_LIMIT: 10
       SUPERVISOR_NUM_PROCS: 2
       TRANSPORT_NAME: mailer
@@ -78,9 +78,9 @@ services:
     volumes:
       - ./api/:/app
     environment:
-      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_CONSUME_LIMIT: 10
       QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 3600
+      QUEUE_TIME_LIMIT: 500
       QUEUE_FAILURE_LIMIT: 10
       SUPERVISOR_NUM_PROCS: 2
       TRANSPORT_NAME: scheduler_awards

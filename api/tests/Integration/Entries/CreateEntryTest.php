@@ -9,6 +9,7 @@ use App\EventListener\NewEntryListener;
 use App\EventListener\TokenCreatedListener;
 use App\Message\Awards\NewEntryAwardMessage;
 use App\Message\NewEntryProcessorMessage;
+use App\Messenger\Serializer\AbstractSerializer;
 use App\Messenger\Transport\SnsTransportFactory;
 use App\Metadata\Metrics\MetricsApiResource;
 use App\Repository\UserRepository;
@@ -22,7 +23,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Profiler\Profile;
-use Symfony\Component\Messenger\DataCollector\MessengerDataCollector;
 use Zenstruck\Messenger\Test\InteractsWithMessenger;
 
 /**
@@ -39,6 +39,7 @@ use Zenstruck\Messenger\Test\InteractsWithMessenger;
 #[UsesClass(SnsTransportFactory::class)]
 #[UsesClass(Schedule::class)]
 #[UsesClass(AwardsScheduler::class)]
+#[UsesClass(AbstractSerializer::class)]
 final class CreateEntryTest extends WebTestCase
 {
     use AuthenticatedClientTrait;
@@ -99,9 +100,6 @@ final class CreateEntryTest extends WebTestCase
         if (!$client->getProfile() instanceof Profile) {
             self::fail('Profiler not enabled');
         }
-
-        /** @var MessengerDataCollector */
-        $messsengerCollector = $client->getProfile()->getCollector('messenger');
 
         $queue = $this->transport('new-entry')->queue();
         $queue->assertCount(1);

@@ -40,7 +40,11 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $entry->setUser($user);
 
         $processor = Processor::COMPLEXITY;
-        $message = new ProcessorOutputMessage('/entries/123', ['new' => 'data'], $processor);
+        $message = (new ProcessorOutputMessage())
+            ->setEntryIri('/entries/123')
+            ->setResult(['new' => 'data'])
+            ->setProcessor($processor)
+        ;
 
         /** @var LoggerInterface&MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
@@ -49,7 +53,7 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $entryRepository = $this->createMock(EntryRepository::class);
         $entryRepository->expects(self::once())
             ->method('removeExistingMetadataForProcessor')
-            ->with($entry, $message->processor)
+            ->with($entry, $message->getProcessor())
         ;
 
         /** @var EntryMetadataRepository&MockObject $entryMetadataRepository */
@@ -71,7 +75,7 @@ final class ProcessorOutputMessageHandlerTest extends TestCase
         $iriConverter = $this->createMock(IriConverterInterface::class);
         $iriConverter->expects(self::once())
             ->method('getResourceFromIri')
-            ->with($message->entryIri)
+            ->with($message->getEntryIri())
             ->willReturn($entry)
         ;
 

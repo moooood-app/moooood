@@ -9,7 +9,7 @@ use App\Enum\Processor;
 final class ProcessorOutputMessage
 {
     private string $entryIri;
-    
+
     /**
      * @var array<mixed>
      */
@@ -22,9 +22,11 @@ final class ProcessorOutputMessage
         return $this->entryIri;
     }
 
-    public function setEntryIri(string $entryIri): void
+    public function setEntryIri(string $entryIri): self
     {
         $this->entryIri = $entryIri;
+
+        return $this;
     }
 
     /**
@@ -38,9 +40,11 @@ final class ProcessorOutputMessage
     /**
      * @param array<mixed> $result
      */
-    public function setResult(array $result): void
+    public function setResult(array $result): self
     {
         $this->result = $result;
+
+        return $this;
     }
 
     public function getProcessor(): Processor
@@ -48,9 +52,10 @@ final class ProcessorOutputMessage
         return $this->processor;
     }
 
-    public function setProcessor(Processor $processor): void
+    public function setProcessor(Processor $processor): self
     {
         $this->processor = $processor;
+
+        return $this;
     }
 }
-

@@ -45,6 +45,7 @@ final class NewEntryListener
             'entry' => $entryIri,
             'user' => $userIri,
         ]);
+
         $this->bus->dispatch(new NewEntryAwardMessage($entryIri, $userIri));
         $this->logger->info('New entry notified to awards system', [
             'entry' => $entryIri,

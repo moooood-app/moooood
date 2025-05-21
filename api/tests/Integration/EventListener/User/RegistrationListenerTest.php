@@ -5,6 +5,7 @@ namespace App\Tests\Integration\EventListener\User;
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\EventListener\User\RegistrationListener;
+use App\Messenger\Serializer\AbstractSerializer;
 use App\Messenger\Transport\SnsTransportFactory;
 use App\Repository\UserRepository;
 use App\Schedule;
@@ -28,6 +29,7 @@ use Zenstruck\Messenger\Test\InteractsWithMessenger;
 #[UsesClass(AwardsScheduler::class)]
 #[UsesClass(Schedule::class)]
 #[UsesClass(SnsTransportFactory::class)]
+#[UsesClass(AbstractSerializer::class)]
 final class RegistrationListenerTest extends KernelTestCase
 {
     use InteractsWithMessenger;

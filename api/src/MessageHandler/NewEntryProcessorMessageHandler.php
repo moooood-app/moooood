@@ -10,14 +10,15 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsMessageHandler]
-class NewEntryEventMessageHandler
+class NewEntryProcessorMessageHandler
 {
     public function __construct(
         private readonly HttpClientInterface $client,
         private readonly MessageBusInterface $bus,
         private readonly LoggerInterface $logger,
-        private readonly string $inferenceApiUrl
-    ) {}
+        private readonly string $inferenceApiUrl,
+    ) {
+    }
 
     public function __invoke(NewEntryProcessorMessage $message): void
     {
