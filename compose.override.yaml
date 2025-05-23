@@ -1,5 +1,6 @@
 # Development environment override
 services:
+  # API platform
   api:
     build:
       context: .
@@ -20,153 +21,7 @@ services:
       - database
       - redis
 
-  worker-messenger-post-processing:
-    build:
-      target: dev
-    volumes:
-      - ./api/:/app
-    environment:
-      QUEUE_CONSUME_LIMIT: 10
-      QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 500
-      QUEUE_FAILURE_LIMIT: 10
-      SUPERVISOR_NUM_PROCS: 2
-      TRANSPORT_NAME: post-processing
-    tty: true
-    depends_on:
-      - database
-      - localstack
-      - redis
-
-  worker-messenger-awards:
-    build:
-      target: dev
-    volumes:
-      - ./api/:/app
-    environment:
-      QUEUE_CONSUME_LIMIT: 10
-      QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 500
-      QUEUE_FAILURE_LIMIT: 10
-      SUPERVISOR_NUM_PROCS: 2
-      TRANSPORT_NAME: awards
-    tty: true
-    depends_on:
-      - database
-      - localstack
-
-  worker-messenger-mailer:
-    build:
-      target: dev
-    volumes:
-      - ./api/:/app
-    environment:
-      QUEUE_CONSUME_LIMIT: 10
-      QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 500
-      QUEUE_FAILURE_LIMIT: 10
-      SUPERVISOR_NUM_PROCS: 2
-      TRANSPORT_NAME: mailer
-    tty: true
-    depends_on:
-      - database
-      - localstack
-
-  worker-messenger-processor-complexity:
-    build:
-      target: dev
-    volumes:
-      - ./api/:/app
-    environment:
-      QUEUE_CONSUME_LIMIT: 100
-      QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 300
-      QUEUE_FAILURE_LIMIT: 10
-      SUPERVISOR_NUM_PROCS: 2
-      TRANSPORT_NAME: processor
-      INFERENCE_API_URL: http://localhost:3000/analyze
-    tty: true
-    depends_on:
-      - database
-      - localstack
-
-  worker-scheduler-awards:
-    build:
-      target: dev
-    volumes:
-      - ./api/:/app
-    environment:
-      QUEUE_CONSUME_LIMIT: 10
-      QUEUE_MEMORY_LIMIT: 128M
-      QUEUE_TIME_LIMIT: 500
-      QUEUE_FAILURE_LIMIT: 10
-      SUPERVISOR_NUM_PROCS: 2
-      TRANSPORT_NAME: scheduler_awards
-    tty: true
-    depends_on:
-      - database
-      - localstack
-
-  database:
-    container_name: database
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
-    ports:
-      - "5432:5432"
-    env_file:
-      - .env
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-moooood}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-moooood}", "-U", "${POSTGRES_USER:-app}"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-    volumes:
-      - ./docker/data/db:/var/lib/postgresql/data:rw
-
-  localstack:
-    container_name: localstack
-    image: localstack/localstack
-    ports:
-      - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
-    env_file:
-      - .env
-    environment:
-      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - DEBUG=${DEBUG:-0}
-    healthcheck:
-      test: awslocal sqs get-queue-attributes --queue-url=$$POST_PROCESSING_SQS_QUEUE
-      interval: 5s
-      timeout: 10s
-      retries: 5
-    volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./docker/data/localstack}:/var/lib/localstack"
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./docker/localstack/init_sns_sqs.sh:/etc/localstack/init/ready.d/init_sns_sqs.sh
-
-  mailpit:
-    container_name: mailpit
-    image: axllent/mailpit
-    ports:
-      - "1025"
-      - "8025:8025"
-    environment:
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
-
-  redis:
-    container_name: redis
-    image: redis:7.4-alpine
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
-      interval: 1s
-      timeout: 3s
-      retries: 5
-    command: ["redis-server"]
-
+  # BentoML services
   bentoml-builder:
     profiles: ["builder"]
     build:
@@ -193,3 +48,157 @@ services:
       BENTO_NAME: complexity
     volumes:
       - ./bentoml/complexity:/workspace
+
+  # Messenger workers
+  worker-messenger-post-processing:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 10
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 300
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: post-processing
+    tty: true
+    depends_on:
+      - database
+      - localstack
+      - redis
+
+  worker-messenger-awards:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 10
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 300
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: awards
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
+  worker-messenger-mailer:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 10
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 300
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: mailer
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
+  worker-messenger-processor-complexity:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 300
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: processor-complexity
+      INFERENCE_API_URL: http://complexity:3000/analyze
+      PROCESSOR_NAME: complexity
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
+  # Cron jobs
+  worker-scheduler-awards:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 10
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 300
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: scheduler_awards
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
+  # PostgreSQL database
+  database:
+    container_name: database
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-moooood}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-moooood}", "-U", "${POSTGRES_USER:-app}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - ./docker/data/db:/var/lib/postgresql/data:rw
+
+  # LocalStack is a fully functional local AWS cloud stack
+  localstack:
+    container_name: localstack
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    env_file:
+      - .env
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+    healthcheck:
+      test: awslocal sqs get-queue-attributes --queue-url=$$POST_PROCESSING_SQS_QUEUE
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./docker/data/localstack}:/var/lib/localstack"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/localstack/init_sns_sqs.sh:/etc/localstack/init/ready.d/init_sns_sqs.sh
+
+  # Mailpit is a local SMTP server with a web interface to view emails
+  mailpit:
+    container_name: mailpit
+    image: axllent/mailpit
+    ports:
+      - "1025"
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+  # Redis Cache
+  redis:
+    container_name: redis
+    image: redis:7.4-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: ["redis-server"]

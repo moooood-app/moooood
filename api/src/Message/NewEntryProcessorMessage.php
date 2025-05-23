@@ -6,7 +6,7 @@ namespace App\Message;
 
 use Symfony\Component\Messenger\Attribute\AsMessage;
 
-#[AsMessage(transport: 'new-entry')]
+#[AsMessage(transport: 'new-entry-topic')]
 final readonly class NewEntryProcessorMessage
 {
     public function __construct(

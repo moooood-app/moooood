@@ -11,6 +11,7 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             string $inferenceApiUrl: '%env(INFERENCE_API_URL)%'
+            string $processorName: '%env(PROCESSOR_NAME)%'
 
     App\:
         resource: '../src/'

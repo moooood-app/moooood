@@ -24,8 +24,8 @@ class EntryMetadataRepository extends ServiceEntityRepository
     {
         $metadata = new EntryMetadata();
         $metadata->setEntry($entry);
-        $metadata->setProcessor($processorOutputMessage->getProcessor());
-        $metadata->setMetadata($processorOutputMessage->getResult());
+        $metadata->setProcessor($processorOutputMessage->processor);
+        $metadata->setMetadata($processorOutputMessage->result);
 
         $this->getEntityManager()->persist($metadata);
         $this->getEntityManager()->flush();

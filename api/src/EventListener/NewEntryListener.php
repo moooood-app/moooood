@@ -41,13 +41,13 @@ final class NewEntryListener
         $userIri = $this->iriConverter->getIriFromResource($entry->getUser());
 
         $this->bus->dispatch(new NewEntryProcessorMessage($entryIri, $entry->getContent()));
-        $this->logger->info('New entry notified to processors', [
+        $this->logger->debug('New entry notified to processors', [
             'entry' => $entryIri,
             'user' => $userIri,
         ]);
 
         $this->bus->dispatch(new NewEntryAwardMessage($entryIri, $userIri));
-        $this->logger->info('New entry notified to awards system', [
+        $this->logger->debug('New entry notified to awards system', [
             'entry' => $entryIri,
             'user' => $userIri,
         ]);

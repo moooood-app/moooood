@@ -2,7 +2,9 @@
 
 namespace App\MessageHandler;
 
+use App\Enum\Processor;
 use App\Message\NewEntryProcessorMessage;
+use App\Message\ProcessorOutputMessage;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -17,6 +19,7 @@ class NewEntryProcessorMessageHandler
         private readonly MessageBusInterface $bus,
         private readonly LoggerInterface $logger,
         private readonly string $inferenceApiUrl,
+        private readonly string $processorName,
     ) {
     }
 
@@ -26,9 +29,15 @@ class NewEntryProcessorMessageHandler
             'json' => ['entry' => $message->content],
         ]);
 
-        $this->bus->dispatch(new NewEntryProcessorMessage($message->entryIri, $response->getContent(true)));
+        $output = new ProcessorOutputMessage(
+            $message->entryIri,
+            $response->toArray(false),
+            Processor::from($this->processorName),
+        );
+
+        $this->bus->dispatch($output);
         $this->logger->info('New entry processed', [
-            'entry' => $message->entryIri,
+            'entry' => $output->entryIri,
         ]);
     }
 }

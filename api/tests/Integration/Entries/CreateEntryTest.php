@@ -101,7 +101,7 @@ final class CreateEntryTest extends WebTestCase
             self::fail('Profiler not enabled');
         }
 
-        $queue = $this->transport('new-entry')->queue();
+        $queue = $this->transport('new-entry-topic')->queue();
         $queue->assertCount(1);
         $queue->assertContains(NewEntryProcessorMessage::class, 1);
 
@@ -114,7 +114,7 @@ final class CreateEntryTest extends WebTestCase
         /** @var User */
         $user = $repository->findOneBy(['email' => UserFixtures::FIRST_USER]);
 
-        $queue = $this->transport('award-events')->queue();
+        $queue = $this->transport('award-events-topic')->queue();
         $queue->assertCount(1);
         $queue->assertContains(NewEntryAwardMessage::class, 1);
 

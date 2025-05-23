@@ -67,7 +67,7 @@ final class NewEntryListenerTest extends TestCase
         /** @var LoggerInterface&MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $loggerMessages = [];
-        $logger->method('info')->willReturnCallback(static function (string $message, array $context = []) use (&$loggerMessages) {
+        $logger->method('debug')->willReturnCallback(static function (string $message, array $context = []) use (&$loggerMessages) {
             $loggerMessages[] = [$message, $context];
         });
 

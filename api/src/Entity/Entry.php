@@ -68,7 +68,7 @@ class Entry
     #[ApiProperty(description: 'The content of the entry')]
     private string $content;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'entries')]
     #[ORM\JoinColumn(nullable: false)]
     #[Gedmo\Blameable(on: 'create')]
     private User $user;

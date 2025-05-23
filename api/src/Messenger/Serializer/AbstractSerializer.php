@@ -2,6 +2,7 @@
 
 namespace App\Messenger\Serializer;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
@@ -16,6 +17,7 @@ abstract class AbstractSerializer implements SerializerInterface
         private readonly SerializerInterface $decorated,
         private readonly DecoderInterface $decoder,
         private readonly SymfonySerializerInterface $serializer,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -34,25 +36,28 @@ abstract class AbstractSerializer implements SerializerInterface
     {
         /**
          * @var array{
-         *     Message: string,
-         *     MessageAttributes: array<string, array{
+         *     Message?: string,
+         *     MessageAttributes?: array<string, array{
          *         Type: string,
          *         StringValue: string,
          *     }>,
          * } $payload */
         $payload = $this->decoder->decode($encodedEnvelope['body'], JsonEncoder::FORMAT);
 
+        $data = $payload['Message'] ?? $encodedEnvelope['body'];
+
+        $this->logger->debug('Received payload: {payload}', [
+            'payload' => $payload,
+        ]);
+
         /** @var object */
         $message = $this->serializer->deserialize(
-            $payload['Message'],
+            $data,
             $this->getMessageClass(),
             JsonEncoder::FORMAT,
         );
 
-        return new Envelope(
-            $message,
-            // todo manage the stamps correctly
-        );
+        return new Envelope($message);
     }
 
     /**

@@ -28,13 +28,13 @@ final class ProcessorOutputMessageHandler
     public function __invoke(ProcessorOutputMessage $message): void
     {
         /** @var Entry */
-        $entry = $this->iriConverter->getResourceFromIri($message->getEntryIri());
+        $entry = $this->iriConverter->getResourceFromIri($message->entryIri);
         $this->logger->info('Data received from processor {processor} for entry {entry}', [
-            'entry' => $entry->getId()->toString(),
-            'processor' => $message->getProcessor()->value,
+            'entry' => $message->entryIri,
+            'processor' => $message->processor->value,
         ]);
 
-        $this->entryRepository->removeExistingMetadataForProcessor($entry, $message->getProcessor());
+        $this->entryRepository->removeExistingMetadataForProcessor($entry, $message->processor);
 
         $this->entryMetadataRepository->createMetadataFromProcessorOutput($entry, $message);
 

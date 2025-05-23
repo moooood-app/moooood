@@ -31,12 +31,14 @@ final class SnsTransport implements TransportInterface
          * }
          */
         $encodedMessage = $this->serializer->encode($envelope);
-        $this->logger->debug('Encoded message: {encodedMessage}', [
+        $this->logger->debug('SNS message: {encodedMessage}', [
             'encodedMessage' => $encodedMessage['body'],
         ]);
+
         $headers = ($encodedMessage['headers'] ?? []) + [
             'type' => $envelope->getMessage()::class,
         ];
+
         $arguments = [
             'MessageAttributes' => [
                 'Headers' => new MessageAttributeValue(['DataType' => 'String', 'StringValue' => json_encode($headers, \JSON_THROW_ON_ERROR)]),

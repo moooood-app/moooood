@@ -2,23 +2,26 @@ framework:
     messenger:
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
+            mailer:
+                dsn: '%env(MESSENGER_TRANSPORT_MAILER_DSN)%'
+            new-entry-topic:
+                dsn: 'sns://%env(NEW_ENTRY_PROCESSING_SNS_ARN)%'
+                serializer: messenger.transport.symfony_serializer
+            processor-complexity:
+                dsn: '%env(MESSENGER_TRANSPORT_PROCESSOR_COMPLEXITY_DSN)%'
+                serializer: App\Messenger\Serializer\NewEntryProcessorMessageSerializer
+            post-processing-topic:
+                dsn: 'sns://%env(POST_PROCESSING_SNS_ARN)%'
+                serializer: messenger.transport.symfony_serializer
             post-processing:
                 dsn: '%env(MESSENGER_TRANSPORT_POST_PROCESSING_DSN)%'
                 serializer: App\Messenger\Serializer\ProcessorOutputSerializer
+            award-events-topic:
+                dsn: 'sns://%env(AWARD_EVENTS_SNS_ARN)%'
+                serializer: messenger.transport.symfony_serializer
             awards:
                 dsn: '%env(MESSENGER_TRANSPORT_AWARD_DSN)%'
                 serializer: App\Messenger\Serializer\NewEntryAwardMessageSerializer
-            processor:
-                dsn: '%env(MESSENGER_TRANSPORT_PROCESSOR_DSN)%'
-                serializer: App\Messenger\Serializer\NewEntryProcessorMessageSerializer
-            mailer:
-                dsn: '%env(MESSENGER_TRANSPORT_MAILER_DSN)%'
-            new-entry:
-                dsn: 'sns://%env(NEW_ENTRY_PROCESSING_SNS_ARN)%'
-                serializer: messenger.transport.symfony_serializer
-            award-events:
-                dsn: 'sns://%env(AWARD_EVENTS_SNS_ARN)%'
-                serializer: messenger.transport.symfony_serializer
         routing:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: mailer
 
@@ -31,5 +34,6 @@ when@test:
                 post-processing: test://
                 awards: test://
                 mailer: test://
-                new-entry: test://
-                award-events: test://
+                new-entry-topic: test://
+                post-processing-topic: test://
+                award-events-topic: test://
