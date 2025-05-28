@@ -194,9 +194,23 @@ class EmotionsService:
         for chunk in chunks:
             # Use the classifier pipeline
             emotions = self.classifier(chunk, truncation=True, max_length=self.MAX_LENGTH)
-            # The pipeline returns a list of dictionaries with 'label' and 'score'
-            chunk_probs = {emotion['label']: emotion['score'] for emotion in emotions}
-            all_probs.append(chunk_probs)
+
+            # The pipeline returns a list containing a list of emotion dictionaries
+            # Extract the inner list of emotions
+            if isinstance(emotions, list) and len(emotions) > 0 and isinstance(emotions[0], list):
+                emotion_list = emotions[0]  # Get the first (and only) batch
+
+                # Convert to dictionary of emotion scores
+                chunk_probs = {emotion['label']: emotion['score'] for emotion in emotion_list}
+                all_probs.append(chunk_probs)
+            else:
+                print(f"Warning: Unexpected emotions structure: {emotions}")
+                continue
+
+        if not all_probs:
+            print("Warning: No probabilities extracted from any chunks")
+            # Return default output with zeros
+            return AnalyzeOutput(**{field: 0.0 for field in AnalyzeOutput.model_fields.keys()})
 
         # Aggregate probabilities by averaging across chunks
         aggregated_probs = {}
@@ -204,7 +218,7 @@ class EmotionsService:
             for emotion, score in probs.items():
                 aggregated_probs[emotion] = aggregated_probs.get(emotion, 0) + score
 
-        # Average the probabilities instead of normalizing
+        # Average the probabilities
         num_chunks = len(all_probs)
         averaged_probs = {emotion: score / num_chunks for emotion, score in aggregated_probs.items()}
 
@@ -212,7 +226,6 @@ class EmotionsService:
         output_dict = {}
         for emotion_field in AnalyzeOutput.model_fields.keys():
             # Try to match the emotion field name with model labels
-            # The model might use different casing or naming conventions
             score = averaged_probs.get(emotion_field, 0.0)
             if score == 0.0:
                 # Try alternative label formats
@@ -234,16 +247,15 @@ class EmotionsService:
     def _split_text_into_chunks(self, text: str) -> List[str]:
         """Split text into overlapping chunks for processing."""
         tokens = self.tokenizer(text, truncation=False, return_tensors="pt")["input_ids"][0]
-        
+
         # If text is short enough, return as single chunk
         if len(tokens) <= self.MAX_LENGTH:
             return [text]
-        
+
         chunks = []
         for i in range(0, len(tokens), self.MAX_LENGTH - self.STRIDE):
             chunk_tokens = tokens[i:i + self.MAX_LENGTH]
             chunk_text = self.tokenizer.decode(chunk_tokens, skip_special_tokens=True)
             chunks.append(chunk_text)
-        
+
         return chunks
-    
