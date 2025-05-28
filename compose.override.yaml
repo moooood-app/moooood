@@ -49,6 +49,21 @@ services:
     volumes:
       - ./bentoml/complexity:/workspace
 
+  emotions:
+    container_name: emotions-inference
+    build:
+      context: .
+      dockerfile: docker/bentoml/Dockerfile
+      target: dev
+      args:
+        BENTO_NAME: emotions
+    ports:
+      - 3001:3000
+    environment:
+      BENTO_NAME: emotions
+    volumes:
+      - ./bentoml/emotions:/workspace
+
   # Messenger workers
   worker-messenger-post-processing:
     build:
@@ -116,6 +131,25 @@ services:
       TRANSPORT_NAME: processor-complexity
       INFERENCE_API_URL: http://complexity:3000/analyze
       PROCESSOR_NAME: complexity
+    tty: true
+    depends_on:
+      - database
+      - localstack
+
+  worker-messenger-processor-emotions:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 300
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: processor-emotions
+      INFERENCE_API_URL: http://emotions:3000/analyze
+      PROCESSOR_NAME: emotions
     tty: true
     depends_on:
       - database

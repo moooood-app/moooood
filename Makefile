@@ -52,7 +52,7 @@ down:
 	docker compose down --remove-orphans
 
 build:
-	docker compose -f compose.yaml -f compose.prod.yaml build
+	COMPOSE_BAKE=true docker compose build
 
 build-bento:
 	docker compose run --rm builder sh -c "bentoml build && bentoml containerize ${BENTO_NAME} -t ${BENTO_NAME}:${VERSION}"

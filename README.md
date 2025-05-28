@@ -15,12 +15,10 @@ graph TD
     C -->|Dispatch notification| D[SNS New Entries Topic]
     D -->|Fan-out notifications| E1[SQS Queue Sentiment]
     D --> E2[SQS Queue Complexity]
-    D --> E3[SQS Queue Keywords]
-    D --> E4[SQS Queue Emotions]
-    E1 -->|Consumed| F1[Python Sentiment Processor]
-    E2 -->|Consumed| F2[Python Complexity Processor]
-    E3 -->|Consumed| F3[Python Keywords Processor]
-    E4 -->|Consumed| F4[Python EmotionsProcessor]
+    D --> E3[SQS Queue Emotions]
+    E1 -->|Consumed| F1[Sentiment Symfony Messenger Processor]
+    E2 -->|Consumed| F3[Complexity Symfony Messenger Processor]
+    E3 -->|Consumed| F4[Emotions Symfony Messenger Processor]
     F1 -->|SNS notification| G[SNS Post-Processing Topic]
     F2 -->|SNS notification| G
     F3 -->|SNS notification| G

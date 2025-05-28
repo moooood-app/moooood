@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: https://{{url}}/api/metrics/emotions?grouping=day
+  url: https://{{url}}/api/metrics/emotions?grouping=day&from=2025-04-01
   body: none
   auth: none
 }
 
-query {
+params:query {
   grouping: day
+  from: 2025-04-01
 }
 
 headers {

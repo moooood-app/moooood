@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: https://{{url}}/api/metrics/complexity?grouping=day
+  url: https://{{url}}/api/metrics/complexity?grouping=hour
   body: none
   auth: none
 }
 
-query {
-  grouping: day
+params:query {
+  grouping: hour
   ~from: 2024-11-05
 }
 
