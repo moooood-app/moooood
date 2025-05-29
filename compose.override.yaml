@@ -35,7 +35,7 @@ services:
     tty: true
 
   complexity:
-    container_name: complexity-inference
+    container_name: bento-complexity
     build:
       context: .
       dockerfile: docker/bentoml/Dockerfile
@@ -48,9 +48,15 @@ services:
       BENTO_NAME: complexity
     volumes:
       - ./bentoml/complexity:/workspace
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:3000/healthz"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
 
   emotions:
-    container_name: emotions-inference
+    container_name: bento-emotions
     build:
       context: .
       dockerfile: docker/bentoml/Dockerfile
@@ -63,6 +69,12 @@ services:
       BENTO_NAME: emotions
     volumes:
       - ./bentoml/emotions:/workspace
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:3000/healthz"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
 
   # Messenger workers
   worker-messenger-post-processing:

@@ -1,5 +1,9 @@
 FROM python:3.11-slim AS base
 
+# Install curl
+RUN apt-get update && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pip install --upgrade pip \
     && pip install bentoml uv
 
