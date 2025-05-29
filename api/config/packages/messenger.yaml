@@ -10,6 +10,12 @@ framework:
             processor-complexity:
                 dsn: '%env(MESSENGER_TRANSPORT_PROCESSOR_COMPLEXITY_DSN)%'
                 serializer: App\Messenger\Serializer\NewEntryProcessorMessageSerializer
+            processor-sentiment:
+                dsn: '%env(MESSENGER_TRANSPORT_PROCESSOR_SENTIMENT_DSN)%'
+                serializer: App\Messenger\Serializer\NewEntryProcessorMessageSerializer
+            processor-emotions:
+                dsn: '%env(MESSENGER_TRANSPORT_PROCESSOR_EMOTIONS_DSN)%'
+                serializer: App\Messenger\Serializer\NewEntryProcessorMessageSerializer
             post-processing-topic:
                 dsn: 'sns://%env(POST_PROCESSING_SNS_ARN)%'
                 serializer: messenger.transport.symfony_serializer

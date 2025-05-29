@@ -162,7 +162,7 @@ services:
       QUEUE_FAILURE_LIMIT: 10
       SUPERVISOR_NUM_PROCS: 2
       TRANSPORT_NAME: processor-complexity
-      INFERENCE_API_URL: http://complexity:3000/analyze
+      INFERENCE_API_URL: http://bento-complexity:3000/analyze
       PROCESSOR_NAME: complexity
     tty: true
     depends_on:
@@ -182,7 +182,7 @@ services:
       QUEUE_FAILURE_LIMIT: 10
       SUPERVISOR_NUM_PROCS: 2
       TRANSPORT_NAME: processor-emotions
-      INFERENCE_API_URL: http://emotions:3000/analyze
+      INFERENCE_API_URL: http://bento-emotions:3000/analyze
       PROCESSOR_NAME: emotions
     tty: true
     depends_on:
@@ -202,7 +202,7 @@ services:
       QUEUE_FAILURE_LIMIT: 10
       SUPERVISOR_NUM_PROCS: 2
       TRANSPORT_NAME: processor-sentiment
-      INFERENCE_API_URL: http://sentiment:3000/analyze
+      INFERENCE_API_URL: http://bento-sentiment:3000/analyze
       PROCESSOR_NAME: sentiment
     tty: true
     depends_on:
