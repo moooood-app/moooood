@@ -1,0 +1,11 @@
+description: |
+    ## 💬 Sentiment Analysis Service
+
+    This service analyzes a piece of text and returns a confidence score for each of the following sentiment categories:
+    - positive
+    - neutral
+    - negative
+
+    It leverages the [cardiffnlp/twitter-roberta-base-sentiment-latest](https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest) model. This model is designed for robust sentiment classification on social media and short-form content like tweets, captions, and comments.
+
+    The input text can be of any length—long texts are intelligently chunked, processed individually, and aggregated to produce a final sentiment distribution.

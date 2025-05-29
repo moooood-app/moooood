@@ -22,7 +22,7 @@ services:
       - redis
 
   # BentoML services
-  bentoml-builder:
+  bento-builder:
     profiles: ["builder"]
     build:
       context: .
@@ -34,7 +34,7 @@ services:
     entrypoint: [""]
     tty: true
 
-  complexity:
+  bento-complexity:
     container_name: bento-complexity
     build:
       context: .
@@ -55,7 +55,7 @@ services:
       retries: 20
       start_period: 10s
 
-  emotions:
+  bento-emotions:
     container_name: bento-emotions
     build:
       context: .
@@ -69,6 +69,27 @@ services:
       BENTO_NAME: emotions
     volumes:
       - ./bentoml/emotions:/workspace
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:3000/healthz"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  bento-sentiment:
+    container_name: bento-sentiment
+    build:
+      context: .
+      dockerfile: docker/bentoml/Dockerfile
+      target: dev
+      args:
+        BENTO_NAME: sentiment
+    ports:
+      - 3002:3000
+    environment:
+      BENTO_NAME: sentiment
+    volumes:
+      - ./bentoml/sentiment:/workspace
     healthcheck:
       test: ["CMD", "curl", "-f", "http://0.0.0.0:3000/healthz"]
       interval: 5s
@@ -147,6 +168,7 @@ services:
     depends_on:
       - database
       - localstack
+      - bento-complexity
 
   worker-messenger-processor-emotions:
     build:
@@ -166,6 +188,27 @@ services:
     depends_on:
       - database
       - localstack
+      - bento-emotions
+
+  worker-messenger-processor-sentiment:
+    build:
+      target: dev
+    volumes:
+      - ./api/:/app
+    environment:
+      QUEUE_CONSUME_LIMIT: 100
+      QUEUE_MEMORY_LIMIT: 128M
+      QUEUE_TIME_LIMIT: 300
+      QUEUE_FAILURE_LIMIT: 10
+      SUPERVISOR_NUM_PROCS: 2
+      TRANSPORT_NAME: processor-sentiment
+      INFERENCE_API_URL: http://sentiment:3000/analyze
+      PROCESSOR_NAME: sentiment
+    tty: true
+    depends_on:
+      - database
+      - localstack
+      - bento-sentiment
 
   # Cron jobs
   worker-scheduler-awards:

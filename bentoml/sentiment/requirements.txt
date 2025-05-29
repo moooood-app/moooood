@@ -1,0 +1,18 @@
+# BentoML and core dependencies
+bentoml>=1.4.8
+pydantic>=2.11.5
+
+# Machine Learning libraries
+transformers>=4.52.3
+torch>=2.5.0
+numpy>=1.26.0
+
+# Additional utilities
+typing-extensions>=4.8.0
+
+# Optional: For better performance and additional features
+accelerate>=0.35.0
+tokenizers>=0.20.0
+
+# Security and compatibility
+certifi>=2023.11.17
