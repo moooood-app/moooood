@@ -56,3 +56,6 @@ build: ## builds the Docker images
 
 build-bento: ## builds a Bento and containerizes it
 	docker compose run --rm builder sh -c "bentoml build && bentoml containerize ${BENTO_NAME} -t ${BENTO_NAME}:${VERSION}"
+
+app: ## starts the Expo app
+	npx expo run:ios
