@@ -139,7 +139,7 @@ final class CreateEntryTest extends WebTestCase
         self::assertValidationErrors($client, [
             [
                 'propertyPath' => 'content',
-                'message' => 'An entry cannot be longer than 5000 characters',
+                'message' => 'An entry cannot be longer than 1000 characters',
             ],
         ]);
     }
