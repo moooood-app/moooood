@@ -190,167 +190,26 @@ class EmotionsService:
     @bentoml.api(input_spec=AnalyzeInput, output_spec=AnalyzeOutput)
     def analyze(self, **params: t.Any) -> AnalyzeOutput:
         entry = params["entry"]
-        chunks = self._split_text_smart(entry)
 
-        if not chunks:
-            return AnalyzeOutput(**{field: 0.0 for field in AnalyzeOutput.model_fields.keys()})
+        try:
+            # Use the classifier pipeline with truncation to handle max length
+            emotions = self.classifier(entry, truncation=True, max_length=512)
 
-        all_probs = []
-        chunk_weights = []
+            # Extract emotion scores
+            if isinstance(emotions, list) and len(emotions) > 0 and isinstance(emotions[0], list):
+                emotion_list = emotions[0]
+                emotion_scores = {emotion['label']: emotion['score'] for emotion in emotion_list}
+            else:
+                # Fallback to empty scores if unexpected format
+                emotion_scores = {}
 
-        for chunk in chunks:
-            try:
-                # Use the classifier pipeline
-                emotions = self.classifier(chunk, truncation=True, max_length=self.MAX_LENGTH + 2)
-
-                # Extract emotion scores
-                if isinstance(emotions, list) and len(emotions) > 0 and isinstance(emotions[0], list):
-                    emotion_list = emotions[0]
-                    chunk_probs = {emotion['label']: emotion['score'] for emotion in emotion_list}
-                    all_probs.append(chunk_probs)
-                    # Weight chunks by their length (longer chunks get more weight)
-                    chunk_weights.append(len(chunk.split()))
-                else:
-                    print(f"Warning: Unexpected emotions structure: {emotions}")
-                    continue
-
-            except Exception as e:
-                print(f"Warning: Error processing chunk: {e}")
-                continue
-
-        if not all_probs:
-            print("Warning: No probabilities extracted from any chunks")
-            return AnalyzeOutput(**{field: 0.0 for field in AnalyzeOutput.model_fields.keys()})
-
-        # Weighted aggregation of probabilities
-        aggregated_probs = self._weighted_aggregate(all_probs, chunk_weights)
+        except Exception as e:
+            print(f"Error processing text: {e}")
+            emotion_scores = {}
 
         # Create output object with all emotions
         output_dict = {}
         for emotion_field in AnalyzeOutput.model_fields.keys():
-            output_dict[emotion_field] = aggregated_probs[emotion_field] if emotion_field in aggregated_probs else 0.0
+            output_dict[emotion_field] = emotion_scores.get(emotion_field, 0.0)
 
         return AnalyzeOutput(**output_dict)
-
-    def _split_text_smart(self, text: str) -> List[str]:
-        """
-        Improved text chunking that:
-        1. Respects sentence boundaries when possible
-        2. Uses token-based length checking
-        3. Handles overlaps more intelligently
-        """
-        # Quick check if text fits in one chunk
-        tokens = self.tokenizer.encode(text, add_special_tokens=False)
-        if len(tokens) <= self.MAX_LENGTH:
-            return [text]
-
-        # Split into sentences first
-        sentences = self._split_sentences(text)
-        chunks = []
-        current_chunk = ""
-        current_tokens = 0
-
-        i = 0
-        while i < len(sentences):
-            sentence = sentences[i]
-            sentence_tokens = len(self.tokenizer.encode(sentence, add_special_tokens=False))
-
-            # If single sentence is too long, split it by words
-            if sentence_tokens > self.MAX_LENGTH:
-                if current_chunk:
-                    chunks.append(current_chunk.strip())
-                    current_chunk = ""
-                    current_tokens = 0
-
-                # Split long sentence into word-based chunks
-                word_chunks = self._split_long_sentence(sentence)
-                chunks.extend(word_chunks)
-                i += 1
-                continue
-
-            # Check if adding this sentence would exceed limit
-            if current_tokens + sentence_tokens > self.MAX_LENGTH:
-                if current_chunk:
-                    chunks.append(current_chunk.strip())
-
-                # Start new chunk with overlap from previous chunk
-                overlap_text = self._get_overlap_text(current_chunk)
-                current_chunk = overlap_text + sentence + " "
-                current_tokens = len(self.tokenizer.encode(current_chunk, add_special_tokens=False))
-            else:
-                current_chunk += sentence + " "
-                current_tokens += sentence_tokens + 1  # +1 for space
-
-            i += 1
-
-        # Add final chunk
-        if current_chunk.strip():
-            chunks.append(current_chunk.strip())
-
-        return [chunk for chunk in chunks if chunk.strip()]
-
-    def _split_sentences(self, text: str) -> List[str]:
-        """Split text into sentences using regex patterns."""
-        # Simple sentence splitting - can be improved with more sophisticated methods
-        sentences = re.split(r'[.!?]+\s+', text)
-        # Clean up and filter empty sentences
-        sentences = [s.strip() for s in sentences if s.strip()]
-        return sentences
-
-    def _split_long_sentence(self, sentence: str) -> List[str]:
-        """Split a long sentence into word-based chunks."""
-        words = sentence.split()
-        chunks = []
-        current_chunk = ""
-
-        for word in words:
-            test_chunk = current_chunk + " " + word if current_chunk else word
-            tokens = len(self.tokenizer.encode(test_chunk, add_special_tokens=False))
-
-            if tokens > self.MAX_LENGTH:
-                if current_chunk:
-                    chunks.append(current_chunk.strip())
-                current_chunk = word
-            else:
-                current_chunk = test_chunk
-
-        if current_chunk.strip():
-            chunks.append(current_chunk.strip())
-
-        return chunks
-
-    def _get_overlap_text(self, chunk: str) -> str:
-        """Get overlap text from the end of a chunk."""
-        words = chunk.split()
-        if len(words) <= self.OVERLAP_LENGTH:
-            return ""
-
-        overlap_words = words[-self.OVERLAP_LENGTH:]
-        overlap_text = " ".join(overlap_words) + " "
-
-        # Ensure overlap doesn't exceed token limit
-        tokens = len(self.tokenizer.encode(overlap_text, add_special_tokens=False))
-        if tokens > self.OVERLAP_LENGTH * 2:  # Safety margin
-            # Truncate overlap if too long
-            while tokens > self.OVERLAP_LENGTH and overlap_words:
-                overlap_words.pop(0)
-                overlap_text = " ".join(overlap_words) + " "
-                tokens = len(self.tokenizer.encode(overlap_text, add_special_tokens=False))
-
-        return overlap_text
-
-    def _weighted_aggregate(self, all_probs: List[dict], weights: List[int]) -> dict:
-        """Aggregate probabilities using weighted averaging."""
-        if not all_probs:
-            return {}
-
-        # Normalize weights
-        total_weight = sum(weights)
-        normalized_weights = [w / total_weight for w in weights]
-
-        aggregated_probs = {}
-        for probs, weight in zip(all_probs, normalized_weights):
-            for emotion, score in probs.items():
-                aggregated_probs[emotion] = aggregated_probs.get(emotion, 0) + score * weight
-
-        return aggregated_probs
